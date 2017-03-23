@@ -1,52 +1,52 @@
 #!/bin/bash
 
-function ws() {
+function rosws() {
     command=$1
     shift
 
     if [[ "$command" = "--help" || -z "$command" ]]; then
-        _ws_help
+        _rosws_help
         return 0
     fi
 
-    if [ -x "$WS_SCRIPTS/${command}.sh" ]; then
-        $WS_SCRIPTS/${command}.sh "$@"
+    if [ -x "$ROSWS_SCRIPTS/${command}.sh" ]; then
+        $ROSWS_SCRIPTS/${command}.sh "$@"
         return 0
-    elif [ -r "$WS_SCRIPTS/${command}.sh" ]; then
-        source $WS_SCRIPTS/${command}.sh "$@"
+    elif [ -r "$ROSWS_SCRIPTS/${command}.sh" ]; then
+        source $ROSWS_SCRIPTS/${command}.sh "$@"
         return 0
     else
-        echo "Unknown ws command: $command"
-        _ws_help 
+        echo "Unknown rosws command: $command"
+        _rosws_help 
     fi
 
     return 1
 }
 
-function _ws_commands() {
-    local WS_COMMANDS=()
+function _rosws_commands() {
+    local ROSWS_COMMANDS=()
 
-    for i in `find -L $WS_SCRIPTS/ -type f -name "*.sh"`; do
-        command=${i#$WS_SCRIPTS/}
+    for i in `find -L $ROSWS_SCRIPTS/ -type f -name "*.sh"`; do
+        command=${i#$ROSWS_SCRIPTS/}
         command=${command%.sh}
         if [[ "$command" == "completion/"* || "$command" == "helper/"* ]]; then
             continue
         elif [ -r $i ]; then
-            WS_COMMANDS+=($command)
+            ROSWS_COMMANDS+=($command)
         fi
     done
     
-    echo ${WS_COMMANDS[@]}
+    echo ${ROSWS_COMMANDS[@]}
 }
 
-function _ws_help() {
+function _rosws_help() {
     echo "The following commands are available:"
 
-    commands=$(_ws_commands)
+    commands=$(_rosws_commands)
     for i in ${commands[@]}; do
-        if [ -x "$WS_SCRIPTS/$i.sh" ]; then
+        if [ -x "$ROSWS_SCRIPTS/$i.sh" ]; then
             echo "   $i"
-        elif [ -r "$WS_SCRIPTS/$i.sh" ]; then
+        elif [ -r "$ROSWS_SCRIPTS/$i.sh" ]; then
             echo "  *$i"
         fi
     done
@@ -55,7 +55,7 @@ function _ws_help() {
     echo "(*) Commands marked with * may change your environment."
 }
 
-function _ws_complete() {
+function _rosws_complete() {
     local cur
     local prev
 
@@ -66,24 +66,24 @@ function _ws_complete() {
     COMPREPLY=()
     _get_comp_words_by_ref cur prev
 
-    # ws <command>
+    # rosws <command>
     if [ $COMP_CWORD -eq 1 ]; then
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W '--help' -- "$cur" ) )
         else
-            COMPREPLY=( $( compgen -W "$(_ws_commands)" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "$(_rosws_commands)" -- "$cur" ) )
         fi
     fi
 
-    # ws command <subcommand..>
+    # rosws command <subcommand..>
     if [ $COMP_CWORD -ge 2 ]; then
         case ${COMP_WORDS[1]} in
             install)
-                _ws_install_complete
+                _rosws_install_complete
                 ;;
 
             uninstall)
-                _ws_uninstall_complete
+                _rosws_uninstall_complete
                 ;;
 
             launch)
@@ -91,7 +91,7 @@ function _ws_complete() {
                     COMPREPLY=( $( compgen -W "--screen" -- "$cur" ) )
                 fi
 
-                COMP_WORDS=( roslaunch ws_mang_onboard_launch $cur )
+                COMP_WORDS=( roslaunch $ONBOARD_LAUNCH_PKG $cur )
                 COMP_CWORD=2
                 _roscomplete_launch
                 ;;
@@ -110,12 +110,12 @@ function _ws_complete() {
                 
             sim)
                 if [ $COMP_CWORD -eq 2 ]; then
-                    _ws_sim_complete
+                    _rosws_sim_complete
                 fi
                 ;;
                 
             test)
-                _ws_test_complete
+                _rosws_test_complete
                 ;;
 
             *)
@@ -124,7 +124,7 @@ function _ws_complete() {
         esac
     fi
 } &&
-complete -F _ws_complete ws
+complete -F _rosws_complete rosws
 
-alias $WS_PREFIX=ws
-complete -F _ws_complete $WS_PREFIX
+alias $ROSWS_PREFIX=rosws
+complete -F _rosws_complete $ROSWS_PREFIX

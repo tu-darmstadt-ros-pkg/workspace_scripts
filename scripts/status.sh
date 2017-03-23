@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $WS_ROOT/setup.bash ""
+. $ROSWS_ROOT/setup.bash ""
 
 function blueEcho()
 {
@@ -71,18 +71,18 @@ function displayStatus()
   cd $old_d
 }
 
-cd ${WS_ROOT}
+cd ${ROSWS_ROOT}
 blueEcho "Looking for changes in $PWD ..."
 displayStatus $PWD
 
-if [ -d $WS_ROOT/rosinstall/optional/custom/.git ]; then
-    cd $WS_ROOT/rosinstall/optional/custom
+if [ -d $ROSWS_ROOT/rosinstall/optional/custom/.git ]; then
+    cd $ROSWS_ROOT/rosinstall/optional/custom
     blueEcho "Looking for changes in $PWD ..."
     displayStatus $PWD
 fi
 
-if [ -d $WS_SCRIPTS/custom/.git ]; then
-    cd $WS_SCRIPTS/custom
+if [ -d $ROSWS_SCRIPTS/custom/.git ]; then
+    cd $ROSWS_SCRIPTS/custom
     blueEcho "Looking for changes in $PWD ..."
     displayStatus $PWD
 fi
@@ -95,7 +95,7 @@ do
   e=${e#*[}
   e=${e%]*}
   branch=$(getSpecBranch $e)
-  displayStatus $WS_ROOT/$e $branch
+  displayStatus $ROSWS_ROOT/$e $branch
 done
 
 blueEcho "Status check done!"

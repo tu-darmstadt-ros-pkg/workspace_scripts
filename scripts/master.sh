@@ -32,5 +32,5 @@ else
 fi
 echo "You can use one of the following commands:"
 for ip in $myips; do
-    echo "  $WS_PREFIX master $1 $ip"
+    echo "  $ROSWS_PREFIX master $1 $ip"
 done

@@ -2,4 +2,4 @@
 
 . $WS_ROOT/setup.bash ""
 
-ws_test "$@"
+rosws_test "$@"

@@ -1,17 +1,17 @@
 #!/bin/bash
 
-function ws_test() {
+function rosws_test() {
     set -e
     
     package=$1
     shift
 
     if [[ "$package" = "--help" || -z "$package" ]]; then
-        _ws_test_help
+        _rosws_test_help
         return 0
     fi
 
-    if [ -d "$WS_ROOT/build/$package" ]; then
+    if [ -d "$ROSWS_ROOT/build/$package" ]; then
         # build tests
         roscd
         catkin build $package --catkin-make-args run_tests
@@ -27,17 +27,17 @@ function ws_test() {
 
         return 0
     else
-        echo "Build directory for '$package' doesn't exists! (path: $WS_ROOT/build/$package)"
+        echo "Build directory for '$package' doesn't exists! (path: $ROSWS_ROOT/build/$package)"
     fi
 
     return 1
 }
 
-function _ws_test_help() {
+function _rosws_test_help() {
     echo "Type name of rospackage to test."
 }
 
-function _ws_test_complete() {
+function _rosws_test_complete() {
     local cur
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
@@ -47,14 +47,14 @@ function _ws_test_complete() {
     COMPREPLY=()
     _get_comp_words_by_ref cur
 
-    # ws test ...
+    # rosws test ...
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
         else
             _roscomplete
         fi
-    # ws test $package ...
+    # rosws test $package ...
     elif [ $COMP_CWORD -ge 3 ]; then
         COMP_WORDS=( roslaunch ${COMP_WORDS[2]} $cur )
         COMP_CWORD=2
@@ -63,4 +63,4 @@ function _ws_test_complete() {
 
     return 0
 } &&
-complete -F _ws_test_complete ws_test
+complete -F _rosws_test_complete rosws_test

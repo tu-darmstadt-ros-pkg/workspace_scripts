@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function ws_sim() {
+function rosws_sim() {
     world=$1
 
     onboard=false
@@ -10,7 +10,7 @@ function ws_sim() {
         world="empty"
     # help requested
     elif [[ "$world" = "--help" ]]; then
-        _ws_sim_help
+        _rosws_sim_help
         return 0
     # check arguments
     else
@@ -31,7 +31,7 @@ function ws_sim() {
     roscd $GAZEBO_WORLDS_PKG
     if [ -z "world/${world}.world" ]; then
         echo "Unknown world file: $world"
-        _ws_sim_help
+        _rosws_sim_help
         return 1
     elif [ "$onboard" = true ]; then
       roslaunch $GAZEBO_LAUNCH_PKG start_onboard_all.launch world_name:=$world "$@"
@@ -42,8 +42,8 @@ function ws_sim() {
     return 0
 }
 
-function _ws_sim_files() {
-    local WS_WORLD_FILES=()
+function _rosws_sim_files() {
+    local ROSWS_WORLD_FILES=()
  
     roscd $GAZEBO_WORLDS_PKG
 
@@ -51,16 +51,16 @@ function _ws_sim_files() {
         file=${i#worlds/}
         file=${file%.world}
         if [ -r $i ]; then
-            WS_WORLD_FILES+=($file)
+            ROSWS_WORLD_FILES+=($file)
         fi
     done
     
-    echo ${WS_WORLD_FILES[@]}
+    echo ${ROSWS_WORLD_FILES[@]}
 }
 
-function _ws_sim_help() {
+function _rosws_sim_help() {
     echo "The following world files are available:"
-    files=$(_ws_sim_files)
+    files=$(_rosws_sim_files)
     for i in ${files[@]}; do
         echo "   $i"
     done
@@ -68,7 +68,7 @@ function _ws_sim_help() {
     echo "Append 'onboard' to start onboard software as well. ROS parameters has to go at the end."
 }
 
-function _ws_sim_complete() {
+function _rosws_sim_complete() {
     local cur
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
@@ -81,9 +81,9 @@ function _ws_sim_complete() {
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
     else
-        COMPREPLY=( $( compgen -W "$(_ws_sim_files)" -- "$cur" ) )
+        COMPREPLY=( $( compgen -W "$(_rosws_sim_files)" -- "$cur" ) )
     fi
 
     return 0
 } &&
-complete -F _ws_sim_complete ws_sim
+complete -F _rosws_sim_complete rosws_sim

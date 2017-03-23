@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ws_install "$@"
+rosws_install "$@"

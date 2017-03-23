@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-$WS_SCRIPTS/update.sh
-$WS_SCRIPTS/make.sh "$@"
+$ROSWS_SCRIPTS/update.sh
+$ROSWS_SCRIPTS/make.sh "$@"

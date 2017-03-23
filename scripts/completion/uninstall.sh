@@ -1,11 +1,11 @@
 #!/bin/bash
 
-function ws_uninstall() {
+function rosws_uninstall() {
     rosinstall=$1
     shift
 
     if [[ "$rosinstall" = "--help" || -z "$rosinstall" ]]; then
-        _ws_uninstall_help
+        _rosws_uninstall_help
         return 0
     fi
 
@@ -20,11 +20,11 @@ function ws_uninstall() {
     return 1
 }
 
-function _ws_uninstall_help() {
+function _rosws_uninstall_help() {
     echo "Type name of rospackage to uninstall."
 }
 
-function _ws_uninstall_complete() {
+function _rosws_uninstall_complete() {
     local cur
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
@@ -44,4 +44,4 @@ function _ws_uninstall_complete() {
 
     return 0
 } &&
-complete -F _ws_uninstall_complete ws_uninstall
+complete -F _rosws_uninstall_complete rosws_uninstall

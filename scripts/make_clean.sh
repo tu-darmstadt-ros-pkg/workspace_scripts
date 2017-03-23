@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-$WS_SCRIPTS/clean.sh
-$WS_SCRIPTS/make.sh "$@"
+$ROSWS_SCRIPTS/clean.sh
+$ROSWS_SCRIPTS/make.sh "$@"

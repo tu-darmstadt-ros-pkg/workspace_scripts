@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # SET HERE YOUR WORKSPACE PREFIX
-export WS_PREFIX="my_ws"
+export ROSWS_PREFIX="rosws"
 
 # SETUP YOUR ENVIRONMENT HERE
 export ONBOARD_LAUNCH_PKG=""            # Name of your main onboard launch package
