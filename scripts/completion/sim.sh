@@ -34,9 +34,9 @@ function ws_sim() {
         _ws_sim_help
         return 1
     elif [ "$onboard" = true ]; then
-      roslaunch $GAZEBO_WORLDS_PKG start_onboard_all.launch world_name:=$world "$@"
+      roslaunch $GAZEBO_LAUNCH_PKG start_onboard_all.launch world_name:=$world "$@"
     else
-      roslaunch $GAZEBO_WORLDS_PKG start_all.launch world_name:=$world "$@"
+      roslaunch $GAZEBO_LAUNCH_PKG start_all.launch world_name:=$world "$@"
     fi
 
     return 0
