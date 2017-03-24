@@ -1,4 +1,17 @@
-#!/bin/sh
+#!/bin/bash
+export ROBOT_PC_SCRIPTS=()
+
+# Use this method to register different robot pcs
+# Example:
+#   add_robot_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
+function add_robot_pc() {
+    script_name="$1"
+    export ${script_name}_script_name="$1"
+    export ${script_name}_hostname="$2"
+    export ${script_name}_screen_name="$3"
+    export ${script_name}_launch_command="$4"
+    ROBOT_PC_SCRIPTS+=($script_name)
+}
 
 # SET HERE YOUR WORKSPACE PREFIX
 export ROSWSS_PREFIX="roswss"

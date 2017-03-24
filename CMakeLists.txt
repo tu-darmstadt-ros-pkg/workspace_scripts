@@ -14,7 +14,7 @@ find_package(catkin REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package()
 
-catkin_add_env_hooks(10.setup SHELLS sh)
+catkin_add_env_hooks(10.setup SHELLS bash)
 catkin_add_env_hooks(11.scripts SHELLS sh)
 catkin_add_env_hooks(12.bash SHELLS bash)
 

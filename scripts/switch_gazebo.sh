@@ -77,7 +77,7 @@ else
     fi
 fi
 
-$ROSWSS_PREFIX make
+roswss make
 
 . $ROSWSS_ROOT/setup.bash
 

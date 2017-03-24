@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function roswss() {
-    command=$1
+    command="$1"
     shift
 
     if [[ "$command" = "--help" || -z "$command" ]]; then
@@ -16,7 +16,18 @@ function roswss() {
         source $ROSWSS_SCRIPTS/${command}.sh "$@"
         return 0
     else
-        echo "Unknown roswss command: $command"
+        # check if current scope is robot pc script
+        for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "$command" ]]; then
+              hostname=${script_name}_hostname
+              screen_name=${script_name}_screen_name
+              launch_command=${script_name}_launch_command
+              robot_pc "${script_name}" "${!hostname}" "${!screen_name}" "${!launch_command}" "$@"
+              return 0
+            fi
+        done
+
+        echo "Unknown workspace script command: $command"
         _roswss_help 
     fi
 
@@ -34,6 +45,10 @@ function _roswss_commands() {
         elif [ -r $i ]; then
             ROSWSS_COMMANDS+=($command)
         fi
+    done
+
+    for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
+        ROSWSS_COMMANDS+=($script_name)
     done
     
     echo ${ROSWSS_COMMANDS[@]}
@@ -77,6 +92,15 @@ function _roswss_complete() {
 
     # roswss command <subcommand..>
     if [ $COMP_CWORD -ge 2 ]; then
+        
+        # check if current scope is robot pc script
+        for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "${COMP_WORDS[1]}" ]]; then
+              _robot_pc_complete
+              return
+            fi
+        done
+
         case ${COMP_WORDS[1]} in
             install)
                 _roswss_install_complete
@@ -123,7 +147,8 @@ function _roswss_complete() {
                 ;;
         esac
     fi
-} &&
+}
+
 complete -F _roswss_complete roswss
 
 alias $ROSWSS_PREFIX=roswss
