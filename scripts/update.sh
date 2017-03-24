@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $ROSWS_ROOT/setup.bash
+. $ROSWSS_ROOT/setup.bash
 
 package=$1
 
@@ -12,15 +12,15 @@ if [[ ! -z "$package" ]]; then
 else
     sudo echo
 
-    echo ">>> Pulling scripts folder in $ROSWS_SCRIPTS"
-    cd $ROSWS_SCRIPTS
+    echo ">>> Pulling scripts folder in $ROSWSS_SCRIPTS"
+    cd $ROSWSS_SCRIPTS
     git pull
 
     # Remove obsolete stuff using wstool
-    $ROSWS_SCRIPTS/helper/rm_obsolete_packages.sh
+    $ROSWSS_SCRIPTS/helper/rm_obsolete_packages.sh
 
-    echo ">>> Pulling install folder in $ROSWS_ROOT"
-    cd $ROSWS_ROOT
+    echo ">>> Pulling install folder in $ROSWSS_ROOT"
+    cd $ROSWSS_ROOT
     git pull
     echo
 
@@ -29,30 +29,30 @@ else
     echo
 
     # merge rosinstall files from rosinstall/*.rosinstall
-    for file in $ROSWS_ROOT/rosinstall/*.rosinstall; do
+    for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
         filename=$(basename ${file%.*})
         echo "Merging to workspace: '$filename'.rosinstall"
         wstool merge $file -y
     done
     echo
 
-    if [ -d $ROSWS_ROOT/rosinstall/optional/custom/.git ]; then
+    if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
         echo ">>> Pulling custom rosinstalls"
-        cd $ROSWS_ROOT/rosinstall/optional/custom
+        cd $ROSWSS_ROOT/rosinstall/optional/custom
         git pull
         echo
     fi
 
-    if [ -d $ROSWS_SCRIPTS/custom/.git ]; then
+    if [ -d $ROSWSS_SCRIPTS/custom/.git ]; then
         echo ">>> Pulling custom scripts"
-        cd $ROSWS_SCRIPTS/custom
+        cd $ROSWSS_SCRIPTS/custom
         git pull
         echo
     fi
 
-    cd $ROSWS_ROOT
+    cd $ROSWSS_ROOT
     echo ">>> Merging rosinstall files"
-    for file in $ROSWS_ROOT/rosinstall/*.rosinstall; do
+    for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
         filename=$(basename ${file%.*})
         echo "Merging to workspace: $filename.rosinstall"
         wstool merge $file -y
@@ -60,9 +60,9 @@ else
     echo
 
     echo ">>> Updating catkin workspace"
-    cd $ROSWS_ROOT/src
+    cd $ROSWSS_ROOT/src
     wstool update
 
     echo ">>> Installing package dependencies"
-    $ROSWS_ROOT/rosinstall/install_scripts/install_package_dependencies.sh
+    $ROSWSS_ROOT/rosinstall/install_scripts/install_package_dependencies.sh
 fi

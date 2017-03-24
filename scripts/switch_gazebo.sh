@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. $ROSWS_ROOT/setup.bash
+. $ROSWSS_ROOT/setup.bash
 
 versions="2, 4, 5, 6, 7"
 
@@ -55,21 +55,21 @@ fi
 sudo apt-get autoremove -y
 
 # built/cleanup gazebo-plugins libs
-cd $ROSWS_ROOT
+cd $ROSWSS_ROOT
 if test "$version" == "2"; then
     if rospack list | grep -q gazebo_plugins; then
         wstool rm external/gazebo_ros_pkgs
 
         # remove source
-        rm -rf $ROSWS_ROOT/src/external/gazebo_ros_pkgs
+        rm -rf $ROSWSS_ROOT/src/external/gazebo_ros_pkgs
 
         # remove compiled binaries
-        rm -rf $ROSWS_ROOT/build/gazebo*
-        rm -rf $ROSWS_ROOT/devel/lib/gazebo*
-        rm -f $ROSWS_ROOT/devel/lib/libgazebo*
-        rm -f $ROSWS_ROOT/devel/lib/libdefault_robot_hw_sim.so
-        rm -rf $ROSWS_ROOT/devel/include/gazebo*
-        rm -rf $ROSWS_ROOT/devel/share/gazebo*
+        rm -rf $ROSWSS_ROOT/build/gazebo*
+        rm -rf $ROSWSS_ROOT/devel/lib/gazebo*
+        rm -f $ROSWSS_ROOT/devel/lib/libgazebo*
+        rm -f $ROSWSS_ROOT/devel/lib/libdefault_robot_hw_sim.so
+        rm -rf $ROSWSS_ROOT/devel/include/gazebo*
+        rm -rf $ROSWSS_ROOT/devel/share/gazebo*
     fi
 else
     if [ -z $(rospack list | grep -q gazebo_plugins)]; then
@@ -77,8 +77,8 @@ else
     fi
 fi
 
-$ROSWS_PREFIX make
+$ROSWSS_PREFIX make
 
-. $ROSWS_ROOT/setup.bash
+. $ROSWSS_ROOT/setup.bash
 
 echo ">>> Setup for Gazebo$version complete!"

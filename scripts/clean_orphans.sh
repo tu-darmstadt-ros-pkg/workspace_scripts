@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd $ROSWS_ROOT
+cd $ROSWSS_ROOT
 catkin clean --orphans
-echo " >>> If orphans were found, run '$ROSWS_PREFIX make --force-cmake' now."
+echo " >>> If orphans were found, run '$ROSWSS_PREFIX make --force-cmake' now."

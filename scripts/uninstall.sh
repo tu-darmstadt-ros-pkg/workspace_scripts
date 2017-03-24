@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rosws_uninstall "$@"
+roswss_uninstall "$@"

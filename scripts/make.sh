@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-. $ROSWS_SCRIPTS/make_externals.sh
+. $ROSWSS_SCRIPTS/make_externals.sh
 
 # check if debug compile is set
 debug=false
@@ -21,7 +21,7 @@ do
 done
 
 if [ $change_dir == true ] ; then
-  cd $ROSWS_ROOT
+  cd $ROSWSS_ROOT
 fi
 
 # add proper compile flag
@@ -40,4 +40,4 @@ echo
 
 catkin build $args
 
-. $ROSWS_ROOT/setup.bash
+. $ROSWSS_ROOT/setup.bash

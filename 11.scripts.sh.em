@@ -1,23 +1,23 @@
 #!/bin/sh
 
 @[if DEVELSPACE]@
-export ROSWS_SCRIPTS=@(PROJECT_SOURCE_DIR)/scripts
+export ROSWSS_SCRIPTS=@(PROJECT_SOURCE_DIR)/scripts
 @[else]@
-export ROSWS_SCRIPTS=@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATION)/scripts
+export ROSWSS_SCRIPTS=@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATION)/scripts
 @[end if]@
-export ROSWS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)/../../.."; pwd)
+export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)/../../.."; pwd)
 
-# include ROSWS_scripts hooks
-#if [ -d $ROSWS_SCRIPTS ]; then
-#  . $ROSWS_SCRIPTS/functions.sh
-#  . $ROSWS_SCRIPTS/robot.sh ""
+# include ROSWSS_scripts hooks
+#if [ -d $ROSWSS_SCRIPTS ]; then
+#  . $ROSWSS_SCRIPTS/functions.sh
+#  . $ROSWSS_SCRIPTS/robot.sh ""
 
-#  _ROSWS_include "$ROSWS_SCRIPTS/setup.d/*.sh"
-#  _ROSWS_include "$ROSWS_SCRIPTS/$HOSTNAME/setup.d/*.sh"
+#  _ROSWSS_include "$ROSWSS_SCRIPTS/setup.d/*.sh"
+#  _ROSWSS_include "$ROSWSS_SCRIPTS/$HOSTNAME/setup.d/*.sh"
 
-#  if [ -r "$ROSWS_SCRIPTS/$HOSTNAME/setup.sh" ]; then
-#      echo "Including $ROSWS_SCRIPTS/$HOSTNAME/setup.sh..." >&2
-#      . "$ROSWS_SCRIPTS/$HOSTNAME/setup.sh"
+#  if [ -r "$ROSWSS_SCRIPTS/$HOSTNAME/setup.sh" ]; then
+#      echo "Including $ROSWSS_SCRIPTS/$HOSTNAME/setup.sh..." >&2
+#      . "$ROSWSS_SCRIPTS/$HOSTNAME/setup.sh"
 #  fi
 #fi
 
@@ -28,5 +28,5 @@ if [ "$ROS_DISTRO" = "indigo" ]; then
 fi
 
 # export some variables
-export PATH=$ROSWS_SCRIPTS/helper:$PATH
-export ROS_WORKSPACE=$ROSWS_ROOT/src
+export PATH=$ROSWSS_SCRIPTS/helper:$PATH
+export ROS_WORKSPACE=$ROSWSS_ROOT/src
