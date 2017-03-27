@@ -10,8 +10,6 @@ if [[ ! -z "$package" ]]; then
     git pull
 # otherwise perform full update
 else
-    sudo echo
-
     echo ">>> Pulling scripts folder in $ROSWSS_SCRIPTS"
     cd $ROSWSS_SCRIPTS
     git pull
