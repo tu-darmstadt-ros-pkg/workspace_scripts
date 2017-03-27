@@ -24,3 +24,7 @@ export GAZEBO_WORLDS_PKG=""                 # Package name where your Gazebo wor
 export ROBOT_MASTER_HOSTNANE=""             # Hostname running ros master
 export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers
 export ROBOT_USER=""                        # Main login user name for robot computers
+
+# export important variables (do not change!)
+export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)"/$ROSWSS_ROOT_RELATIVE_PATH; pwd)
+export ROS_WORKSPACE=$ROSWSS_ROOT/src
