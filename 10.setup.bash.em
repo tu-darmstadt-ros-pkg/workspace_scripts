@@ -15,11 +15,12 @@ function add_robot_pc() {
 
 # SET HERE YOUR WORKSPACE PREFIX
 export ROSWSS_PREFIX="roswss"
+export ROSWSS_ROOT_RELATIVE_PATH="../.."    # Relative path to workspace root from package location
 
 # SETUP YOUR ENVIRONMENT HERE
-export ONBOARD_LAUNCH_PKG=""            # Name of your main onboard launch package
-export GAZEBO_LAUNCH_PKG=""             # Package name where your Gazebo worlds are stored
-export GAZEBO_WORLDS_PKG=""             # Package name where your Gazebo worlds are stored
-export ROBOT_MASTER_HOSTNANE=""         # Hostname running ros master
-export ROBOT_HOSTNAMES=""               # Hostnames of all available robot computers
-export ROBOT_USER=""                    # Main login user name for robot computers
+export ONBOARD_LAUNCH_PKG=""                # Name of your main onboard launch package
+export GAZEBO_LAUNCH_PKG=""                 # Package name where your Gazebo worlds are stored
+export GAZEBO_WORLDS_PKG=""                 # Package name where your Gazebo worlds are stored
+export ROBOT_MASTER_HOSTNANE=""             # Hostname running ros master
+export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers
+export ROBOT_USER=""                        # Main login user name for robot computers

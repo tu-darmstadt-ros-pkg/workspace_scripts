@@ -5,7 +5,7 @@ export ROSWSS_SCRIPTS=@(PROJECT_SOURCE_DIR)/scripts
 @[else]@
 export ROSWSS_SCRIPTS=@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATION)/scripts
 @[end if]@
-export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)/../../.."; pwd)
+export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)/$ROSWSS_ROOT_RELATIVE_PATH"; pwd)
 
 # include ROSWSS_scripts hooks
 #if [ -d $ROSWSS_SCRIPTS ]; then
