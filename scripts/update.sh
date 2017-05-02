@@ -10,12 +10,18 @@ if [[ ! -z "$package" ]]; then
     git pull
 # otherwise perform full update
 else
-    echo ">>> Pulling scripts folder in $ROSWSS_SCRIPTS"
-    cd $ROSWSS_SCRIPTS
-    git pull
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        echo ">>> Pulling scripts folder in $dir"
+        cd $dir
+        git pull
+    done
 
     # Remove obsolete stuff using wstool
-    $ROSWSS_SCRIPTS/helper/rm_obsolete_packages.sh
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        if [ -f "$dir/helper/rm_obsolete_packages.sh" ]; then
+            $dir/helper/rm_obsolete_packages.sh
+        fi
+    done
 
     echo ">>> Pulling install folder in $ROSWSS_ROOT"
     cd $ROSWSS_ROOT
@@ -41,12 +47,14 @@ else
         echo
     fi
 
-    if [ -d $ROSWSS_SCRIPTS/custom/.git ]; then
-        echo ">>> Pulling custom scripts"
-        cd $ROSWSS_SCRIPTS/custom
-        git pull
-        echo
-    fi
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        if [ -d $dir/custom/.git ]; then
+            echo ">>> Pulling custom scripts in $dir"
+            cd $dir/custom
+            git pull
+            echo
+        fi
+    done
 
     cd $ROSWSS_ROOT
     echo ">>> Merging rosinstall files"

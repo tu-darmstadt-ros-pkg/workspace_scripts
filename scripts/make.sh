@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
 
-. $ROSWSS_SCRIPTS/make_externals.sh
+for dir in ${ROSWSS_SCRIPTS//:/ }; do
+    if [ -r "$dir/make_externals.sh" ]; then
+        . $dir/make_externals.sh
+    fi
+done
 
 # check if debug compile is set
 debug=false

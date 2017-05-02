@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function robot_pc() {
+function remote_pc() {
     script_name="$1"
     shift
     hostname="$1"
@@ -12,8 +12,8 @@ function robot_pc() {
     command="$1"
     shift
 
-    if [[ "$command" == "--help" || -z "$command" ]]; then
-        _robot_pc_help
+    if [[ "$command" == "help" || "$command" == "--help" || -z "$command" ]]; then
+        _remote_pc_help
         return 0
     fi
 
@@ -27,10 +27,17 @@ function robot_pc() {
             roswss ssh $hostname
         fi
     elif [ ! $(hostname) = $hostname ]; then
-        roswss ssh $hostname "robot_pc '$script_name' '$hostname' '$screen_name' '$launch_command' '$command' '$@'"
+        roswss ssh $hostname "remote_pc '$script_name' '$hostname' '$screen_name' '$launch_command' '$command' '$@'"
 
-    # we are on robot host pc
+    # we are on remote host pc
     else
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do
+            if [ -x "$dir/${command}.sh" ]; then
+                roswss $command "$@"
+                return 0            
+            fi
+        done
+
         if [ $command == "roscore" ]; then
             roswss screen start "roscore" "roscore $@"
         elif [ $command == "start" ]; then
@@ -39,8 +46,6 @@ function robot_pc() {
             roswss screen stop "$screen_name" "$@"
         elif [ $command == "show" ]; then
             roswss screen show "$screen_name" "$@"
-        elif [ -x "$ROSWSS_SCRIPTS/${command}.sh" ]; then
-            roswss $command "$@"
         else
             $command "$@"
         fi
@@ -49,7 +54,7 @@ function robot_pc() {
     return 0
 }
 
-function _robot_pc_commands() {
+function _remote_pc_commands() {
     local COMMANDS=("roscore" "start" "stop" "show")
 
     commands=$(_roswss_commands)
@@ -63,31 +68,44 @@ function _robot_pc_commands() {
     echo ${COMMANDS[@]}
 }
 
-function _robot_pc_help() {
+function _remote_pc_help() {
     echo "The following commands are available:"
 
-    commands=$(_robot_pc_commands)
-    for i in ${commands[@]}; do       
-        if [ $i == "roscore" ]; then
-            echo "   $i"
-        elif [ $i == "start" ]; then
-            echo "   $i"
-        elif [ $i == "stop" ]; then
-            echo "   $i"
-        elif [ $i == "show" ]; then
-            echo "   $i"
-        elif [ -x "$ROSWSS_SCRIPTS/$i.sh" ]; then
-            echo "   $i"
-        elif [ -r "$ROSWSS_SCRIPTS/$i.sh" ]; then
-            echo "  *$i"
-        fi
+    commands=$(_remote_pc_commands)
+
+    out=""
+
+    for i in ${commands[@]}; do
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do      
+            if [ $i == "roscore" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ $i == "start" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ $i == "stop" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ $i == "show" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ -x "$dir/$i.sh" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ -r "$dir/$i.sh" ]; then
+                out+="* \t $i \t\t ($dir)\n"
+                break
+            fi
+        done
     done
+
+    echo -e $out | column -s $'\t' -tn
 
     echo
     echo "(*) Commands marked with * may change your environment."
 }
 
-function _robot_pc_complete() {
+function _remote_pc_complete() {
     local cur
     local prev
 
@@ -101,10 +119,10 @@ function _robot_pc_complete() {
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
     else
-        COMPREPLY=( $( compgen -W "$(_robot_pc_commands)" -- "$cur" ) )
+        COMPREPLY=( $( compgen -W "$(_remote_pc_commands)" -- "$cur" ) )
     fi
 }
 
-for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
-    complete -F _robot_pc_complete $script_name
+for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+    complete -F _remote_pc_complete $script_name
 done

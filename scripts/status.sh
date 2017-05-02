@@ -81,11 +81,13 @@ if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
     displayStatus $PWD
 fi
 
-if [ -d $ROSWSS_SCRIPTS/custom/.git ]; then
-    cd $ROSWSS_SCRIPTS/custom
-    blueEcho "Looking for changes in $PWD ..."
-    displayStatus $PWD
-fi
+for dir in ${ROSWSS_SCRIPTS//:/ }; do
+    if [ -d $dir/custom/.git ]; then
+        cd $dir/custom
+        blueEcho "Looking for changes in $PWD ..."
+        displayStatus $PWD
+    fi
+done
 
 blueEcho "Looking for changes in ${ROS_WORKSPACE} ..."
 roscd

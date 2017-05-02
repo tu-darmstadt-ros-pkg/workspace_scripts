@@ -4,32 +4,34 @@ function roswss() {
     command="$1"
     shift
 
-    if [[ "$command" = "--help" || -z "$command" ]]; then
+    if [[ "$command" == "help" || "$command" = "--help" || -z "$command" ]]; then
         _roswss_help
         return 0
     fi
 
-    if [ -x "$ROSWSS_SCRIPTS/${command}.sh" ]; then
-        $ROSWSS_SCRIPTS/${command}.sh "$@"
-        return 0
-    elif [ -r "$ROSWSS_SCRIPTS/${command}.sh" ]; then
-        source $ROSWSS_SCRIPTS/${command}.sh "$@"
-        return 0
-    else
-        # check if current scope is robot pc script
-        for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
-            if [[ "$script_name" == "$command" ]]; then
-              hostname=${script_name}_hostname
-              screen_name=${script_name}_screen_name
-              launch_command=${script_name}_launch_command
-              robot_pc "${script_name}" "${!hostname}" "${!screen_name}" "${!launch_command}" "$@"
-              return 0
-            fi
-        done
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        if [ -x "$dir/${command}.sh" ]; then
+            $dir/${command}.sh "$@"
+            return 0
+        elif [ -r "$dir/${command}.sh" ]; then
+            source $dir/${command}.sh "$@"
+            return 0
+        else
+            # check if current scope is remote pc script
+            for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+                if [[ "$script_name" == "$command" ]]; then
+                    hostname=${script_name}_hostname
+                    screen_name=${script_name}_screen_name
+                    launch_command=${script_name}_launch_command
+                    remote_pc "${script_name}" "${!hostname}" "${!screen_name}" "${!launch_command}" "$@"
+                    return 0
+                fi
+            done
+        fi
+    done
 
-        echo "Unknown workspace script command: $command"
-        _roswss_help 
-    fi
+    echo "Unknown workspace script command: $command"
+    _roswss_help 
 
     return 1
 }
@@ -37,17 +39,17 @@ function roswss() {
 function _roswss_commands() {
     local ROSWSS_COMMANDS=()
 
-    for i in `find -L $ROSWSS_SCRIPTS/ -type f -name "*.sh"`; do
-        command=${i#$ROSWSS_SCRIPTS/}
-        command=${command%.sh}
-        if [[ "$command" == "completion/"* || "$command" == "helper/"* ]]; then
-            continue
-        elif [ -r $i ]; then
-            ROSWSS_COMMANDS+=($command)
-        fi
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
+            command=${i#$dir/}
+            command=${command%.sh}
+            if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
+                ROSWSS_COMMANDS+=($command)
+            fi
+        done
     done
 
-    for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
+    for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
         ROSWSS_COMMANDS+=($script_name)
     done
     
@@ -58,13 +60,29 @@ function _roswss_help() {
     echo "The following commands are available:"
 
     commands=$(_roswss_commands)
+
+    out=""
+
     for i in ${commands[@]}; do
-        if [ -x "$ROSWSS_SCRIPTS/$i.sh" ]; then
-            echo "   $i"
-        elif [ -r "$ROSWSS_SCRIPTS/$i.sh" ]; then
-            echo "  *$i"
-        fi
+        for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "$i" ]]; then
+                out+="\t $i \t\t (remote pc)\n"
+                break
+            fi
+        done
+
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do
+            if [ -x "$dir/$i.sh" ]; then
+                out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ -r "$dir/$i.sh" ]; then
+                out+="* \t $i \t\t ($dir)\n"
+                break
+            fi
+        done
     done
+
+    echo -e $out | column -s $'\t' -tn
 
     echo
     echo "(*) Commands marked with * may change your environment."
@@ -92,16 +110,24 @@ function _roswss_complete() {
 
     # roswss command <subcommand..>
     if [ $COMP_CWORD -ge 2 ]; then
-        
-        # check if current scope is robot pc script
-        for script_name in "${ROBOT_PC_SCRIPTS[@]}"; do
-            if [[ "$script_name" == "${COMP_WORDS[1]}" ]]; then
-              _robot_pc_complete
+        # check if current scope is remote pc script
+        for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "$prev" ]]; then
+              _remote_pc_complete
               return
             fi
         done
 
-        case ${COMP_WORDS[1]} in
+        # check for custom completion scripts
+        for i in "${!ROSWSS_COMPLETION_TAGS[@]}"; do 
+            if [[ "${ROSWSS_COMPLETION_TAGS[i]}" == "${COMP_WORDS[1]}" ]]; then
+                eval ${ROSWSS_COMPLETION_SCRIPTS[$i]}
+                return
+            fi
+        done
+
+        # default completion
+        case $prev in
             install)
                 _roswss_install_complete
                 ;;
