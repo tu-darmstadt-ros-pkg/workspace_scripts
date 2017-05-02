@@ -13,11 +13,13 @@ export ROSWSS_SCRIPTS="@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATIO
 
 # SETUP YOUR ENVIRONMENT HERE
 #export ONBOARD_LAUNCH_PKG=""                # Name of your main onboard launch package
-#export GAZEBO_LAUNCH_PKG=""                 # Package name where your Gazebo worlds are stored
+#export GAZEBO_LAUNCH_PKG=""                 # Gazebo launch file package
 #export GAZEBO_WORLDS_PKG=""                 # Package name where your Gazebo worlds are stored
+#export AUTOSTART_LAUNCH_PKG=""              # Package containing autostart setup
 #export ROBOT_MASTER_HOSTNANE=""             # Hostname running ros master
 #export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers
 #export ROBOT_USER=""                        # Main login user name for robot computers
+#export ROBOT_TYPE=""                        # Set robot type
 
 # SETUP YOUR REMOTE PCs HERE
 # Use add_remote_pc to register different remote pcs

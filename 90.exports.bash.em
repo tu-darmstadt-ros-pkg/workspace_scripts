@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # export important variables (do not change!)
+export HOSTNAME=$(hostname)
 export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)"/$ROSWSS_ROOT_RELATIVE_PATH; pwd)
 export ROS_WORKSPACE=$ROSWSS_ROOT/src
 
