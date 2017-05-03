@@ -37,7 +37,7 @@ function roswss() {
 }
 
 function _roswss_commands() {
-    local ROSWSS_COMMANDS=()
+    local ROSWSS_COMMANDS=('help')
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
