@@ -15,8 +15,8 @@ find_package(catkin REQUIRED)
 catkin_package()
 
 catkin_add_env_hooks(10.init SHELLS bash)
-catkin_add_env_hooks(90.exports SHELLS bash)
-catkin_add_env_hooks(91.autostart SHELLS bash)
+catkin_add_env_hooks(50.exports SHELLS bash)
+catkin_add_env_hooks(80.autostart SHELLS bash)
 
 #############
 ## Install ##
