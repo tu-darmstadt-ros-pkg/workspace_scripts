@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# only execute autostart if specified
+if [ -z "$AUTOSTART_LAUNCH_PKG" ]; then
+    return
+fi  
+
 # include helper functions
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
     if [ -f $dir/helper/functions.sh ]; then
