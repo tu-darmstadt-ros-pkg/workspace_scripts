@@ -108,19 +108,32 @@ function _roswss_complete() {
         fi
     fi
 
-    # roswss command <subcommand..>
-    if [ $COMP_CWORD -ge 2 ]; then
+    # roswss <remote_pc> <command..>
+    if [ $COMP_CWORD -eq 2 ]; then
         # check if current scope is remote pc script
         for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
             if [[ "$script_name" == "$prev" ]]; then
-              _remote_pc_complete
-              return
+                _remote_pc_complete
+                return
+            fi
+        done
+    fi
+
+    # roswss command <subcommand..>
+    if [ $COMP_CWORD -ge 2 ]; then
+        prev=${COMP_WORDS[1]}
+
+        # check if current scope is remote pc script
+        for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "$prev" ]]; then
+                prev=${COMP_WORDS[2]}
+                break
             fi
         done
 
         # check for custom completion scripts
         for i in "${!ROSWSS_COMPLETION_TAGS[@]}"; do 
-            if [[ "${ROSWSS_COMPLETION_TAGS[i]}" == "${COMP_WORDS[1]}" ]]; then
+            if [[ "${ROSWSS_COMPLETION_TAGS[i]}" == "$prev" ]]; then
                 eval ${ROSWSS_COMPLETION_SCRIPTS[$i]}
                 return
             fi

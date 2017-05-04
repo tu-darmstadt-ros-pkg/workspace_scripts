@@ -59,9 +59,20 @@ function _remote_pc_commands() {
 
     commands=$(_roswss_commands)
     for i in ${commands[@]}; do
-        if [ $i == "motion" ]; then
+
+        # don't offer remote pcs again
+        skip=false
+        for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
+            if [[ "$script_name" == "$i" ]]; then
+              skip=true
+              break
+            fi
+        done
+
+        if [ "$skip" = true ]; then
             continue
         fi
+
         COMMANDS+=($i)
     done
     
