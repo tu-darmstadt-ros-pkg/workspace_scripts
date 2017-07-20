@@ -53,12 +53,6 @@ fi
 
 sudo apt-get autoremove -y
 
-# built/cleanup gazebo-plugins libs
-cd $ROSWSS_ROOT
-if [ -z $(rospack list | grep -q gazebo_plugins)]; then
-  wstool set -y -u src/external/gazebo_ros_pkgs --git https://github.com/ros-simulation/gazebo_ros_pkgs.git -v $ROS_DISTRO-devel
-fi
-
 roswss make
 
 . $ROSWSS_ROOT/setup.bash
