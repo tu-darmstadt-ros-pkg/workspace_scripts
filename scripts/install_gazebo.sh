@@ -33,7 +33,10 @@ fi
 echo "Installing gazebo$version.."
 
 # remove old version
-sudo apt-get remove -y gazebo* ros-$ROS_DISTRO-gazebo*
+if [ $(dpkg-query -W -f='${Status}' gazebo$version 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+  sudo apt-get remove -y gazebo* ros-$ROS_DISTRO-gazebo*
+fi
 
 # install from debs
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu xenial main" > /etc/apt/sources.list.d/gazebo-latest.list'
