@@ -3,7 +3,7 @@
 cd $ROSWSS_ROOT
 
 if [ "$#" -eq 0 ]; then
-  echo -n "Do you want to clean devel and build? [y/n] "
+  echo -n "Do you want to clean devel and build? [y/N] "
   read -N 1 REPLY
   echo
   if test "$REPLY" = "y" -o "$REPLY" = "Y"; then

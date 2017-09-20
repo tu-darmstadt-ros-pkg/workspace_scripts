@@ -10,6 +10,14 @@ if [[ ! -z "$package" ]]; then
     git pull
 # otherwise perform full update
 else
+    # update systems settings
+    if [ -d /.git ]; then
+        echo ">>> Pulling system settings"
+        cd /
+        sudo git pull
+        echo
+    fi
+
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         echo ">>> Pulling scripts folder in $dir"
         cd $dir
