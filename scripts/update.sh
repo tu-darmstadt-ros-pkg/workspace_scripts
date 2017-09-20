@@ -15,7 +15,8 @@ else
         echo ">>> Pulling system settings"
         cd /
         sudo git pull
-        echo
+	sudo chown -R $USER:$USER ~/.git-credential-cache/
+	echo
     fi
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
