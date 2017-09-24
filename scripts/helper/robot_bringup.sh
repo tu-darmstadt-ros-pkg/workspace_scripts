@@ -1,6 +1,7 @@
 #!/bin/sh
 
-_robot_include() {
+_robot_bringup_include()
+{
     dir="$1"
     shift
     for FILE in $dir; do
@@ -10,7 +11,8 @@ _robot_include() {
     done
 }
 
-_robot_run() {
+_robot_bringup_run()
+{
     dir="$1"
     shift
     for FILE in $dir; do
