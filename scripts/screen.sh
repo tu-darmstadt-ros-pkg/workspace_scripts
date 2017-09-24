@@ -33,7 +33,7 @@ case $action in
             exit 1
         fi
 
-        screen -dmS $screen_session /bin/bash -ic "$@"
+        screen -dmS $screen_session /bin/bash -ic "$@" > /tmp/$screen_session.log
 
         if screen -ls | grep $screen_session; then
             echo "Screen '$screen_session' started!"
