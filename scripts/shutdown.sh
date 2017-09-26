@@ -5,7 +5,12 @@ read -N 1 REPLY
 echo
 
 if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
-  killall screen
+  if screen -ls &>/dev/null ; then
+    killall screen
+  fi
+
+  echo "Shutting down in 3s!"
+  sleep 3
   sudo shutdown now -h
 else
   echo ">>> Shutdown request cancelled"
