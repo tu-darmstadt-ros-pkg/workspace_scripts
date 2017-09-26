@@ -49,7 +49,8 @@ case $action in
             exit 1
         fi
 
-        screen -S $screen_session -X quit "$@"
+        echo "Stopping screen '$screen_session'"
+        screen -S $screen_session -X quit
 
         if screen -ls | grep $screen_session; then
             echo "Warning: The screen is maybe still running."
