@@ -21,3 +21,8 @@ _robot_bringup_run()
         $FILE "$@"
     done
 }
+
+wait_for_roscore()
+{
+    until rostopic list &>/dev/null ; do sleep 1; done
+}
