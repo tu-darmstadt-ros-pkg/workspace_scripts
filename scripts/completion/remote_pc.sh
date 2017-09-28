@@ -31,13 +31,6 @@ function remote_pc() {
 
     # we are on remote host pc
     else
-        for dir in ${ROSWSS_SCRIPTS//:/ }; do
-            if [ -x "$dir/${command}.sh" ]; then
-                roswss $command "$@"
-                return 0            
-            fi
-        done
-
         if [ $command == "roscore" ]; then
             roswss screen start "roscore" "roscore $@"
         elif [ $command == "start" ]; then
@@ -47,6 +40,14 @@ function remote_pc() {
         elif [ $command == "show" ]; then
             roswss screen show "$screen_name" "$@"
         else
+            for dir in ${ROSWSS_SCRIPTS//:/ }; do
+                if [ -x "$dir/${command}.sh" ]; then
+                    roswss $command "$@"
+                    return 0            
+                fi
+            done
+
+            # just try to execute command when no corresponding script was found
             $command "$@"
         fi
     fi
