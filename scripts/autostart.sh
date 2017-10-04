@@ -4,7 +4,7 @@
 if [ -z "$AUTOSTART_LAUNCH_PKG" ]; then
     echo "WARNING: autostart.sh has been triggered but AUTOSTART_LAUNCH_PKG was not set!" 
     return
-fi  
+fi
 
 # include helper functions
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
