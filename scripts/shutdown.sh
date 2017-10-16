@@ -11,7 +11,7 @@ if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
 
   echo "Shutting down in 3s!"
   sleep 3
-  sudo shutdown now -h
+  sudo shutdown -P now
 else
   echo ">>> Shutdown request cancelled"
 fi
