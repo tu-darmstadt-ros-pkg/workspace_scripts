@@ -76,7 +76,7 @@ else
 
     echo ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src
-    wstool update
+    wstool update -j$(nproc)
 
     echo ">>> Installing package dependencies"
     $ROSWSS_ROOT/rosinstall/install_scripts/install_package_dependencies.sh
