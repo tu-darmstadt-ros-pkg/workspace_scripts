@@ -15,7 +15,9 @@ else
         echo ">>> Pulling system settings"
         cd /
         sudo git pull
-        sudo chown -R $USER:$USER ~/.git-credential-cache/
+        if [ -d ~/.git-credential-cache/ ]; then
+          sudo chown -R $USER:$USER ~/.git-credential-cache/
+        fi
         echo
     fi
 
