@@ -33,7 +33,11 @@ case $action in
             exit 1
         fi
 
-        screen -dmS $screen_session /bin/bash -ic "$@" > /tmp/$screen_session.log
+        # create subfolders for each screen, there seems to be no option to change the output file name
+		mkdir -p $ROSWSS_ROOT/logs/screen_logs/$screen_session
+		cd $ROSWSS_ROOT/logs/screen_logs/$screen_session
+        screen -dmLS $screen_session /bin/bash -ic "$@"
+
 
         if screen -ls | grep $screen_session; then
             echo "Screen '$screen_session' started!"
