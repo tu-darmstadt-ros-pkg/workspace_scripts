@@ -11,10 +11,10 @@ done
 catkin clean --orphans
 
 # check if debug compile is set
-args="$@"
+args=("$@")
 debug=false
-for var in $args
-do
+for (( i=0; i<${#args[@]}; i++ )); do
+  var=${args[i]}
   if [ "$var" == "debug" ]; then
     debug=true
     args=( "${args[@]:0:$i}" "${args[@]:$((i + 1))}" )
@@ -24,8 +24,7 @@ done
 
 # check for single pkg compile
 change_dir=true
-for var in $args
-do
+for var in $args; do
   if [ "$var" == "--this" ]; then
     change_dir=false
     break
