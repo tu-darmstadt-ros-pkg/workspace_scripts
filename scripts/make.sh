@@ -7,16 +7,24 @@ for dir in ${ROSWSS_SCRIPTS//:/ }; do
     fi
 done
 
+# clean removed or disabled packages
+catkin clean --orphans
+
 # check if debug compile is set
+args="$@"
 debug=false
-if [ "$1" == "debug" ]; then
-  shift
-  debug=true
-fi
+for var in $args
+do
+  if [ "$var" == "debug" ]; then
+    debug=true
+    args=( "${args[@]:0:$i}" "${args[@]:$((i + 1))}" )
+    break
+  fi
+done
 
 # check for single pkg compile
 change_dir=true
-for var in "$@"
+for var in $args
 do
   if [ "$var" == "--this" ]; then
     change_dir=false
@@ -29,7 +37,6 @@ if [ $change_dir == true ] ; then
 fi
 
 # add proper compile flag
-args="$@"
 if [ $debug == true ]; then
   echo
   echo "-------------------- Debug build --------------------"
