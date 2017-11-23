@@ -11,7 +11,18 @@ function roswss_install() {
 
     error=0
 
+    # perform install
     while [[ ! -z "$rosinstall" ]]; do
+        # add entry in .install
+        if [ ! -f $ROSWSS_ROOT/.install ]; then
+           touch $ROSWSS_ROOT/.install
+        fi
+
+        if ! grep -Fxq "${rosinstall}" $ROSWSS_ROOT/.install; then
+          echo "${rosinstall}" >> $ROSWSS_ROOT/.install
+        fi
+
+        # perform install
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.rosinstall" ]; then
             local LAST_PWD=$PWD
             cd $ROSWSS_ROOT/src
@@ -49,7 +60,7 @@ function _roswss_install_files() {
 }
 
 function _roswss_install_help() {
-    echo "The following rosinstall files are available:"
+    echo "The following optional rosinstall files are available:"
     files=$(_roswss_install_files)
     for i in ${files[@]}; do
         echo "   $i"

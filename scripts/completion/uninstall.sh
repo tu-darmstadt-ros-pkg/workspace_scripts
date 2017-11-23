@@ -9,19 +9,28 @@ function roswss_uninstall() {
         return 0
     fi
 
-    # TODO: Check if local package!
-    if roscd $rosinstall ; then
-        wstool rm $PWD
-        cd ..
-        rm -rf $rosinstall
-        return 0
-    fi
+    sed -i "/$rosinstall/d" $ROSWSS_ROOT/.install
 
-    return 1
+    # TODO: Also uninstall packages?
+
+    return 0
+}
+
+function _roswss_uninstall_files() {
+    local ROSWSS_ROSINSTALL_FILES=()
+
+    while read filename; do
+        ROSWSS_ROSINSTALL_FILES+=($filename)
+    done <$ROSWSS_ROOT/.install
+
+    echo ${ROSWSS_ROSINSTALL_FILES[@]}
 }
 
 function _roswss_uninstall_help() {
-    echo "Type name of rospackage to uninstall."
+    echo "The following optional rosinstall files are installed:"
+    while read filename; do
+        echo "   $filename"
+    done <$ROSWSS_ROOT/.install
 }
 
 function _roswss_uninstall_complete() {
@@ -37,9 +46,7 @@ function _roswss_uninstall_complete() {
     if [[ "$cur" == -* ]]; then
         COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
     else
-        COMP_WORDS=( roscd $cur )
-        COMP_CWORD=1
-        _roscomplete
+        COMPREPLY=( $( compgen -W "$(_roswss_uninstall_files)" -- "$cur" ) )
     fi
 
     return 0

@@ -39,18 +39,6 @@ else
     git pull
     echo
 
-    echo ">>> Checking package updates"
-    ./rosinstall/install_scripts/install_package_dependencies.sh
-    echo
-
-    # merge rosinstall files from rosinstall/*.rosinstall
-    for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
-        filename=$(basename ${file%.*})
-        echo "Merging to workspace: '$filename'.rosinstall"
-        wstool merge $file -y
-    done
-    echo
-
     if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
         echo ">>> Pulling custom rosinstalls"
         cd $ROSWSS_ROOT/rosinstall/optional/custom
@@ -58,22 +46,23 @@ else
         echo
     fi
 
-    for dir in ${ROSWSS_SCRIPTS//:/ }; do
-        if [ -d $dir/custom/.git ]; then
-            echo ">>> Pulling custom scripts in $dir"
-            cd $dir/custom
-            git pull
-            echo
-        fi
-    done
+    echo ">>> Checking package updates"
+    ./rosinstall/install_scripts/install_package_dependencies.sh
+    echo
 
-    cd $ROSWSS_ROOT
-    echo ">>> Merging rosinstall files"
+    echo ">>> Checking rosinstall updates"
+    # merge rosinstall files from rosinstall/*.rosinstall
     for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
         filename=$(basename ${file%.*})
-        echo "Merging to workspace: $filename.rosinstall"
+        echo "Merging to workspace: '$filename'.rosinstall"
         wstool merge $file -y
     done
+
+    # merge installed optional rosinstall files from rosinstall/optional/*.rosinstall
+    while read filename; do
+      echo "Merging to workspace: '$filename'.rosinstall"
+      wstool merge $ROSWSS_ROOT/rosinstall/optional/$filename.rosinstall -y
+    done <$ROSWSS_ROOT/.install
     echo
 
     echo ">>> Updating catkin workspace"
