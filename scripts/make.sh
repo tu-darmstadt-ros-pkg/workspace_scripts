@@ -7,9 +7,6 @@ for dir in ${ROSWSS_SCRIPTS//:/ }; do
     fi
 done
 
-# clean removed or disabled packages
-catkin clean --orphans
-
 # check if debug compile is set
 args=("$@")
 debug=false
@@ -33,6 +30,9 @@ done
 
 if [ $change_dir == true ] ; then
   cd $ROSWSS_ROOT
+
+  # clean removed or disabled packages
+  catkin clean --orphans
 fi
 
 # add proper compile flag
