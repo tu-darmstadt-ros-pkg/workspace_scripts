@@ -14,7 +14,7 @@ else
     if [ -d /.git ]; then
         echo ">>> Pulling system settings"
         cd /
-        sudo git pull
+        sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK git pull
         if [ -d ~/.git-credential-cache/ ]; then
           sudo chown -R $USER:$USER ~/.git-credential-cache/
         fi
