@@ -59,10 +59,12 @@ else
     done
 
     # merge installed optional rosinstall files from rosinstall/optional/*.rosinstall
-    while read filename; do
-      echo "Merging to workspace: '$filename'.rosinstall"
-      wstool merge $ROSWSS_ROOT/rosinstall/optional/$filename.rosinstall -y
-    done <$ROSWSS_ROOT/.install
+    if [ -f "$ROSWSS_ROOT/.install" ]; then
+      while read filename; do
+        echo "Merging to workspace: '$filename'.rosinstall"
+        wstool merge $ROSWSS_ROOT/rosinstall/optional/$filename.rosinstall -y
+      done <$ROSWSS_ROOT/.install
+    fi
     echo
 
     echo ">>> Updating catkin workspace"
