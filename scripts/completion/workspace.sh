@@ -52,6 +52,12 @@ function _roswss_commands() {
     for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
         ROSWSS_COMMANDS+=($script_name)
     done
+
+    # sort commands
+    ROSWSS_COMMANDS=( $(
+      for command in "${ROSWSS_COMMANDS[@]}"; do
+          echo "$command"
+      done | sort) )
     
     echo ${ROSWSS_COMMANDS[@]}
 }
