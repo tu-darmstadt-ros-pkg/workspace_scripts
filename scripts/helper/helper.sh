@@ -1,5 +1,11 @@
 #!/bin/sh
 
+apt_install()
+{
+    PACKAGES_TO_INSTALL=$1
+    dpkg -s $PACKAGES_TO_INSTALL &>/dev/null || sudo apt-get -y install $PACKAGES_TO_INSTALL
+}
+
 append_to_file()
 {
     file=$1
