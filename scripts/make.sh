@@ -11,38 +11,40 @@ done
 args=("$@")
 debug=false
 for (( i=0; i<${#args[@]}; i++ )); do
-  var=${args[i]}
-  if [ "$var" == "debug" ]; then
-    debug=true
-    args=( "${args[@]:0:$i}" "${args[@]:$((i + 1))}" )
-    break
-  fi
+    var=${args[i]}
+    if [ "$var" == "debug" ]; then
+        debug=true
+        args=( "${args[@]:0:$i}" "${args[@]:$((i + 1))}" )
+        break
+    fi
 done
 
 # check for single pkg compile
 change_dir=true
 for var in $args; do
-  if [ "$var" == "--this" ]; then
-    change_dir=false
-    break
-  fi
+    if [ "$var" == "--this" ]; then
+        change_dir=false
+        break
+    fi
 done
 
-if [ $change_dir == true ] ; then
-  cd $ROSWSS_ROOT
+if [ $change_dir == true ]; then
+    cd $ROSWSS_ROOT
 
-  # clean removed or disabled packages
-  catkin clean --orphans
+    # clean removed or disabled packages
+    if [ -d $ROSWSS_ROOT/.catkin_tools ]; then
+        catkin clean --orphans
+    fi
 fi
 
 # add proper compile flag
 if [ $debug == true ]; then
-  echo
-  echo "-------------------- Debug build --------------------"
-  args="-DCMAKE_BUILD_TYPE=Debug $args"
+    echo
+    echo "-------------------- Debug build --------------------"
+    args="-DCMAKE_BUILD_TYPE=Debug $args"
 else
-  echo
-  echo "------------------- Default build -------------------"
+    echo
+    echo "------------------- Default build -------------------"
 fi
 echo ">>> Building with arguments '$args'"
 echo "-----------------------------------------------------"
