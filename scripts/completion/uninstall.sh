@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function roswss_uninstall() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     rosinstall=$1
     shift
 
@@ -9,7 +11,13 @@ function roswss_uninstall() {
         return 0
     fi
 
-    sed -i "/$rosinstall/d" $ROSWSS_ROOT/.install
+    # run bash script
+    if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
+      $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
+      error=0
+    fi
+
+    remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall
 
     # TODO: Also uninstall packages?
 
