@@ -31,14 +31,23 @@ function _roswss_uninstall_files() {
         ROSWSS_ROSINSTALL_FILES+=($filename)
     done <$ROSWSS_ROOT/.install
 
+    # sort names
+    ROSWSS_ROSINSTALL_FILES=( $(
+      for file in "${ROSWSS_ROSINSTALL_FILES[@]}"; do
+          echo "$file"
+      done | sort) )
+
     echo ${ROSWSS_ROSINSTALL_FILES[@]}
 }
 
 function _roswss_uninstall_help() {
     echo "The following optional rosinstall files are installed:"
-    while read filename; do
-        echo "   $filename"
-    done <$ROSWSS_ROOT/.install
+
+    files=$(_roswss_install_files)
+
+    for i in ${files[@]}; do
+        echo "   $i"
+    done
 }
 
 function _roswss_uninstall_complete() {
@@ -58,5 +67,5 @@ function _roswss_uninstall_complete() {
     fi
 
     return 0
-} &&
+}
 complete -F _roswss_uninstall_complete roswss_uninstall

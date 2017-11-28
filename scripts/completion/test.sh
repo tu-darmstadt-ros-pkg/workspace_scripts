@@ -62,5 +62,5 @@ function _roswss_test_complete() {
     fi
 
     return 0
-} &&
+}
 complete -F _roswss_test_complete roswss_test

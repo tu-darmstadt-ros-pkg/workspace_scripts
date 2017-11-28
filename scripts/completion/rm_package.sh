@@ -43,5 +43,5 @@ function _roswss_rm_package_complete() {
     fi
 
     return 0
-} &&
+}
 complete -F _roswss_rm_package_complete roswss_rm_package

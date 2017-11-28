@@ -119,5 +119,5 @@ function _roswss_install_complete() {
     fi
 
     return 0
-} &&
+}
 complete -F _roswss_install_complete roswss_install

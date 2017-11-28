@@ -85,5 +85,5 @@ function _roswss_sim_complete() {
     fi
 
     return 0
-} &&
+}
 complete -F _roswss_sim_complete roswss_sim
