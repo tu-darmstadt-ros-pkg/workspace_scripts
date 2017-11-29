@@ -34,13 +34,12 @@ case $action in
         fi
 
         # create subfolders for each screen, there seems to be no option to change the output file name
-		mkdir -p $ROSWSS_ROOT/logs/screen_logs/$screen_session
-		cd $ROSWSS_ROOT/logs/screen_logs/$screen_session
-		[ -f screenlog.0 ] && rm screenlog.0
+        mkdir -p $ROSWSS_ROOT/logs/screen_logs/$screen_session
+        cd $ROSWSS_ROOT/logs/screen_logs/$screen_session
+        [ -f screenlog.0 ] && rm screenlog.0
         screen -dmLS $screen_session /bin/bash -ic "$@"
 
-
-        if screen -ls | grep $screen_session; then
+        if screen -ls | grep $screen_session &>/dev/null; then
             echo "Screen '$screen_session' started!"
         else
             echo "Error! Screen '$screen_session' was not started!"
@@ -49,7 +48,7 @@ case $action in
         ;;
 
     stop) # stop screen
-        if ! screen -ls | grep $screen_session; then
+        if ! screen -ls | grep $screen_session &>/dev/null; then
             echo "There is no screen '$screen_session' running!"
             exit 1
         fi
@@ -57,7 +56,7 @@ case $action in
         echo "Stopping screen '$screen_session'"
         screen -S $screen_session -X quit
 
-        if screen -ls | grep $screen_session; then
+        if screen -ls | grep $screen_session &>/dev/null; then
             echo "Warning: The screen is maybe still running."
             exit 2
         else
@@ -66,7 +65,7 @@ case $action in
         ;;
 
     show) # show screen
-        if ! screen -ls | grep $screen_session; then
+        if ! screen -ls | grep $screen_session &>/dev/null; then
             echo "There is no screen '$screen_session' running!"
             exit 1
         fi
