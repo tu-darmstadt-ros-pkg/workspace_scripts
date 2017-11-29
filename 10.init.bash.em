@@ -1,15 +1,13 @@
 #!/bin/bash
 export ROSWSS_REMOTE_PC_SCRIPTS=()
+export ROSWSS_SEP_SYM='?'
 
 # Use this method to register different remote pcs
 # Example:
 #   add_remote_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
 function add_remote_pc() {
     script_name="$1"
-    export ${script_name}_script_name="$1"
-    export ${script_name}_hostname="$2"
-    export ${script_name}_screen_name="$3"
-    export ${script_name}_launch_command="$4"
+    export ${script_name}_remote_pc="${1}${ROSWSS_SEP_SYM}${2}${ROSWSS_SEP_SYM}${3}${ROSWSS_SEP_SYM}${4}"
     ROSWSS_REMOTE_PC_SCRIPTS+=($script_name)
 }
 
