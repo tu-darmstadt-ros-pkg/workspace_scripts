@@ -2,8 +2,10 @@
 
 apt_install()
 {
-    PACKAGES_TO_INSTALL=$1
-    dpkg -s $PACKAGES_TO_INSTALL &>/dev/null || sudo apt-get -y install $PACKAGES_TO_INSTALL
+    while [[ ! -z "$1" ]]; do
+        dpkg -s $1 &>/dev/null || sudo apt-get -y install $1
+        shift
+    done
 }
 
 append_to_file()
