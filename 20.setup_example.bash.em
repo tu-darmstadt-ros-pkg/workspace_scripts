@@ -14,6 +14,7 @@ export ROSWSS_ROOT_RELATIVE_PATH="../.."    # Relative path to workspace root fr
 # SETUP YOUR ENVIRONMENT HERE
 export ONBOARD_LAUNCH_PKG=""                # Name of your main onboard launch package
 export ONBOARD_LAUNCH_FILE=""               # Name of your main onboard launch file
+export UI_LAUNCH_PKG=""                     # Name of your main ui launch package
 export GAZEBO_LAUNCH_PKG=""                 # Gazebo launch package
 export GAZEBO_LAUNCH_FILE=""                # Gazebo launch file
 export GAZEBO_LAUNCH_W_ONBOARD_FILE=""      # Gazebo launch file starting also onboard software
