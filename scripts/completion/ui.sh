@@ -1,11 +1,11 @@
 #!/bin/bash
 
-function ui() {
+function roswss_ui() {
     command="$1"
     shift
 
     if [[ "$command" == "help" || "$command" = "--help" || -z "$command" ]]; then
-        _ui_help
+        _roswss_ui_help
         return 0
     fi
 
@@ -35,10 +35,10 @@ function ui() {
     fi
 
     echo "Unknown command: $command"
-    _ui_help 
+    _roswss_ui_help 
 }
 
-function _ui_rqt_config_files() {
+function _roswss_ui_rqt_config_files() {
     local ROSWSS_ROSINSTALL_FILES=()
 
     path="$(rospack find $UI_LAUNCH_PKG)/config/rqt/"
@@ -55,7 +55,7 @@ function _ui_rqt_config_files() {
     echo ${ROSWSS_ROSINSTALL_FILES[@]}
 }
 
-function _ui_rviz_config_files() {
+function _roswss_ui_rviz_config_files() {
     local ROSWSS_ROSINSTALL_FILES=()
 
     path="$(rospack find $UI_LAUNCH_PKG)/config/rviz/"
@@ -72,7 +72,7 @@ function _ui_rviz_config_files() {
     echo ${ROSWSS_ROSINSTALL_FILES[@]}
 }
 
-function _ui_launch_files() {
+function _roswss_ui_launch_files() {
     local ROSWSS_ROSINSTALL_FILES=()
 
     path="$(rospack find $UI_LAUNCH_PKG)/launch/"
@@ -89,42 +89,42 @@ function _ui_launch_files() {
     echo ${ROSWSS_ROSINSTALL_FILES[@]}
 }
 
-function _ui_commands() {
+function _roswss_ui_commands() {
     local ROSWSS_COMMANDS=('help' 'rqt' 'rviz')
     
     echo ${ROSWSS_COMMANDS[@]}
 }
 
-function _ui_help() {
+function _roswss_ui_help() {
     echo "The following commands are available:"
-    commands=$(_ui_commands)
+    commands=$(_roswss_ui_commands)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
     echo "The following rqt perspectives are available:"
-    commands=$(_ui_rqt_config_files)
+    commands=$(_roswss_ui_rqt_config_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
     echo "The following rviz defaults are available:"
-    commands=$(_ui_rviz_config_files)
+    commands=$(_roswss_ui_rviz_config_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
     echo "The following launchfiles are available:"
-    commands=$(_ui_launch_files)
+    commands=$(_roswss_ui_launch_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
 }
 
-function _ui_complete() {
+function _roswss_ui_complete() {
     local cur
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
@@ -139,7 +139,7 @@ function _ui_complete() {
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
         else
-            COMPREPLY=( $( compgen -W "$(_ui_commands) $(_ui_launch_files)" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "$(_roswss_ui_commands) $(_roswss_ui_launch_files)" -- "$cur" ) )
         fi
     fi
 
@@ -150,11 +150,11 @@ function _ui_complete() {
         # default completion
         case $prev in
             rqt)
-                COMPREPLY=( $( compgen -W "$(_ui_rqt_config_files)" -- "$cur" ) )
+                COMPREPLY=( $( compgen -W "$(_roswss_ui_rqt_config_files)" -- "$cur" ) )
                 ;;
 
             rviz)
-                COMPREPLY=( $( compgen -W "$(_ui_rviz_config_files)" -- "$cur" ) )
+                COMPREPLY=( $( compgen -W "$(_roswss_ui_rviz_config_files)" -- "$cur" ) )
                 ;;
 
             *)
@@ -165,4 +165,4 @@ function _ui_complete() {
 
     return 0
 }
-complete -F _ui_complete ui
+complete -F _roswss_ui_complete roswss_ui

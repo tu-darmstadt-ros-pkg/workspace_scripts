@@ -2,4 +2,4 @@
 
 . $ROSWSS_ROOT/setup.bash ""
 
-ui "$@"
+roswss_ui "$@"

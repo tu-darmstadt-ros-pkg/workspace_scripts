@@ -191,6 +191,10 @@ function _roswss_complete() {
             test)
                 _roswss_test_complete
                 ;;
+                
+            ui)
+                _roswss_ui_complete
+                ;;
 
             *)
                 COMPREPLY=()             
