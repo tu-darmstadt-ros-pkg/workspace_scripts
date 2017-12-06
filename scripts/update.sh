@@ -24,8 +24,10 @@ else
     # pull base scripts first
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         echo ">>> Pulling scripts folder in $dir"
-        cd $dir
-        git pull
+        if [ -d $dir ]; then
+            cd $dir
+            git pull
+        fi
     done
 
     # updating root rosinstalls
