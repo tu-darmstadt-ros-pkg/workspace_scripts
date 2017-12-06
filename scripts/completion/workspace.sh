@@ -45,13 +45,15 @@ function _roswss_commands() {
     local ROSWSS_COMMANDS=('help')
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
-        for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
-            command=${i#$dir/}
-            command=${command%.sh}
-            if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
-                ROSWSS_COMMANDS+=($command)
-            fi
-        done
+        if [ -d $dir ]; then
+            for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
+                command=${i#$dir/}
+                command=${command%.sh}
+                if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
+                    ROSWSS_COMMANDS+=($command)
+                fi
+            done
+        fi
     done
 
     for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
