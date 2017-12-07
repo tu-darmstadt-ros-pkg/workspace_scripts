@@ -37,6 +37,8 @@ if [ $change_dir == true ]; then
     fi
 fi
 
+args=${args[*]}
+
 # add proper compile flag
 if [ $debug == true ]; then
     echo
