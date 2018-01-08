@@ -17,7 +17,7 @@ function roswss_install() {
 
         # perform rosinstall
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.rosinstall" ]; then
-          echo "Merging to workspace: ${filename}.rosinstall"
+          echo "Merging to workspace: ${rosinstall}.rosinstall"
           local LAST_PWD=$PWD
           cd $ROSWSS_ROOT/src
           wstool merge ../rosinstall/optional/${rosinstall}.rosinstall
@@ -27,7 +27,7 @@ function roswss_install() {
         
         # run bash script
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
-          echo "[Running bash script: ${filename}.sh]"
+          echo "[Running bash script: ${rosinstall}.sh]"
           $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "install"
           error=0
         fi
