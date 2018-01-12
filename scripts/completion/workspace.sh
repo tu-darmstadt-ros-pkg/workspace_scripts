@@ -22,7 +22,7 @@ function roswss() {
                 if [[ "$script_name" == "$command" ]]; then
 
                     pc=${script_name}_remote_pc
-                    args=($(echo ${!pc} | tr "?" "\n"))
+                    args=($(echo ${!pc} | tr "$ROSWSS_SEP_SYM" "\n"))
 
                     hostname=${args[1]}
                     screen_name=${args[2]}
