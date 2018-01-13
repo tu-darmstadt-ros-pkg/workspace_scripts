@@ -20,13 +20,17 @@ function roswss() {
             # check if current scope is remote pc script
             for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
                 if [[ "$script_name" == "$command" ]]; then
-
                     pc=${script_name}_remote_pc
-                    args=($(echo ${!pc} | tr "$ROSWSS_SEP_SYM" "\n"))
 
+                    OLD_IFS=$IFS
+                    IFS=$ROSWSS_SEP_SYM
+
+                    args=(${!pc})
                     hostname=${args[1]}
                     screen_name=${args[2]}
                     launch_command=${args[3]}
+
+                    IFS=$OLD_IFS
 
                     remote_pc "${script_name}" "${hostname}" "${screen_name}" "${launch_command}" "$@"
                     return 0

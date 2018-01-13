@@ -1,6 +1,6 @@
 #!/bin/bash
 export ROSWSS_REMOTE_PC_SCRIPTS=()
-export ROSWSS_SEP_SYM='?'
+export ROSWSS_SEP_SYM=';'
 
 # Use this method to register different remote pcs
 # Example:
