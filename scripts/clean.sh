@@ -1,9 +1,11 @@
 #!/bin/bash
 
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
 cd $ROSWSS_ROOT
 
 if [ "$#" -eq 0 ]; then
-  echo -n "Do you want to clean devel and build? [y/N] "
+  echo -ne "${YELLOW}Do you want to clean devel and build? [y/N] ${NOCOLOR}"
   read -N 1 REPLY
   echo
   if test "$REPLY" = "y" -o "$REPLY" = "Y"; then
@@ -13,9 +15,9 @@ if [ "$#" -eq 0 ]; then
             . $dir/clean_externals.sh
         fi
     done
-    echo ">>> Cleaned devel and build directories."
+    echo_info ">>> Cleaned devel and build directories."
   else
-    echo ">>> Clean cancelled by user."
+    echo_error ">>> Clean cancelled by user."
   fi
 else 
   command=$1

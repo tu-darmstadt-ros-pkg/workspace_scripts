@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function roswss_test() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     set -e
     
     package=$1
@@ -27,14 +29,14 @@ function roswss_test() {
 
         return 0
     else
-        echo "Build directory for '$package' doesn't exists! (path: $ROSWSS_ROOT/build/$package)"
+        echo_error "Build directory for '$package' doesn't exists! (path: $ROSWSS_ROOT/build/$package)"
     fi
 
     return 1
 }
 
 function _roswss_test_help() {
-    echo "Type name of rospackage to test."
+    echo_note "Type name of rospackage to test."
 }
 
 function _roswss_test_complete() {

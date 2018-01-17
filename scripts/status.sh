@@ -1,13 +1,7 @@
 #!/bin/bash
 
-. $ROSWSS_ROOT/setup.bash ""
-
-function blueEcho()
-{
-  echo -ne '\e[0;34m'
-  echo $1
-  echo -ne '\e[0m'
-}
+source $ROSWSS_ROOT/setup.bash ""
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 function getSpecBranch()
 {
@@ -37,20 +31,22 @@ function displayStatus()
        || [ -n "$(git status --porcelain)" ] \
        || [ -n "$(git status | grep -P 'branch is (ahead|behind)')" ]
     then
-      echo "$PWD :"
+      echo_note "$PWD:"
       if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
       then
         git status | grep "On branch" | perl -pe "chomp"
-        echo -e " (should be on branch $desiredBranch)"
+        echo_warn -e " (should be on branch $desiredBranch)"
       fi
       git status | grep -P 'branch is (ahead|behind)'
-      git status | grep "modified"
-      git status | grep "new file"
-      git status | grep "deleted"
+      echo -ne $RED; git status | grep "modified"; echo -ne $NOCOLOR
+      echo -ne $GREEN; git status | grep "new file"; echo -ne $NOCOLOR
+      echo -ne $ORANGE; git status | grep "deleted"; echo -ne $NOCOLOR
       if [ -n "$(git status | grep 'Untracked files')" ]
       then
+        echo -ne $DGRAY
         git status --porcelain | grep '??' | sed -r 's/^.{3}//' \
         | xargs -I file echo -e '\tuntracked:  '"file"
+        echo -ne $NOCOLOR
       fi
       echo
     fi
@@ -58,7 +54,7 @@ function displayStatus()
     if [ "$(hg branch)" != "$desiredBranch" ] \
        || [ -n "$(hg status)" ]
     then
-      echo "$PWD :"
+      echo "$PWD:"
       echo "On hg branch `hg branch`"
       hg status
       hg incoming | grep "changes"
@@ -72,24 +68,24 @@ function displayStatus()
 }
 
 cd ${ROSWSS_ROOT}
-blueEcho "Looking for changes in $PWD ..."
+echo_info "Looking for changes in $PWD ..."
 displayStatus $PWD
 
 if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
     cd $ROSWSS_ROOT/rosinstall/optional/custom
-    blueEcho "Looking for changes in $PWD ..."
+    echo_info "Looking for changes in $PWD ..."
     displayStatus $PWD
 fi
 
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
     if [ -d $dir/custom/.git ]; then
         cd $dir/custom
-        blueEcho "Looking for changes in $PWD ..."
+        echo_info "Looking for changes in $PWD ..."
         displayStatus $PWD
     fi
 done
 
-blueEcho "Looking for changes in ${ROS_WORKSPACE} ..."
+echo_info "Looking for changes in ${ROS_WORKSPACE} ..."
 roscd
 entries=$(wstool foreach echo)
 for e in ${entries[@]};
@@ -100,5 +96,5 @@ do
   displayStatus $ROSWSS_ROOT/$e $branch
 done
 
-blueEcho "Status check done!"
+echo_info "Status check done!"
 

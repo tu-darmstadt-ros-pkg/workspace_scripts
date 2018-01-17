@@ -15,26 +15,28 @@ function roswss_install() {
     while [[ ! -z "$rosinstall" ]]; do
         error=1
 
+        echo_info ">>> Installing $rosinstall"
+
         # perform rosinstall
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.rosinstall" ]; then
-          echo "Merging to workspace: ${rosinstall}.rosinstall"
-          local LAST_PWD=$PWD
-          cd $ROSWSS_ROOT/src
-          wstool merge ../rosinstall/optional/${rosinstall}.rosinstall
-          cd $LAST_PWD
-          error=0
+            echo_note "Merging to workspace: ${rosinstall}.rosinstall"
+            local LAST_PWD=$PWD
+            cd $ROSWSS_ROOT/src
+            wstool merge ../rosinstall/optional/${rosinstall}.rosinstall
+            cd $LAST_PWD
+            error=0
         fi
         
         # run bash script
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
-          echo "[Running bash script: ${rosinstall}.sh]"
-          $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "install"
-          error=0
+            echo_note "Running bash script: ${rosinstall}.sh"
+            $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "install"
+            error=0
         fi
 
         # check error code
         if [ $error -ne 0 ]; then
-            echo "ERROR: Unknown rosinstall file: $rosinstall"
+            echo_error "ERROR: Unknown rosinstall file: ${rosinstall}"
             _roswss_install_help
             return 1
         fi
@@ -44,6 +46,7 @@ function roswss_install() {
 
         rosinstall=$1
         shift
+        echo
     done
 
     return 0
@@ -80,7 +83,7 @@ function _roswss_install_files() {
 }
 
 function _roswss_install_help() {
-    echo "The following optional rosinstall files are available:"
+    echo_note "The following optional rosinstall files are available:"
 
     files=$(_roswss_install_files)
 

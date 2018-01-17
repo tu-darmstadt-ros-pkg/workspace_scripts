@@ -13,6 +13,7 @@ function roswss_uninstall() {
 
     # run bash script
     if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
+      echoc $PURPLE "Running bash script: ${rosinstall}.sh"
       $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
       error=0
     fi
@@ -41,7 +42,7 @@ function _roswss_uninstall_files() {
 }
 
 function _roswss_uninstall_help() {
-    echo "The following optional rosinstall files are installed:"
+    echo_note "The following optional rosinstall files are installed:"
 
     files=$(_roswss_install_files)
 

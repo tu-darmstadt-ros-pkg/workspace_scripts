@@ -1,4 +1,7 @@
 #!/bin/bash
+
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
 if [ "$#" -eq 0 ]; then
     echo "Usage: ssh <HOST> <Command (optional)>"
     exit 1
@@ -7,7 +10,7 @@ fi
 host=$1; shift
 user=$ROBOT_USER
 
-echo "Connecting to $host as $user"
+echo_info "Connecting to $host as $user"
 if [ "$#" -eq 0 ]; then
    ssh $user@$host
 else

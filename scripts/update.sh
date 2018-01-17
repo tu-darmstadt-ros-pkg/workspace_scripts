@@ -1,6 +1,7 @@
 #!/bin/bash
 
-. $ROSWSS_ROOT/setup.bash
+source $ROSWSS_ROOT/setup.bash
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 package=$1
 
@@ -12,7 +13,7 @@ if [[ ! -z "$package" ]]; then
 else
     # update systems settings
     if [ -d /.git ]; then
-        echo ">>> Pulling system settings"
+        echo_info ">>> Pulling system settings"
         cd /
         sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK git pull
         if [ -d ~/.git-credential-cache/ ]; then
@@ -23,7 +24,7 @@ else
 
     # pull base scripts first
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
-        echo ">>> Pulling scripts folder in $dir"
+        echo_info ">>> Pulling scripts folder in $dir"
         if [ -d $dir ]; then
             cd $dir
             git pull
@@ -31,14 +32,14 @@ else
     done
 
     # updating root rosinstalls
-    echo ">>> Pulling install folder in $ROSWSS_ROOT"
+    echo_info ">>> Pulling install folder in $ROSWSS_ROOT"
     cd $ROSWSS_ROOT
     git pull
     echo
 
     # updating custom rosinstalls
     if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
-        echo ">>> Pulling custom rosinstalls"
+        echo_info ">>> Pulling custom rosinstalls"
         cd $ROSWSS_ROOT/rosinstall/optional/custom
         git pull
         echo
@@ -47,10 +48,10 @@ else
     cd $ROSWSS_ROOT/src
 
     # merge rosinstall files from rosinstall/*.rosinstall
-    echo ">>> Checking rosinstall updates"
+    echo_info ">>> Checking rosinstall updates"
     for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
         filename=$(basename ${file%.*})
-        echo "Merging to workspace: ${filename}.rosinstall"
+        echo_note "Merging to workspace: ${filename}.rosinstall"
         wstool merge $file -y
     done
 
@@ -58,7 +59,7 @@ else
     if [ -f "$ROSWSS_ROOT/.install" ]; then
         while read filename; do
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${filename}.rosinstall" ]; then
-            echo "Merging to workspace: ${filename}.rosinstall"
+            echo_note "Merging to workspace: ${filename}.rosinstall"
             wstool merge $ROSWSS_ROOT/rosinstall/optional/$filename.rosinstall -y
         fi
         done <$ROSWSS_ROOT/.install
@@ -66,10 +67,10 @@ else
     echo
 
     # running bash scripts from rosinstall/*.sh
-    echo ">>> Running bash scripts"
+    echo_info ">>> Running bash scripts"
     for file in $ROSWSS_ROOT/rosinstall/*.sh; do
         filename=$(basename ${file%.*})
-        echo "[Running bash script: ${filename}.sh]"
+        echo_note "Running bash script: ${filename}.sh"
         $file
         echo
     done
@@ -78,14 +79,14 @@ else
     if [ -f "$ROSWSS_ROOT/.install" ]; then
         while read filename; do
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${filename}.sh" ]; then
-            echo "[Running bash script: ${filename}.sh]"
+            echo_note "Running bash script: ${filename}.sh"
             $ROSWSS_ROOT/rosinstall/optional/${filename}.sh "install"
         fi
         done <$ROSWSS_ROOT/.install
     fi
     echo
 
-    echo ">>> Updating catkin workspace"
+    echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src
     wstool update -j$(nproc)
 fi

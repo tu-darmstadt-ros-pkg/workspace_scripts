@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function roswss_ui() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     command="$1"
     shift
 
@@ -34,7 +36,7 @@ function roswss_ui() {
       return 0
     fi
 
-    echo "Unknown command: $command"
+    echo_error "Unknown command: $command"
     _roswss_ui_help 
 }
 
@@ -96,28 +98,28 @@ function _roswss_ui_commands() {
 }
 
 function _roswss_ui_help() {
-    echo "The following commands are available:"
+    echo_note "The following commands are available:"
     commands=$(_roswss_ui_commands)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
-    echo "The following rqt perspectives are available:"
+    echo_note "The following rqt perspectives are available:"
     commands=$(_roswss_ui_rqt_config_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
-    echo "The following rviz defaults are available:"
+    echo_note "The following rviz defaults are available:"
     commands=$(_roswss_ui_rviz_config_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
     echo
 
-    echo "The following launchfiles are available:"
+    echo_note "The following launchfiles are available:"
     commands=$(_roswss_ui_launch_files)
     for i in ${commands[@]}; do
         echo "   $i"

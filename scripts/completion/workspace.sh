@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function roswss() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     command="$1"
     shift
 
@@ -39,7 +41,7 @@ function roswss() {
         fi
     done
 
-    echo "Unknown workspace script command: $command"
+    echo_error "Unknown workspace script command: $command"
     _roswss_help 
 
     return 1
@@ -74,7 +76,7 @@ function _roswss_commands() {
 }
 
 function _roswss_help() {
-    echo "The following commands are available:"
+    echo_note "The following commands are available:"
 
     commands=$(_roswss_commands)
 
@@ -102,7 +104,7 @@ function _roswss_help() {
     echo -e $out | column -s $'\t' -tn
 
     echo
-    echo "(*) Commands marked with * may change your environment."
+    echo_note "(*) Commands marked with * may change your environment."
 }
 
 function _roswss_complete() {
@@ -185,7 +187,7 @@ function _roswss_complete() {
                 ;;
 
             screen)
-                COMPREPLY=( $( compgen -W "start stop show" -- "$cur" ) )
+                COMPREPLY=( $( compgen -W "start stop show list" -- "$cur" ) )
                 ;;
                 
             sim)

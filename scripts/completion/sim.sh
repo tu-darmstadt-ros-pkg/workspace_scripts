@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function roswss_sim() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     world=$1
 
     onboard=false
@@ -30,7 +32,7 @@ function roswss_sim() {
 
     roscd $GAZEBO_WORLDS_PKG
     if [[ -z "world/${world}.world" ]]; then
-        echo "Unknown world file: $world"
+        echo_error "Unknown world file: $world"
         _roswss_sim_help
         return 1
     elif [[ "$onboard" = true && ! -z "$GAZEBO_LAUNCH_W_ONBOARD_FILE" ]]; then
@@ -59,13 +61,13 @@ function _roswss_sim_files() {
 }
 
 function _roswss_sim_help() {
-    echo "The following world files are available:"
+    echo_note "The following world files are available:"
     files=$(_roswss_sim_files)
     for i in ${files[@]}; do
         echo "   $i"
     done
 
-    echo "Append 'onboard' to start onboard software as well. ROS parameters has to go at the end."
+    echo_note "Append 'onboard' to start onboard software as well. ROS parameters has to go at the end."
 }
 
 function _roswss_sim_complete() {

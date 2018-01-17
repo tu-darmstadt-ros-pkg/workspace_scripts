@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo -n "ARE YOU SURE TO SHUTDOWN >>> '$(hostname)' <<<? [y/N]"
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
+echo -ne "${YELLOW}ARE YOU SURE TO SHUTDOWN >>> '$(hostname)' <<<? [y/N] ${NOCOLOR}"
 read -N 1 REPLY
 echo
 
@@ -9,9 +11,9 @@ if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
     killall screen
   fi
 
-  echo "Shutting down in 3s!"
+  echo_warn "Shutting down in 3s!"
   sleep 3
   sudo shutdown -P now
 else
-  echo ">>> Shutdown request cancelled"
+  echo_info ">>> Shutdown request cancelled"
 fi

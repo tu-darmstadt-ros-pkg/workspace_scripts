@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function remote_pc() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     script_name="$1"
     shift
     hostname="$1"
@@ -22,7 +24,7 @@ function remote_pc() {
     # check if first a ssh connection to host is required/requested
     if [ $command = 'ssh' ]; then
         if [ $(hostname) = $hostname ]; then
-            echo "You are already on $hostname!"
+            echo_warn "You are already on $hostname!"
         else
             roswss ssh $hostname
         fi
@@ -81,7 +83,7 @@ function _remote_pc_commands() {
 }
 
 function _remote_pc_help() {
-    echo "The following commands are available:"
+    echo_note "The following commands are available:"
 
     commands=$(_remote_pc_commands)
 
@@ -114,7 +116,7 @@ function _remote_pc_help() {
     echo -e $out | column -s $'\t' -tn
 
     echo
-    echo "(*) Commands marked with * may change your environment."
+    echo_note "(*) Commands marked with * may change your environment."
 }
 
 function _remote_pc_complete() {

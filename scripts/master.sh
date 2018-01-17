@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
 master=$1
 #host -t a $master >/dev/null
 #if [ "$?" -ne 0 ]; then
@@ -8,12 +10,12 @@ master=$1
 
 # export ROS_MASTER_URI
 export ROS_MASTER_URI=http://$master:11311
-echo "Setting ROS_MASTER_URI to $ROS_MASTER_URI"
+echo_info "Setting ROS_MASTER_URI to $ROS_MASTER_URI"
 
 # export ROS_IP
 if [ -n "$2" ]; then
     export ROS_IP=$2
-    echo "Setting ROS_IP to $ROS_IP"
+    echo_info "Setting ROS_IP to $ROS_IP"
 fi
 
 if [ -n "$ROS_IP" ]; then return; fi
@@ -24,13 +26,18 @@ hostname=$HOSTNAME
 if [ -n "$ROS_HOSTNAME" ]; then hostname=$ROS_HOSTNAME; fi
 
 myips=$(hostname -I)
-echo -n "Your hostname is: "; host -t a $hostname
+echo -ne "${LBLUE}Your hostname is: ${NOCOLOR}"; host -t a $hostname
 if [ $? -eq 0 ]; then
-    echo "If this address is not reachable from the master, you need to set the ROS_IP environment variable manually to one of these addresses: $myips"
+    echo "If this address is not reachable from the master, you need to set the ROS_IP environment variable manually to one of these addresses:"
 else
-    echo "Your hostname cannot be resolved in the network, you need to set the ROS_IP environment variable manually to one of these addresses: $myips"
+    echo_warn "Your hostname cannot be resolved in the network, you need to set the ROS_IP environment variable manually to one of these addresses:"
 fi
-echo "You can use one of the following commands:"
+for ip in ${myips[@]}; do
+    echo "    $ip"
+done
+echo
+
+echo_note "You can use one of the following commands:"
 for ip in $myips; do
-    echo "  $ROSWSS_PREFIX master $1 $ip"
+    echo "    $ROSWSS_PREFIX master $1 $ip"
 done

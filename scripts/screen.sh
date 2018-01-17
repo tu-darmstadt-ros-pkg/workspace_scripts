@@ -1,9 +1,13 @@
 #!/bin/bash
-# list of valid arguments
-ARGUMENTS=( "start" "stop" "show" )
-ARGUMENTS_MSG="Usage: screen start/stop/show <Command>"
 
-valid_argument () { 
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
+# list of valid arguments
+ARGUMENTS=( "start" "stop" "show" "list" )
+ARGUMENTS_MSG="Usage: screen start/stop/show/list <Screen Name> <Command>"
+
+# checks if given argument is known
+valid_argument() { 
     local in=1
     for element in "${ARGUMENTS[@]}"; do
         if [ $element = $1 ]; then
@@ -15,10 +19,10 @@ valid_argument () {
 
 # check if correct argument is given
 if [ "$#" -eq 0 ]; then
-    echo "Called with too less arguments. $ARGUMENTS_MSG"
+    echo_error "Called with too less arguments. $ARGUMENTS_MSG"
     exit 1
 elif ! valid_argument $1; then
-    echo "Unknown parameter '$1'! $ARGUMENTS_MSG"
+    echo_error "Unknown parameter '$1'! $ARGUMENTS_MSG"
     exit 1
 fi
 
@@ -29,7 +33,7 @@ screen_session=$1; shift
 case $action in
     start) # start screen
         if screen -ls | grep $screen_session; then
-            echo "Error! Screen '$screen_session' is already running!"
+            echo_warn "Screen '$screen_session' is already running!"
             exit 1
         fi
 
@@ -40,16 +44,16 @@ case $action in
         screen -dmLS $screen_session /bin/bash -ic "$@"
 
         if screen -ls | grep $screen_session &>/dev/null; then
-            echo "Screen '$screen_session' started!"
+            echo_info "Screen '$screen_session' started!"
         else
-            echo "Error! Screen '$screen_session' was not started!"
+            echo_warn "Screen '$screen_session' was not started!"
             exit 1
         fi
         ;;
 
     stop) # stop screen
         if ! screen -ls | grep $screen_session &>/dev/null; then
-            echo "There is no screen '$screen_session' running!"
+            echo_error "There is no screen '$screen_session' running!"
             exit 1
         fi
 
@@ -57,19 +61,23 @@ case $action in
         screen -S $screen_session -X quit
 
         if screen -ls | grep $screen_session &>/dev/null; then
-            echo "Warning: The screen is maybe still running."
+            echo_warn "Warning: The screen is maybe still running."
             exit 2
         else
-            echo "Screen '$screen_session' stopped!"
+            echo_info "Screen '$screen_session' stopped!"
         fi
         ;;
 
     show) # show screen
         if ! screen -ls | grep $screen_session &>/dev/null; then
-            echo "There is no screen '$screen_session' running!"
+            echo_error "There is no screen '$screen_session' running!"
             exit 1
         fi
 
         screen -rx $screen_session "$@"
+        ;;
+
+    list)
+        screen -list
         ;;
 esac
