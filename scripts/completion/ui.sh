@@ -136,7 +136,7 @@ function _roswss_ui_complete() {
     COMPREPLY=()
     _get_comp_words_by_ref cur
 
-    # roswss <command>
+    # ui <command>
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
@@ -145,7 +145,7 @@ function _roswss_ui_complete() {
         fi
     fi
 
-    # usb_stick command <subcommand..>
+    # rqt/rviz command <subcommand..>
     if [ $COMP_CWORD -eq 3 ]; then
         prev=${COMP_WORDS[2]}
 
