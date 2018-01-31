@@ -46,7 +46,7 @@ case $action in
         if screen -ls | grep $screen_session &>/dev/null; then
             echo_info "Screen '$screen_session' started!"
         else
-            echo_warn "Screen '$screen_session' was not started!"
+            echo_warn "Screen '$screen_session' may not be started!"
             exit 1
         fi
         ;;
