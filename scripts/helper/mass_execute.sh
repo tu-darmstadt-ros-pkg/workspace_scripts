@@ -5,10 +5,10 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 # executes all scripts and launchfiles in a path given as argument
 
-trap 'shutdown' INT TERM EXIT
+trap 'shutdown' EXIT HUP INT QUIT PIPE TERM
 
 shutdown() {
-    trap '' INT TERM EXIT   # ignore INT, TERM and EXIT while shutting down
+    trap '' EXIT HUP INT QUIT PIPE TERM   # ignore INT, TERM and EXIT while shutting down
     echo
     echo "**** Shutting down... ****"
     echo
@@ -128,7 +128,7 @@ do
 	  run_scripts 
 done 
 
-echo_info ">>> Done"
+echo_info ">>> Mass execution done"
 
 # wait forever to be able to shutdown screens later
 cat
