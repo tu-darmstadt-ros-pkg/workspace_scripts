@@ -8,7 +8,7 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 trap 'shutdown' EXIT HUP INT QUIT PIPE TERM
 
 shutdown() {
-    trap '' EXIT HUP INT QUIT PIPE TERM   # ignore INT, TERM and EXIT while shutting down
+    trap '' EXIT HUP INT QUIT PIPE TERM   # ignore all signals while shutting down
     echo
     echo "**** Shutting down... ****"
     echo
