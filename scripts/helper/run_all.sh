@@ -58,7 +58,7 @@ read_arguments() {
 }
 
 run_scripts() {
-	echo_info ">>> Mass executing files in '$DIRECTORY':"
+	echo_info ">>> Executing all files in '$DIRECTORY':"
 
 	# run all scripts in script folder
 	echo_info ">>> Running bash scripts"
@@ -128,7 +128,7 @@ do
 	  run_scripts 
 done 
 
-echo_info ">>> Mass execution done"
+echo_info ">>> Done"
 
 # wait forever to be able to shutdown screens later
 cat
