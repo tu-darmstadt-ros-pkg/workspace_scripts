@@ -67,8 +67,20 @@ function _remote_pc_commands() {
         skip=false
         for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
             if [[ "$script_name" == "$i" ]]; then
-              skip=true
-              break
+                skip=true
+                break
+            elif [ $i == "roscore" ]; then
+                skip=true
+                break
+            elif [ $i == "start" ]; then
+                skip=true
+                break
+            elif [ $i == "stop" ]; then
+                skip=true
+                break
+            elif [ $i == "show" ]; then
+                skip=true
+                break
             fi
         done
 
@@ -92,16 +104,16 @@ function _remote_pc_help() {
     for i in ${commands[@]}; do
         for dir in ${ROSWSS_SCRIPTS//:/ }; do      
             if [ $i == "roscore" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t (Remote PC Script)\n"
                 break
             elif [ $i == "start" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t (Remote PC Script)\n"
                 break
             elif [ $i == "stop" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t (Remote PC Script)\n"
                 break
             elif [ $i == "show" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t (Remote PC Script)\n"
                 break
             elif [ -x "$dir/$i.sh" ]; then
                 out+="\t $i \t\t ($dir)\n"
