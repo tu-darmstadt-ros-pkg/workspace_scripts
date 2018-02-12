@@ -121,6 +121,13 @@ function _roswss_ui_help() {
     done
     echo
 
+    echo_note "The following launch files are available:"
+    commands=$(_roswss_ui_launch_files)
+    for i in ${commands[@]}; do
+        echo "   $i"
+    done
+    echo
+
     echo_note "The following rqt perspectives are available:"
     commands=$(_roswss_ui_rqt_config_files)
     for i in ${commands[@]}; do
@@ -130,13 +137,6 @@ function _roswss_ui_help() {
 
     echo_note "The following rviz defaults are available:"
     commands=$(_roswss_ui_rviz_config_files)
-    for i in ${commands[@]}; do
-        echo "   $i"
-    done
-    echo
-
-    echo_note "The following launchfiles are available:"
-    commands=$(_roswss_ui_launch_files)
     for i in ${commands[@]}; do
         echo "   $i"
     done
