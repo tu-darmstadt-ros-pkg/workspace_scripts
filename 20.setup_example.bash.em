@@ -10,6 +10,7 @@ export ROSWSS_SCRIPTS="@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATIO
 # SET HERE YOUR WORKSPACE PREFIX
 export ROSWSS_PREFIX="roswss"
 export ROSWSS_ROOT_RELATIVE_PATH="../.."    # Relative path to workspace root from package location
+export ROSWSS_INSTALL_DIR="rosinstall"      # Path/Directory to install files (relative to workspace root dir)
 
 # SETUP YOUR ENVIRONMENT HERE
 export ONBOARD_LAUNCH_PKG=""                # Name of your main onboard launch package

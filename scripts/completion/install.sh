@@ -2,8 +2,9 @@
 
 function roswss_install() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+    source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 
-    rosinstall=$1
+    local rosinstall=$1
     shift
 
     if [[ "$rosinstall" = "--help" || -z "$rosinstall" ]]; then
@@ -13,24 +14,21 @@ function roswss_install() {
 
     # perform install
     while [[ ! -z "$rosinstall" ]]; do
-        error=1
+        local error=1
 
         echo_info ">>> Installing $rosinstall"
 
         # perform rosinstall
-        if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.rosinstall" ]; then
+        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.rosinstall" ]; then
             echo_note "Merging to workspace: ${rosinstall}.rosinstall"
-            local LAST_PWD=$PWD
-            cd $ROSWSS_ROOT/src
-            wstool merge ../rosinstall/optional/${rosinstall}.rosinstall
-            cd $LAST_PWD
+            rosinstall ${rosinstall}.rosinstall
             error=0
         fi
         
         # run bash script
-        if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
+        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.sh" ]; then
             echo_note "Running bash script: ${rosinstall}.sh"
-            $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "install"
+            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.sh "install"
             error=0
         fi
 
@@ -56,8 +54,8 @@ function _roswss_install_files() {
     local ROSWSS_ROSINSTALL_FILES=()
  
     # find all rosinstall files
-    for i in `find -L $ROSWSS_ROOT/rosinstall/optional/ -type f -name "*.rosinstall"`; do
-        file=${i#$ROSWSS_ROOT/rosinstall/optional/}
+    for i in `find -L $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/ -maxdepth 1 -type f -name "*.rosinstall"`; do
+        local file=${i#$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/}
         file=${file%.rosinstall}
         if [ -r $i ]; then
             ROSWSS_ROSINSTALL_FILES+=($file)
@@ -65,10 +63,10 @@ function _roswss_install_files() {
     done
 
     # find all bash scripts
-    for i in `find -L $ROSWSS_ROOT/rosinstall/optional/ -type f -name "*.sh"`; do
-        file=${i#$ROSWSS_ROOT/rosinstall/optional/}
+    for i in `find -L $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/ -maxdepth 1 -type f -name "*.sh"`; do
+        local file=${i#$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/}
         file=${file%.sh}
-        if [ -r $i ] && [ ! -f $ROSWSS_ROOT/rosinstall/optional/$file.rosinstall ]; then
+        if [ -r $i ] && [ ! -f $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$file.rosinstall ]; then
             ROSWSS_ROSINSTALL_FILES+=($file)
         fi
     done
@@ -85,17 +83,17 @@ function _roswss_install_files() {
 function _roswss_install_help() {
     echo_note "The following optional rosinstall files are available:"
 
-    files=$(_roswss_install_files)
+    local files=$(_roswss_install_files)
 
-    out=""
+    local out=""
 
     for i in ${files[@]}; do
         line=()
 
-        if [ -f "$ROSWSS_ROOT/rosinstall/optional/$i.rosinstall" ]; then
+        if [ -f "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$i.rosinstall" ]; then
             line+=(".rosinstall")
         fi
-        if [ -f "$ROSWSS_ROOT/rosinstall/optional/$i.sh" ]; then
+        if [ -f "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$i.sh" ]; then
             line+=(".sh")
         fi
 

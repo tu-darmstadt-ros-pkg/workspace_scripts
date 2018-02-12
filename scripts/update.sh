@@ -37,50 +37,42 @@ else
     git pull
     echo
 
-    # updating custom rosinstalls
-    if [ -d $ROSWSS_ROOT/rosinstall/optional/custom/.git ]; then
-        echo_info ">>> Pulling custom rosinstalls"
-        cd $ROSWSS_ROOT/rosinstall/optional/custom
-        git pull
-        echo
-    fi
-
     cd $ROSWSS_ROOT/src
 
-    # merge rosinstall files from rosinstall/*.rosinstall
+    # merge rosinstall files from *.rosinstall
     echo_info ">>> Checking rosinstall updates"
-    for file in $ROSWSS_ROOT/rosinstall/*.rosinstall; do
+    for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.rosinstall; do
         filename=$(basename ${file%.*})
         echo_note "Merging to workspace: ${filename}.rosinstall"
-        wstool merge $file -y
+        wstool merge -y $file
     done
 
-    # merge installed optional rosinstall files from rosinstall/optional/*.rosinstall
+    # merge installed optional rosinstall files from optional/*.rosinstall
     if [ -f "$ROSWSS_ROOT/.install" ]; then
         while read filename; do
-        if [ -r "$ROSWSS_ROOT/rosinstall/optional/${filename}.rosinstall" ]; then
+        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.rosinstall" ]; then
             echo_note "Merging to workspace: ${filename}.rosinstall"
-            wstool merge $ROSWSS_ROOT/rosinstall/optional/$filename.rosinstall -y
+            wstool merge -y $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$filename.rosinstall
         fi
         done <$ROSWSS_ROOT/.install
     fi
     echo
 
-    # running bash scripts from rosinstall/*.sh
+    # running bash scripts from *.sh
     echo_info ">>> Running bash scripts"
-    for file in $ROSWSS_ROOT/rosinstall/*.sh; do
+    for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
         filename=$(basename ${file%.*})
         echo_note "Running bash script: ${filename}.sh"
         $file
         echo
     done
 
-    # running bash scripts from rosinstall/optional/*.sh
+    # running bash scripts from optional/*.sh
     if [ -f "$ROSWSS_ROOT/.install" ]; then
         while read filename; do
-        if [ -r "$ROSWSS_ROOT/rosinstall/optional/${filename}.sh" ]; then
+        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
-            $ROSWSS_ROOT/rosinstall/optional/${filename}.sh "install"
+            $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
         fi
         done <$ROSWSS_ROOT/.install
     fi
