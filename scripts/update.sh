@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $ROSWSS_ROOT/setup.bash
+source $ROSWSS_ROOT/setup.bash ""
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 
@@ -60,6 +60,7 @@ else
     echo
 
     # running bash scripts from *.sh
+    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
     echo_info ">>> Running bash scripts"
     for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
         filename=$(basename ${file%.*})
@@ -69,6 +70,7 @@ else
     done
 
     # running bash scripts from optional/*.sh
+    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
     if [ -f "$ROSWSS_ROOT/.install" ]; then
         while read filename; do
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then

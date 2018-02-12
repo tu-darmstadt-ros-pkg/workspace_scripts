@@ -12,6 +12,8 @@ function roswss_install() {
         return 0
     fi
 
+    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
+
     # perform install
     while [[ ! -z "$rosinstall" ]]; do
         local error=1

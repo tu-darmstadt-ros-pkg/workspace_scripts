@@ -18,8 +18,7 @@ LCYAN='\033[1;36m'
 WHITE='\033[1;37m'
 NOCOLOR='\033[0m'
 
-echoc()
-{   
+echoc() {
     if [ $# -lt 2 ]; then
       echo "echoc usage: echoc <COLOR> <TEXT>"
       return
@@ -31,41 +30,46 @@ echoc()
     echo -e "${color}${@}${NOCOLOR}"
 }
 
-echo_error()
-{
+echo_error() {
     echoc $RED "$@"
 }
 
-echo_warn()
-{
+echo_warn() {
     echoc $YELLOW "$@"
 }
 
-echo_debug()
-{
+echo_debug() {
     echoc $GREEN "$@"
 }
 
-echo_info()
-{
+echo_info() {
     echoc $LGREEN "$@"
 }
 
-echo_note()
-{
+echo_note() {
     echoc $LBLUE "$@"
 }
 
-apt_install()
-{
+apt_install() {
     while [[ ! -z "$1" ]]; do
         dpkg -s $1 &>/dev/null || sudo apt-get -y install $1
         shift
     done
 }
 
-append_to_file()
-{
+depends() {
+    local install
+
+    while [[ ! -z "$1" ]]; do
+        install=$1
+        if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
+            roswss install $install
+        fi
+        shift
+    done
+}
+
+append_to_file() {
     local file
     file=$1
     local line
@@ -79,8 +83,7 @@ append_to_file()
     echo "$line" >> $file
 }
 
-append_to_file_if_not_exist()
-{
+append_to_file_if_not_exist() {
     local file
     file=$1
     local line
@@ -97,8 +100,7 @@ append_to_file_if_not_exist()
     fi
 }
 
-remove_from_file()
-{
+remove_from_file() {
     local file
     file=$1
     local line
@@ -107,8 +109,7 @@ remove_from_file()
     sed -i "\?${line}?d" $file
 }
 
-remove_from_file_exact()
-{
+remove_from_file_exact() {
     local file
     file=$1
     local line
