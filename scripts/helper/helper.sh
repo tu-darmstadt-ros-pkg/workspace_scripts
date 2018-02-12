@@ -73,7 +73,7 @@ append_to_file()
 
     # check if file exists and create it
     if [ ! -f $file ]; then
-         touch $file
+        touch $file
     fi
 
     echo "$line" >> $file
@@ -88,12 +88,12 @@ append_to_file_if_not_exist()
 
     # check if file exists and create it
     if [ ! -f $file ]; then
-         touch $file
+        touch $file
     fi
 
     # check if entry exists and add it
     if ! grep -Fxq "$line" $file; then
-      echo "$line" >> $file
+        echo "$line" >> $file
     fi
 }
 

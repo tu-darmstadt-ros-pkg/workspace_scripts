@@ -2,6 +2,7 @@
 
 source $ROSWSS_ROOT/setup.bash
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 
 package=$1
 
@@ -63,7 +64,7 @@ else
     for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
         filename=$(basename ${file%.*})
         echo_note "Running bash script: ${filename}.sh"
-        $file
+        source $file
         echo
     done
 
@@ -72,7 +73,7 @@ else
         while read filename; do
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
-            $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
+            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
         fi
         done <$ROSWSS_ROOT/.install
     fi
