@@ -5,6 +5,7 @@ function roswss_test() {
 
     set -e
     
+    local package
     package=$1
     shift
 
@@ -19,6 +20,7 @@ function roswss_test() {
         catkin build $package --catkin-make-args run_tests
 
         # run tests
+        local launch
         launch=$1
         shift
         while [[ ! -z "$launch" ]]; do

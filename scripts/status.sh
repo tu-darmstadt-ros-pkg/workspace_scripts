@@ -5,8 +5,10 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 function getSpecBranch()
 {
+  local entry
   entry=$1
 
+  local desiredBranch
   desiredBranch=$(wstool info $entry | grep "Spec-Version")
   desiredBranch="${desiredBranch[@]}"
   desiredBranch=${desiredBranch#*: }
@@ -15,8 +17,11 @@ function getSpecBranch()
 
 function displayStatus()
 {
+  local old_d
   old_d=`pwd`
+  local dir
   dir=$1
+  local desiredBranch
   desiredBranch=$2
 
   cd $dir
@@ -35,7 +40,7 @@ function displayStatus()
       if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
       then
         git status | grep "On branch" | perl -pe "chomp"
-        echo_warn -e " (should be on branch $desiredBranch)"
+        echo_warn " (should be on branch $desiredBranch)"
       fi
       git status | grep -P 'branch is (ahead|behind)'
       echo -ne $RED; git status | grep "modified"; echo -ne $NOCOLOR

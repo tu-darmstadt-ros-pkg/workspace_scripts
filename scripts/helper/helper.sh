@@ -25,6 +25,7 @@ echoc()
       return
     fi
 
+    local color
     color=${1}
     shift
     echo -e "${color}${@}${NOCOLOR}"
@@ -65,7 +66,9 @@ apt_install()
 
 append_to_file()
 {
+    local file
     file=$1
+    local line
     line=$2
 
     # check if file exists and create it
@@ -78,7 +81,9 @@ append_to_file()
 
 append_to_file_if_not_exist()
 {
+    local file
     file=$1
+    local line
     line=$2
 
     # check if file exists and create it
@@ -94,7 +99,9 @@ append_to_file_if_not_exist()
 
 remove_from_file()
 {
+    local file
     file=$1
+    local line
     line=$2
 
     sed -i "\?${line}?d" $file
@@ -102,7 +109,9 @@ remove_from_file()
 
 remove_from_file_exact()
 {
+    local file
     file=$1
+    local line
     line=$2
 
     sed -i "\?\<${line}\>?d" $file

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. $WS_ROOT/setup.bash ""
+. $ROSWSS_ROOT/setup.bash ""
 
 roswss_test "$@"

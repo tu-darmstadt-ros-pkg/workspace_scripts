@@ -3,6 +3,7 @@
 function roswss_uninstall() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    local rosinstall
     rosinstall=$1
     shift
 
@@ -15,7 +16,6 @@ function roswss_uninstall() {
     if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
       echoc $PURPLE "Running bash script: ${rosinstall}.sh"
       $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
-      error=0
     fi
 
     remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall
@@ -26,7 +26,8 @@ function roswss_uninstall() {
 }
 
 function _roswss_uninstall_files() {
-    local ROSWSS_ROSINSTALL_FILES=()
+    local ROSWSS_ROSINSTALL_FILES
+    ROSWSS_ROSINSTALL_FILES=()
 
     while read filename; do
         ROSWSS_ROSINSTALL_FILES+=($filename)
@@ -44,6 +45,7 @@ function _roswss_uninstall_files() {
 function _roswss_uninstall_help() {
     echo_note "The following optional rosinstall files are installed:"
 
+    local files
     files=$(_roswss_install_files)
 
     for i in ${files[@]}; do

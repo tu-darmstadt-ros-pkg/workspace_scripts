@@ -8,7 +8,8 @@ ARGUMENTS_MSG="Usage: screen start/stop/show/list <Screen Name> <Command>"
 
 # checks if given argument is known
 valid_argument() { 
-    local in=1
+    local in
+    in=1
     for element in "${ARGUMENTS[@]}"; do
         if [ $element = $1 ]; then
             return 0

@@ -3,6 +3,7 @@
 function roswss() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    local command
     command="$1"
     shift
 
@@ -22,14 +23,20 @@ function roswss() {
             # check if current scope is remote pc script
             for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
                 if [[ "$script_name" == "$command" ]]; then
+                    local pc
                     pc=${script_name}_remote_pc
 
+                    local OLD_IFS
                     OLD_IFS=$IFS
                     IFS=$ROSWSS_SEP_SYM
 
+                    local args
                     args=(${!pc})
+                    local hostname
                     hostname=${args[1]}
+                    local screen_name
                     screen_name=${args[2]}
+                    local launch_command
                     launch_command=${args[3]}
 
                     IFS=$OLD_IFS
@@ -48,11 +55,13 @@ function roswss() {
 }
 
 function _roswss_commands() {
-    local ROSWSS_COMMANDS=('help')
+    local ROSWSS_COMMANDS
+    ROSWSS_COMMANDS=('help')
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -d $dir ]; then
             for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
+                local command
                 command=${i#$dir/}
                 command=${command%.sh}
                 if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
@@ -78,8 +87,10 @@ function _roswss_commands() {
 function _roswss_help() {
     echo_note "The following commands are available:"
 
+    local commands
     commands=$(_roswss_commands)
 
+    local out
     out=""
 
     for i in ${commands[@]}; do

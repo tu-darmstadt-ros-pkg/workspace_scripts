@@ -3,14 +3,19 @@
 function remote_pc() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    local script_name
     script_name="$1"
     shift
+    local hostname
     hostname="$1"
     shift
+    local screen_name
     screen_name="$1"
     shift
+    local launch_command
     launch_command="$1"
     shift
+    local command
     command="$1"
     shift
 
@@ -58,10 +63,13 @@ function remote_pc() {
 }
 
 function _remote_pc_commands() {
-    local COMMANDS=("roscore" "start" "stop" "show")
+    local COMMANDS
+    COMMANDS=("roscore" "start" "stop" "show")
 
-    commands=$(_roswss_commands)
-    for i in ${commands[@]}; do
+    local roswss_commands
+    roswss_commands=$(_roswss_commands)
+
+    for i in ${roswss_commands[@]}; do
 
         # don't offer remote pcs again
         skip=false
@@ -97,8 +105,10 @@ function _remote_pc_commands() {
 function _remote_pc_help() {
     echo_note "The following commands are available:"
 
+    local commands
     commands=$(_remote_pc_commands)
 
+    local out
     out=""
 
     for i in ${commands[@]}; do

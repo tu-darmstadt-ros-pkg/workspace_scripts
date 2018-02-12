@@ -3,6 +3,7 @@
 function roswss_ui() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    local command
     command="$1"
     shift
 
@@ -11,7 +12,10 @@ function roswss_ui() {
         return 0
     fi
 
+    local path
     path="$(rospack find $UI_LAUNCH_PKG)"
+
+    local config
 
     if [[ "$command" == "rqt" ]]; then
         if [[ -n "$1" ]]; then
@@ -41,12 +45,15 @@ function roswss_ui() {
 }
 
 function _roswss_ui_rqt_config_files() {
-    local ROSWSS_ROSINSTALL_FILES=()
+    local ROSWSS_ROSINSTALL_FILES
+    ROSWSS_ROSINSTALL_FILES=()
 
+    local path
     path="$(rospack find $UI_LAUNCH_PKG)/config/rqt/"
  
     # find all rosinstall files
     for i in `find -L $path -type f -name "*.perspective"`; do
+        local file
         file=${i#$path}
         file=${file%.perspective}
         if [ -r $i ]; then
@@ -58,12 +65,15 @@ function _roswss_ui_rqt_config_files() {
 }
 
 function _roswss_ui_rviz_config_files() {
-    local ROSWSS_ROSINSTALL_FILES=()
+    local ROSWSS_ROSINSTALL_FILES
+    ROSWSS_ROSINSTALL_FILES=()
 
+    local path
     path="$(rospack find $UI_LAUNCH_PKG)/config/rviz/"
 
     # find all bash scripts
     for i in `find -L $path -type f -name "*.rviz"`; do
+        local file
         file=${i#$path}
         file=${file%.rviz}
         if [ -r $i ]; then
@@ -75,12 +85,15 @@ function _roswss_ui_rviz_config_files() {
 }
 
 function _roswss_ui_launch_files() {
-    local ROSWSS_ROSINSTALL_FILES=()
+    local ROSWSS_ROSINSTALL_FILES
+    ROSWSS_ROSINSTALL_FILES=()
 
+    local path
     path="$(rospack find $UI_LAUNCH_PKG)/launch/"
  
     # find all rosinstall files
     for i in `find -L $path -type f -name "*.launch"`; do
+        local file
         file=${i#$path}
         file=${file%.launch}
         if [ -r $i ]; then
@@ -92,12 +105,15 @@ function _roswss_ui_launch_files() {
 }
 
 function _roswss_ui_commands() {
-    local ROSWSS_COMMANDS=('help' 'rqt' 'rviz')
+    local ROSWSS_COMMANDS
+    ROSWSS_COMMANDS=('help' 'rqt' 'rviz')
     
     echo ${ROSWSS_COMMANDS[@]}
 }
 
 function _roswss_ui_help() {
+    local commands
+
     echo_note "The following commands are available:"
     commands=$(_roswss_ui_commands)
     for i in ${commands[@]}; do
@@ -128,6 +144,7 @@ function _roswss_ui_help() {
 
 function _roswss_ui_complete() {
     local cur
+    local prev
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
         return 0

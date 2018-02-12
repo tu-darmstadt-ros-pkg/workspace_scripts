@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function roswss_rm_package() {
+    local rosinstall
     rosinstall=$1
     shift
 

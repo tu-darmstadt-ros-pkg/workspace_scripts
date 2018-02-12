@@ -2,6 +2,7 @@
 
 _robot_bringup_include()
 {
+    local dir
     dir="$1"
     shift
     for FILE in $dir; do
@@ -13,6 +14,7 @@ _robot_bringup_include()
 
 _robot_bringup_run()
 {
+    local dir
     dir="$1"
     shift
     for FILE in $dir; do

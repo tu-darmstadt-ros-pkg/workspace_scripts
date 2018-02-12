@@ -3,6 +3,7 @@
 function roswss_sim() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    local command
     command="$1"
 
     if [[ "$command" == "help" || "$command" = "--help" ]]; then
@@ -25,6 +26,7 @@ function roswss_sim() {
           return
         fi
 
+        local path
         path="$(rospack find $GAZEBO_WORLDS_PKG)/worlds"
 
         if [[ -f "$path/${command}" ]]; then
@@ -47,12 +49,14 @@ function roswss_sim() {
 }
 
 function _roswss_sim_launch_files() {
-    local ROSWSS_LAUNCH_FILES=()
+    local ROSWSS_LAUNCH_FILES
+    ROSWSS_LAUNCH_FILES=()
 
     if [[ -z "$GAZEBO_LAUNCH_PKG" ]]; then
       return
     fi
 
+    local path
     path="$(rospack find $GAZEBO_LAUNCH_PKG)/launch/"
  
     # find all launch files
@@ -67,12 +71,14 @@ function _roswss_sim_launch_files() {
 }
 
 function _roswss_sim_world_files() {
-    local ROSWSS_WORLD_FILES=()
+    local ROSWSS_WORLD_FILES
+    ROSWSS_WORLD_FILES=()
 
     if [[ -z "$GAZEBO_WORLDS_PKG" ]]; then
       return
     fi
 
+    local path
     path="$(rospack find $GAZEBO_WORLDS_PKG)/worlds/"
  
     # find all world files
@@ -87,6 +93,8 @@ function _roswss_sim_world_files() {
 }
 
 function _roswss_sim_help() {
+    local commands
+
     echo_note "The following launch files are available:"
     commands=$(_roswss_sim_launch_files)
     for i in ${commands[@]}; do
