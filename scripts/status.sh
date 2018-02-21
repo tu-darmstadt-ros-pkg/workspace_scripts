@@ -40,7 +40,7 @@ function displayStatus()
       if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
       then
         git status | grep "On branch" | perl -pe "chomp"
-        echo_warn " (should be on branch $desiredBranch)"
+        echo_warn " (should be on branch $desiredBranch"
       fi
       git status | grep -P 'branch is (ahead|behind)'
       echo -ne $RED; git status | grep "modified"; echo -ne $NOCOLOR
