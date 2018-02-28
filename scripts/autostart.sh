@@ -21,8 +21,8 @@ autostart_dir=$(rospack find $AUTOSTART_LAUNCH_PKG)
 
 # include setup hooks
 _robot_bringup_include "$autostart_dir/setup.d/*.sh"
-_robot_bringup_include "$autostart_dir/$HOSTNAME/setup.d/*.sh"
+_robot_bringup_include "$autostart_dir/setup.d/$HOSTNAME/*.sh"
 
 # auto startup
 _robot_bringup_run "$autostart_dir/autostart.d/*.sh"
-_robot_bringup_run "$autostart_dir/$HOSTNAME/autostart.d/*.sh"
+_robot_bringup_run "$autostart_dir/autostart.d/$HOSTNAME/*.sh"
