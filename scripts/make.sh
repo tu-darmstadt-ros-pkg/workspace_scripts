@@ -8,6 +8,8 @@ for dir in ${ROSWSS_SCRIPTS//:/ }; do
     fi
 done
 
+# TODO: use getopts
+
 # check if debug compile is set
 args=("$@")
 debug=false
