@@ -26,6 +26,8 @@ export ROBOT_USER=""                        # Main login user name for robot com
 
 # SETUP YOUR REMOTE PCs HERE
 # Use add_remote_pc to register different remote pcs
+# Syntax:
+#   add_remote_pc <script_name> <host_name> <screen_name> <command>
 # Example:
 #   add_remote_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
 
