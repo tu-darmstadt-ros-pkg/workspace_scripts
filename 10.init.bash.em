@@ -2,7 +2,8 @@
 export ROSWSS_REMOTE_PC_SCRIPTS=()
 export ROSWSS_SEP_SYM=';'
 
-# Use this method to register different remote pcs
+# Use this method to register different remote pcs# Syntax:
+#   add_remote_pc <script_name> <host_name> <screen_name> <command>
 # Example:
 #   add_remote_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
 function add_remote_pc() {
