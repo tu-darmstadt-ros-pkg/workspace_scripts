@@ -50,11 +50,15 @@ echo_note() {
     echoc $LBLUE "$@"
 }
 
-apt_install() {
+aptinstall() {
     while [[ ! -z "$1" ]]; do
         dpkg -s $1 &>/dev/null || sudo apt-get -y install $1
         shift
     done
+}
+
+apt_install() {
+    aptinstall "$@"
 }
 
 depends() {

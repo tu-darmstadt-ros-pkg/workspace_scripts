@@ -1,7 +1,6 @@
 #!/bin/bash
 
-rosinstall()
-{
+rosinstall() {
     local LAST_PWD
     LAST_PWD=$PWD
     cd $ROSWSS_ROOT/src
@@ -16,4 +15,8 @@ rosinstall()
     done
 
     cd $LAST_PWD
+}
+
+ros_install() {
+    rosinstall "$@"
 }
