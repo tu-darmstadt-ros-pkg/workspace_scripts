@@ -2,11 +2,15 @@
 
 set -e
 
+current_pwd=$PWD
+
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
     if [ -r "$dir/make_externals.sh" ]; then
         . $dir/make_externals.sh
     fi
 done
+
+cd $current_pwd
 
 # TODO: use getopts
 
@@ -39,6 +43,8 @@ if [ $change_dir == true ]; then
         catkin clean --orphans
     fi
 fi
+
+echo $PWD
 
 args=${args[*]}
 
