@@ -4,37 +4,48 @@ function roswss_test() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
     set -e
-    
-    local package
-    package=$1
-    shift
 
-    if [[ "$package" = "--help" || -z "$package" ]]; then
+    local legacy=false
+    if [[ "$1" = "--legacy" ]]; then
+        legacy=true
+        shift
+    fi
+
+    if [[ -z "$1" || "$1" = "--help" ]]; then
         _roswss_test_help
         return 0
     fi
 
-    if [ -d "$ROSWSS_ROOT/build/$package" ]; then
-        # build tests
-        roscd
-        catkin build $package --catkin-make-args run_tests
+    local package
+    package=$1
+    shift
 
-        # run tests
-        local launch
-        launch=$1
-        shift
-        while [[ ! -z "$launch" ]]; do
-            rostest $package $launch
-            launch=$1
-            shift
-        done
-
-        return 0
+    # build tests
+    if [ $legacy = true ]; then
+        echo "LEGACY"
+        if [ -d "$ROSWSS_ROOT/build/$package" ]; then
+            cd $ROSWSS_ROOT/build/$package
+            make tests
+        else
+            echo_error "Build directory for '$package' doesn't exists! (path: $ROSWSS_ROOT/build/$package)"
+            return 1
+        fi
     else
-        echo_error "Build directory for '$package' doesn't exists! (path: $ROSWSS_ROOT/build/$package)"
+        roscd $package
+        catkin build $package --catkin-make-args run_tests
     fi
 
-    return 1
+    # run tests
+    local launch
+    launch=$1
+    shift
+    while [[ ! -z "$launch" ]]; do
+        rostest $package $launch
+        launch=$1
+        shift
+    done
+
+    return 0
 }
 
 function _roswss_test_help() {
@@ -54,13 +65,26 @@ function _roswss_test_complete() {
     # roswss test ...
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
-            COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "--help --legacy" -- "$cur" ) )
         else
             _roscomplete
         fi
-    # roswss test $package ...
+    # roswss test (--legacy) $package ...
+    elif [ $COMP_CWORD -eq 3 ]; then
+        if [[ "${COMP_WORDS[2]}" == -* ]]; then # legacy case
+          _roscomplete
+        else
+          COMP_WORDS=( roslaunch ${COMP_WORDS[2]} $cur )
+        fi
+        COMP_CWORD=2
+        _roscomplete_test
+    # roswss test (--legacy) $package ...
     elif [ $COMP_CWORD -ge 3 ]; then
-        COMP_WORDS=( roslaunch ${COMP_WORDS[2]} $cur )
+        if [[ "${COMP_WORDS[2]}" == -* ]]; then # legacy case
+          COMP_WORDS=( roslaunch ${COMP_WORDS[3]} $cur )
+        else
+          COMP_WORDS=( roslaunch ${COMP_WORDS[2]} $cur )
+        fi
         COMP_CWORD=2
         _roscomplete_test
     fi
