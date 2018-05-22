@@ -161,7 +161,7 @@ function _roswss_complete() {
             fi
         done
 
-        # check for custom completion scripts
+        # check for exported completion scripts
         for i in "${!ROSWSS_COMPLETION_TAGS[@]}"; do 
             if [[ "${ROSWSS_COMPLETION_TAGS[i]}" == "$prev" ]]; then
                 eval ${ROSWSS_COMPLETION_SCRIPTS[$i]}
@@ -169,16 +169,8 @@ function _roswss_complete() {
             fi
         done
 
-        # default completion
+        # default completion (special cases; default cases see in 50.exports.bash.em)
         case $prev in
-            install)
-                _roswss_install_complete
-                ;;
-
-            uninstall)
-                _roswss_uninstall_complete
-                ;;
-
             launch)
                 if [[ "$cur" == -* ]]; then
                     COMPREPLY=( $( compgen -W "--screen" -- "$cur" ) )
@@ -189,16 +181,8 @@ function _roswss_complete() {
                 _roscomplete_launch
                 ;;
 
-            make|update)
-                _roscomplete
-                ;;
-
             master)
                 COMPREPLY=( $( compgen -W "localhost $ROBOT_HOSTNAMES" -- "$cur" ) )
-                ;;
-
-            rosdoc)
-                _roswss_rosdoc_complete
                 ;;
 
             screen)
@@ -209,14 +193,6 @@ function _roswss_complete() {
                 if [ $COMP_CWORD -eq 2 ]; then
                     _roswss_sim_complete
                 fi
-                ;;
-                
-            test)
-                _roswss_test_complete
-                ;;
-                
-            ui)
-                _roswss_ui_complete
                 ;;
 
             *)
