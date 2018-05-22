@@ -197,6 +197,10 @@ function _roswss_complete() {
                 COMPREPLY=( $( compgen -W "localhost $ROBOT_HOSTNAMES" -- "$cur" ) )
                 ;;
 
+            rosdoc)
+                _roswss_rosdoc_complete
+                ;;
+
             screen)
                 COMPREPLY=( $( compgen -W "start stop show list" -- "$cur" ) )
                 ;;
