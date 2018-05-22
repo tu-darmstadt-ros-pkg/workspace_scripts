@@ -6,7 +6,7 @@ function roswss_test() {
     set -e
 
     local legacy=false
-    if [[ "$1" = "--legacy" ]]; then
+    if [[ "$1" = "--fix" ]]; then
         legacy=true
         shift
     fi
@@ -25,25 +25,31 @@ function roswss_test() {
         echo "LEGACY"
         if [ -d "$ROSWSS_ROOT/build/$package" ]; then
             cd $ROSWSS_ROOT/build/$package
-            make tests
+            make run_tests
         else
-            echo_error "Build directory for '$package' doesn't exists! (path: $ROSWSS_ROOT/build/$package)"
+            echo_error "Build directory for '$package' doesn't exists (lookup path: $ROSWSS_ROOT/build/$package)! Maybe you should run a regular build first."
             return 1
         fi
     else
         roscd $package
-        catkin build $package --catkin-make-args run_tests
-    fi
 
-    # run tests
-    local launch
-    launch=$1
-    shift
-    while [[ ! -z "$launch" ]]; do
-        rostest $package $launch
+        if [[ -z "$1" ]]; then
+            catkin build $package --catkin-make-args run_tests
+        else
+            catkin build $package --catkin-make-args tests
+        fi
+
+        local launch
         launch=$1
         shift
-    done
+
+        # run tests manually
+        while [[ ! -z "$launch" ]]; do
+            rostest $package $launch
+            launch=$1
+            shift
+        done
+    fi
 
     return 0
 }
@@ -65,7 +71,7 @@ function _roswss_test_complete() {
     # roswss test ...
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
-            COMPREPLY=( $( compgen -W "--help --legacy" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "--help --fix" -- "$cur" ) )
         else
             _roscomplete
         fi
