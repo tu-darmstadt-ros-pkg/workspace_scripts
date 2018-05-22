@@ -8,8 +8,18 @@ package=$1
 
 # update package only if given
 if [[ ! -z "$package" ]]; then
-    roscd $package
-    git pull
+    echo_info "Pulling packages manually..."
+    echo
+    while [[ ! -z "$package" ]]; do
+        echo_note ">>> $package"
+        roscd $package
+        git pull
+        echo
+        
+        shift
+        package=$1
+    done
+    echo_info "Done!"
 # otherwise perform full update
 else
     # update systems settings
