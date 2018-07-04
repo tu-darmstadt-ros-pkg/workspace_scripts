@@ -86,7 +86,7 @@ run_scripts() {
             fi
         fi
     done
-  echo
+    echo
 
     # launch all launchfiles
     echo_info ">>> Running launch files"
@@ -113,7 +113,7 @@ run_scripts() {
             fi
         fi
     done
-  echo
+    echo
 }
 
 # program start, init variables
