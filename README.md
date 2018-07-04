@@ -1,3 +1,4 @@
+
 # ROS Workspace Scripts
 The **ROS** **W**ork**s**pace **S**cripts (*roswss*) package provides an expandable framework for commonly used scripts in order to simplify your workflow in a ROS environment. The core features include:
 
@@ -186,7 +187,8 @@ X((System)) --> A
 A(systemd) --> B
 B[startup.sh] -- 'roswss autostart' --> C
 C[autostart.sh] --> D[setup.d]
-C --> E[autostart.d]
+C --> E
+E[autostart.d] -- run_all.sh --> F[...]
 ```
 
  1. The autostart procedure is triggered by the Linux OS via [systemd](https://www.freedesktop.org/wiki/Software/systemd/).
@@ -209,19 +211,19 @@ robot_bringup
 │   │   ...
 │
 └───autostart.d # Software startup routines (optional)
-│   │   <common scripts and launchfiles here>
+│   │   <common scripts>
 │   │   ...
 │   │
 │   └───<hostname> # Machine-specific parts should be located in the corresponding named subfolder (optional)
-│       │   <Machine-specific scripts and launchfiles here>
+│       │   <Machine-specific scripts>
 │       │   ...
 │
 └───system.d # Hardware/System setup routines (optional)
-│   │   <common scripts and launchfiles here>
+│   │   <common scripts>
 │   │   ...
 │   │
 │   └───<hostname> # Machine-specific parts should be located in the corresponding named subfolder (optional)
-│       │   <Machine-specific scripts and launchfiles here>
+│       │   <Machine-specific scripts>
 │       │   ...
 ```
 **Note:** All subfolders are optional. The machine-specific routines will be only handled when the running machine's hostname is matching the subfolder's name. A package example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup).
@@ -270,21 +272,26 @@ where `<ros_root>` must be replaced by the **global** path to the ROS workspace 
 
 
 #### Step 4: roswss Autostart
-Using the *roswss* autostart feature is now quite simple as long the in [step 1](#step-1-robot-bringup-package) declared autostart package has the structure as suggested for the robot_bringup package.  All shell scripts (\*.sh) and launchfiles (\*.launch) located in the following folders are handled in the given order:
+Using the basic *roswss* autostart feature is now quite simple as long the in [step 1](#step-1-robot-bringup-package) declared autostart package has the structure as suggested for the robot_bringup package.  All shell scripts (\*.sh) located in the following folders are sequentially called using a **single bash session** in the given order:
  1. ../system.d/
  2. ../system.d/\<hostname>
  3. ../autostart.d/
  4. ../autostart.d/\<hostname>
 
-Hereby, each shell script and launchfile is executed in its own screen.
-
 **Please note:**
-* Only files in the given folders are considered; The content of all subfolders is ignored!
-* All scripts and launchfiles are handled in alphabetical order.
-* Shell scripts require to have execute permission.
+* Only files in the given folders are considered; The content of all their subfolders is ignored!
+* All scripts are handled in alphabetical order.
+* Scripts in `system.d` will be sourced and therefore change the environment of the running bash session.
+* Scripts in `autostart.d` require to have execute permission.
 
 **Tip:**
-* Shell scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start parts of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh).
+* Enumerate scripts using following convention `XX.my_script.sh`  in order to obtain a clearly defined execution order.
+* A wait script such as given in [this example](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/10.roscore.sh) should be placed to ensure the roscore has properly settled.
+* Scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start parts of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh). The next section will describe how to setup this feature.
+
+#### Step 5: The run_all script
+
+TODO
 
 ## Disclaimer
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
