@@ -214,7 +214,7 @@ robot_bringup
 │   │   <common scripts>
 │   │   ...
 │   │
-│   └───<hostname> # Machine-specific parts should be located in the corresponding named subfolder (optional)
+│   └───<hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
 │       │   <Machine-specific scripts>
 │       │   ...
 │
@@ -222,7 +222,7 @@ robot_bringup
 │   │   <common scripts>
 │   │   ...
 │   │
-│   └───<hostname> # Machine-specific parts should be located in the corresponding named subfolder (optional)
+│   └───<hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
 │       │   <Machine-specific scripts>
 │       │   ...
 ```
@@ -281,12 +281,12 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
 **Please note:**
 * Only files in the given folders are considered; The content of all their subfolders is ignored!
 * All scripts are handled in alphabetical order.
-* Scripts in `system.d` will be sourced and therefore change the environment of the running bash session.
+* Scripts in `system.d` will be sourced and therefore change the environment of the running bash session. Thus, it is the ideal place for exports of variables.
 * Scripts in `autostart.d` require to have execute permission.
 
 **Tip:**
 * Enumerate scripts using following convention `XX.my_script.sh`  in order to obtain a clearly defined execution order.
-* A wait script such as given in [this example](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/10.roscore.sh) should be placed to ensure the roscore has properly settled.
+* A wait script such as given in [this example](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/10.roscore.sh) should be placed to ensure the roscore has properly settled before proceeding. Analogously this should be done for any hardware that requires time to fully boot-up such as cameras.
 * Scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start parts of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh). The next section will describe how to setup this feature.
 
 #### Step 5: The run_all script
