@@ -176,7 +176,7 @@ roswss my_script start
 ```
 
 ## Autostart
-Autostart is a very complex and difficult topic and comes with a lot of issues at different layers which has to solved reliably. Hence, the currently known best-practice method using *roswss* is demonstrated next.
+Autostart is a very complex and difficult topic and comes with a lot of issues at different layers which has to be solved reliably. Hence, the currently known best-practice method using *roswss* is demonstrated next.
 
 ### Overview: Call Chain
 The autostart procedure follows the call chain in the drawing below:
