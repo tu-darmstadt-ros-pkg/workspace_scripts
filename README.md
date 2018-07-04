@@ -55,7 +55,7 @@ The manifest is as well very simple
 ```
 
 ### 20.setup.bash.em
-This file is originated from `20.setup_example.bash.em` of the workspace_scripts main folder. It must be copied into your scripts package and renamed into `20.setup.bash.em`. Open the file and provide all required data, especially the command prefix via `ROSWSS_PREFIX` (default: `roswss`) which is used to create a name alias for `roswss`. For details how to set `ROSWSS_ROOT_RELATIVE_PATH` and `ROSWSS_INSTALL_DIR` correctly, please read the **[Rosinstall](#Rosinstall)** section.
+This file is originated from `20.setup_example.bash.em` of the workspace_scripts main folder. It must be copied into your scripts package and renamed into `20.setup.bash.em`. Open the file and provide all required data, especially the command prefix via `ROSWSS_PREFIX` (default: `roswss`) which is used to create a name alias for `roswss`. For details how to set `ROSWSS_ROOT_RELATIVE_PATH` and `ROSWSS_INSTALL_DIR` correctly, please read the **[Rosinstall](#rosinstall)** section.
 
 **Note:** Each change of the `20.setup.bash.em` file requires a recompile and new terminal session in order to take full effect.
 
@@ -270,7 +270,7 @@ where `<ros_root>` must be replaced by the **global** path to the ROS workspace 
 
 
 #### Step 4: roswss Autostart
-Using the *roswss* autostart feature is now quite simple as long the in [step 1](#Step_1) declared autostart package has the structure as suggested for the robot_bringup package.  All shell scripts (\*.sh) and launchfiles (\*.launch) located in the following folders are handled in the given order:
+Using the *roswss* autostart feature is now quite simple as long the in [step 1](#step-1-robot-bringup-package) declared autostart package has the structure as suggested for the robot_bringup package.  All shell scripts (\*.sh) and launchfiles (\*.launch) located in the following folders are handled in the given order:
  1. ../system.d/
  2. ../system.d/\<hostname>
  3. ../autostart.d/
