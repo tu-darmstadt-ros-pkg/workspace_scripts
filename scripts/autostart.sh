@@ -3,7 +3,7 @@
 # only execute autostart if specified
 if [ -z "$AUTOSTART_LAUNCH_PKG" ]; then
     echo "WARNING: autostart.sh has been triggered but AUTOSTART_LAUNCH_PKG was not set!" 
-    return
+    return 1
 fi
 
 # include helper functions

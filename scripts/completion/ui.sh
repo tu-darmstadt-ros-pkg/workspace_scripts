@@ -3,6 +3,12 @@
 function roswss_ui() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    # only execute if UI_LAUNCH_PKG is set
+    if [ -z "$UI_LAUNCH_PKG" ]; then
+        echo_error "ERROR: In order to use the ui command, please set UI_LAUNCH_PKG." 
+        return 1
+    fi
+
     local command
     command="$1"
     shift
@@ -143,6 +149,15 @@ function _roswss_ui_help() {
 }
 
 function _roswss_ui_complete() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
+    # only execute if UI_LAUNCH_PKG is set
+    if [ -z "$UI_LAUNCH_PKG" ]; then
+        echo
+        echo_error "ERROR: In order to use the ui command, please set UI_LAUNCH_PKG." 
+        return 1
+    fi
+
     local cur
     local prev
 

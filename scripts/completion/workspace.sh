@@ -119,6 +119,8 @@ function _roswss_help() {
 }
 
 function _roswss_complete() {
+    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
     local cur
     local prev
 
@@ -172,6 +174,13 @@ function _roswss_complete() {
         # default completion (special cases; default cases see in 50.exports.bash.em)
         case $prev in
             launch)
+                # only execute if ONBOARD_LAUNCH_PKG is set
+                if [ -z "$ONBOARD_LAUNCH_PKG" ]; then
+                    echo
+                    echo_error "ERROR: In order to use the launch command, please set ONBOARD_LAUNCH_PKG." 
+                    return 1
+                fi
+
                 if [[ "$cur" == -* ]]; then
                     COMPREPLY=( $( compgen -W "--screen" -- "$cur" ) )
                 fi

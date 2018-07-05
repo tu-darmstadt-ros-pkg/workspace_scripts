@@ -3,6 +3,12 @@
 function roswss_sim() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    # only execute if GAZEBO_LAUNCH_PKG is set
+    if [ -z "$GAZEBO_LAUNCH_PKG" ]; then
+        echo_error "ERROR: In order to use the sim command, please set GAZEBO_LAUNCH_PKG." 
+        return 1
+    fi
+
     local command
     command="$1"
 
@@ -111,6 +117,13 @@ function _roswss_sim_help() {
 }
 
 function _roswss_sim_complete() {
+    # only execute if GAZEBO_LAUNCH_PKG is set
+    if [ -z "$GAZEBO_LAUNCH_PKG" ]; then
+        echo
+        echo_error "ERROR: In order to use the sim command, please set GAZEBO_LAUNCH_PKG." 
+        return 1
+    fi
+
     local cur
 
     if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
