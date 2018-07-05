@@ -379,15 +379,15 @@ robot_bringup
 │
 │   ...
 ```
-Actually, for each machine new subfolders (launch and scripts) are created in the autostart.d section. **These newly created folders hold all launchfiles (\*.launch) and shell scripts (\*.sh) which should be started by the run_all script.**
+Actually, for each machine new subfolders (launch and scripts) are created in their autostart.d section. **These newly created folders hold all launchfiles (\*.launch) and shell scripts (\*.sh) which should be started by the run_all script.**
 
 In addition, the root directory contains a  new script folder holding the main script for each machine which calls the run_all script.
 
 ##### Final Plumbing
 
-Now all presented features are going to put together. Please keep in mind to replace all placeholders `<...>` according to your setup and your command prefix alias can be used instead of the generic `roswss`. All used names are exemplary, feel free to customize your setup!
+Now all presented features are going to put together. Please keep in mind to replace all placeholders `<...>` according to your setup and your command prefix alias can be used as well instead of the generic `roswss`. All used names are exemplary, feel free to customize your setup!
 
- First the main script (`robot_bringup/scripts/<hostname>.sh`) has to be created with following content:
+ First, the main script (`robot_bringup/scripts/<hostname>.sh`) has to be created with following content:
 
 ```Shell
 #!/bin/bash
@@ -401,7 +401,7 @@ DIRECTORIES="$(rospack find robot_bringup)/autostart.d/<hostname>/scripts \
 bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l $LOG_DIR
 ```
 
-This main script is used for a predefined screen session. In `20.setup.bash.em` just add
+This main script is going to be used for a predefined screen session, thus, in `20.setup.bash.em` just add
 
 ```Shell
 add_remote_pc "<hostname>" "<hostname>" "<hostname>" "<absolute_path_to_workspace>/src/robot_bringup/scripts/<hostname>.sh"
