@@ -89,7 +89,7 @@ my_scripts
 
 **Note:** *roswss* will source a shell script if no execute permission is set. This allows scripts to change your current environment (e.g. exporting variables).
 
-The script naming convention behaves like inheritance in object-oriented programming languages. Any own script with will overload any previously defined script with the same name. The override order is indeed determined by alphabetical order of all environment hooks crawling for script files (usually the `xx.setup.bash.em`). The currently available scripts and their origin can be determined by using the `roswss --help`.
+The script naming convention behaves like inheritance in object-oriented programming languages. Any own script will overload any previously defined script with the same name. The override order is indeed determined by alphabetical order of all environment hooks crawling for script files (usually the `xx.setup.bash.em`). The currently available scripts and their origin can be determined by using the `roswss --help`.
 
 *roswss* does already provide a lot of convenient helper functions such as colored text outputs ([see helper.sh](https://github.com/tu-darmstadt-ros-pkg/workspace_scripts/blob/kinetic-devel/scripts/helper/helper.sh)). In order to use them just source the `helper.sh` file:
 
