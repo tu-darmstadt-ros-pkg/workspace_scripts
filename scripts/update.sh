@@ -71,13 +71,16 @@ else
 
     # running bash scripts from *.sh
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
-    echo_info ">>> Running bash scripts"
-    for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
-        filename=$(basename ${file%.*})
-        echo_note "Running bash script: ${filename}.sh"
-        source $file
-        echo
-    done
+    count=`ls -1 *.sh 2>/dev/null | wc -l`
+    if [ $count != 0 ]; then
+        echo_info ">>> Running bash scripts"
+        for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
+            filename=$(basename ${file%.*})
+            echo_note "Running bash script: ${filename}.sh"
+            source $file
+            echo
+        done
+    fi
 
     # running bash scripts from optional/*.sh
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
