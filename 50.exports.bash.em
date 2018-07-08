@@ -16,9 +16,9 @@ done
 
 # default auto completion
 add_completion "install" "_roswss_install_complete"
-add_completion "make" "_roscomplete"
+add_completion "make" "_catkin_pkgs_complete"
 add_completion "rosdoc" "_roswss_rosdoc_complete"
 add_completion "test" "_roswss_test_complete"
 add_completion "ui" "_roswss_ui_complete"
 add_completion "uninstall" "_roswss_uninstall_complete"
-add_completion "update" "_roscomplete"
+add_completion "update" "_catkin_pkgs_complete"
