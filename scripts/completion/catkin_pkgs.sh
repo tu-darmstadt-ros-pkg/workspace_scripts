@@ -13,7 +13,7 @@ function _catkin_pkgs_complete() {
     if [[ ${cur} == -* ]]; then
         return 0
     else
-        COMPREPLY=($(compgen -W "$(_catkin_pkgs)" -- ${cur}))
+        COMPREPLY=($(compgen -W "$(catkin --no-color list --workspace $ROSWSS_ROOT --unformatted --quiet 2> /dev/null)" -- ${cur}))
     fi
 
     return 0
