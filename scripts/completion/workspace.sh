@@ -191,11 +191,21 @@ function _roswss_complete() {
                 ;;
 
             master)
-                COMPREPLY=( $( compgen -W "localhost $ROBOT_HOSTNAMES" -- "$cur" ) )
+                if [ $COMP_CWORD -eq 2 ]; then
+                    COMPREPLY=( $( compgen -W "localhost $ROBOT_HOSTNAMES" -- "$cur" ) )
+                fi
+                ;;
+
+            ssh)
+                if [ $COMP_CWORD -eq 2 ]; then
+                    COMPREPLY=( $( compgen -W "$ROBOT_HOSTNAMES" -- "$cur" ) )
+                fi
                 ;;
 
             screen)
-                COMPREPLY=( $( compgen -W "start stop show list" -- "$cur" ) )
+                if [ $COMP_CWORD -eq 2 ]; then
+                    COMPREPLY=( $( compgen -W "start stop show list" -- "$cur" ) )
+                fi
                 ;;
                 
             sim)
