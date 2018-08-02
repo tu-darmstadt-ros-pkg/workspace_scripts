@@ -18,7 +18,7 @@ user=$ROBOT_USER
 
 echo_info "Connecting to $host as $user"
 if [ "$#" -eq 0 ]; then
-   ssh $user@$host
+   ssh $user@$host -A
 else
-   ssh $user@$host -t 'bash -l -c -i "'$@'"'
+   ssh $user@$host -A -t 'bash -l -c -i "'$@'"'
 fi
