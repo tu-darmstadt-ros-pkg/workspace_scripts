@@ -39,8 +39,8 @@ case $action in
         fi
 
         # create subfolders for each screen, there seems to be no option to change the output file name
-        mkdir -p $ROSWSS_ROOT/logs/screen_logs/$screen_session
-        cd $ROSWSS_ROOT/logs/screen_logs/$screen_session
+        mkdir -p ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
+        cd ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
         [ -f screenlog.0 ] && rm screenlog.0
         screen -dmLS $screen_session /bin/bash -ic "$@"
 
