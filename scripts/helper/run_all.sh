@@ -23,7 +23,7 @@ shutdown() {
 read_arguments() {
     # check if arguments were given
     if [ $# -lt 1 ]; then
-        echo 'Usage: ./execute <directory list> [-p preexecute_commands]' >&2
+        echo 'Usage: roswss run_all <directory list> [-p preexecute_commands] [-l log_dir]' >&2
         echo 'it is recommended to start this script in a screen' >&2
         exit 1
     fi
@@ -46,7 +46,7 @@ read_arguments() {
     done
 
     # read input arguments
-    LOG_DIR=$ROSWSS_ROOT/logs
+    LOG_DIR="${ROSWSS_LOG_DIR}/logs"
     while getopts 'p:l:' opt ; do
         case "$opt" in
             p) PREEXECUTE_COMMAND=$OPTARG ;;
@@ -75,8 +75,8 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p $LOG_DIR/$screen_session
-            cd $LOG_DIR/$screen_session
+            mkdir -p ${LOG_DIR}/$screen_session
+            cd ${LOG_DIR}/$screen_session
             [ -f screenlog.0 ] && rm screenlog.0
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
@@ -102,8 +102,8 @@ run_scripts() {
 
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
             # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p $LOG_DIR/$screen_session
-            cd $LOG_DIR/$screen_session
+            mkdir -p ${LOG_DIR}/$screen_session
+            cd ${LOG_DIR}/$screen_session
             [ -f screenlog.0 ] && rm screenlog.0
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
@@ -149,7 +149,7 @@ run_scripts() {
 
 # program start, init variables
 PREEXECUTE_COMMAND=""
-LOG_DIR=$ROSWSS_ROOT/logs
+LOG_DIR="${ROSWSS_LOG_DIR}/logs"
 # array for reading input directories
 declare -a directories
 

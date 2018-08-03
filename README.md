@@ -256,7 +256,7 @@ robot_bringup
 │       │   <Machine-specific scripts>
 │       │   ...
 │
-└───system.d # Hardware/System setup routines (optional)
+└───setup.d # Hardware/System setup routines (optional)
 │   │   <common scripts>
 │   │   ...
 │   │
@@ -322,15 +322,15 @@ where `<ros_root>` must be replaced by the **global** path to the ROS workspace 
 #### Step 4: roswss Autostart
 
 Using the basic *roswss* autostart feature is now quite simple as long the in [step 1](#step-1-robot-bringup-package) declared autostart package has the structure as suggested for the robot_bringup package.  All shell scripts (\*.sh) located in the following folders are sequentially called using a **single bash session** in the given order:
- 1. ../system.d/
- 2. ../system.d/\<hostname>
+ 1. ../setup.d/
+ 2. ../setup.d/\<hostname>
  3. ../autostart.d/
  4. ../autostart.d/\<hostname>
 
 **Please note:**
 * Only files in the given folders are considered; The content of all their subfolders is ignored!
 * All scripts are handled in alphabetical order.
-* Scripts in `system.d` will be sourced and therefore change the environment of the running bash session. Thus, it is the ideal place for exports of variables.
+* Scripts in `setup.d` will be sourced and therefore change the environment of the running bash session. Thus, it is the ideal place for exports of variables.
 * Scripts in `autostart.d` require to have execute permission.
 
 **Tips:**
@@ -345,10 +345,10 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
 The previously described autostart feature by *roswss* works sequential. In order to run a collection of scripts in parallel, the `run_all` script should be used. 
 
 ```Shell
-bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l $LOG_DIR
+bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
 ```
 
-The run_all script will execute **each** roslaunch (\*.launch) and shell script (\*.sh) within the given folders (declared as a list of paths in `DIRECTORIES`) in its own screen session. Optionally, a path for the log files can be specified with `-l $LOG_DIR`. A full example of how to use this script can be found [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/scripts/motion.sh).
+The run_all script will execute **each** roslaunch (\*.launch) and shell script (\*.sh) within the given folders (declared as a list of paths in `DIRECTORIES`) in its own screen session. Optionally, a path for the log files can be specified with `-l ${ROSWSS_LOG_DIR}`. A full example of how to use this script can be found [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/scripts/motion.sh).
 
 The script will stop all started screen sessions on termination and therefore will not exit automatically. Please consider this blocking behavior when using the script.
 
@@ -392,13 +392,12 @@ Now all presented features are going to put together. Please keep in mind to rep
 ```Shell
 #!/bin/bash
 
-LOG_DIR="$ROSWSS_ROOT/logs"
 DIRECTORIES="$(rospack find robot_bringup)/autostart.d/<hostname>/scripts \
              $(rospack find robot_bringup)/autostart.d/<hostname>/launch"
 
 
 # run execute script with script and launch folder
-bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l $LOG_DIR
+bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
 ```
 
 This main script is going to be used for a predefined screen session, thus, in `20.setup.bash.em` just add
@@ -444,7 +443,7 @@ In case of any issues, you can check following steps:
 
  - Check if screen is even running with `roswss screen list` (or use the native version `screen -list`)
  - Attach to your main screen with `roswss <hostname> show`
- - Check the log files created in your specified `$LOG_DIR` 
+ - Check the log files created in your specified `${ROSWSS_LOG_DIR}` 
 
 ## Disclaimer
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
