@@ -114,6 +114,37 @@ run_scripts() {
         fi
     done
     echo
+    
+    if [ ! -d $DIRECTORY/delayed_scripts ]; then 
+        echo "No delayed scripts to be executed"
+    else
+        echo "Waiting 5 seconds before executing delayed scripts"
+        sleep 5
+    fi
+    echo_info ">>> Running delayed scripts"
+    for files in $DIRECTORY/delayed_scripts/*.sh; do
+        if [ -f $files ]; then
+            # getting script name for screen session
+            screen_session=${files##*/}
+            screen_session=${screen_session%%.sh}_script
+
+            started_screens_array[${counter}]=$screen_session
+            echo_note "Starting bash script: ${started_screens_array[${counter}]}.sh"
+                (( counter=$counter + 1 ))
+
+            # create subfolders for each screen, there seems to be no option to change the output file name
+            mkdir -p $LOG_DIR/$screen_session
+            cd $LOG_DIR/$screen_session
+            [ -f screenlog.0 ] && rm screenlog.0
+
+            if [ -z "$PREEXECUTE_COMMAND" ]; then
+              roswss screen start $screen_session "bash $files"
+            else
+              roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+            fi
+        fi
+    done
+    echo
 }
 
 # program start, init variables
