@@ -133,8 +133,8 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p $LOG_DIR/$screen_session
-            cd $LOG_DIR/$screen_session
+            mkdir -p ${LOG_DIR}/$screen_session
+            cd ${LOG_DIR}/$screen_session
             [ -f screenlog.0 ] && rm screenlog.0
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
