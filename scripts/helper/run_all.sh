@@ -118,8 +118,8 @@ run_scripts() {
     if [ ! -d $DIRECTORY/delayed_scripts ]; then 
         echo "No delayed scripts to be executed"
     else
-        echo "Waiting 5 seconds before executing delayed scripts"
-        sleep 5
+        echo "Waiting 30 seconds before executing delayed scripts"
+        sleep 30
     fi
     echo_info ">>> Running delayed scripts"
     for files in $DIRECTORY/delayed_scripts/*.sh; do
