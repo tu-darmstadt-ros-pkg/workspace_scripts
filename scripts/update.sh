@@ -41,10 +41,16 @@ else
             git pull
         fi
     done
-
+    
     # updating root rosinstalls
     echo_info ">>> Pulling install folder in $ROSWSS_ROOT"
     cd $ROSWSS_ROOT
+    git pull
+    echo
+    
+    # update optional rosinstalls
+    echo_info ">>> Pulling optional installs in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional"
+    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
     git pull
     echo
 
