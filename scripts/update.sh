@@ -63,18 +63,7 @@ else
         echo_note "Merging to workspace: ${filename}.rosinstall"
         wstool merge -y $file
     done
-
-    # merge installed optional rosinstall files from optional/*.rosinstall
-    if [ -f "$ROSWSS_ROOT/.install" ]; then
-        while read filename; do
-        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.rosinstall" ]; then
-            echo_note "Merging to workspace: ${filename}.rosinstall"
-            wstool merge -y $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$filename.rosinstall
-        fi
-        done <$ROSWSS_ROOT/.install
-    fi
-    echo
-
+    
     # running bash scripts from *.sh
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
     count=`ls -1 *.sh 2>/dev/null | wc -l`
@@ -87,16 +76,19 @@ else
             echo
         done
     fi
-
-    # running bash scripts from optional/*.sh
-    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
+    
+    # merged installed optional rosinstall or bash files
     if [ -f "$ROSWSS_ROOT/.install" ]; then
-        while read filename; do
+      while read filename; do
+        if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.rosinstall" ]; then
+            echo_note "Merging to workspace: ${filename}.rosinstall"
+            wstool merge -y $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$filename.rosinstall
+        fi
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
         fi
-        done <$ROSWSS_ROOT/.install
+      done <$ROSWSS_ROOT/.install
     fi
     echo
 
