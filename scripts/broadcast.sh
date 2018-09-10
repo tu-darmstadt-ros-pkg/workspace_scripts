@@ -7,7 +7,8 @@ if [ "$#" -eq 0 ]; then
     exit 1
 fi
 echo "1"
-command=$1; shift
+shift
+command=$@;
 
 hosts=($ROBOT_HOSTNAMES)
 users=($ROBOT_USERS)
@@ -15,7 +16,7 @@ users=($ROBOT_USERS)
 for idx in "${!hosts[@]}"; do 
     host="${hosts[$idx]}"
     user="${users[$idx]}"
-    $dir/ssh.sh $host $command
     echo "Executing $command on $host"
+    $dir/ssh.sh $host $command
 done
 
