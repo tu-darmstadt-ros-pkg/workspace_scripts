@@ -13,9 +13,19 @@ function roswss_ui() {
     command="$1"
     shift
 
-    if [[ "$command" == "help" || "$command" = "--help" || -z "$command" ]]; then
+    if [[ "$command" == "help" || "$command" = "--help" ]]; then
         _roswss_ui_help
         return 0
+    fi
+    
+    if [[ -z "$command" ]]; then
+      if [[ -z "$UI_DEFAULT_LAUNCH_FILE" ]]; then
+        _roswss_ui_help
+        return 0  
+      else
+        roslaunch $UI_LAUNCH_PKG $UI_DEFAULT_LAUNCH_FILE "$@"
+        return 0
+      fi
     fi
 
     local path
@@ -42,7 +52,7 @@ function roswss_ui() {
         fi
         return 0
     else
-      roslaunch $UI_LAUNCH_PKG ${command}.launch
+      roslaunch $UI_LAUNCH_PKG ${command}.launch "$@"
       return 0
     fi
 
