@@ -12,6 +12,7 @@ function roswss_install() {
         return 0
     fi
 
+    pwd=$PWD
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
 
     # perform install
@@ -48,6 +49,8 @@ function roswss_install() {
         shift
         echo
     done
+
+    cd $pwd
 
     return 0
 }
