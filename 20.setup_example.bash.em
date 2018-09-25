@@ -11,6 +11,7 @@ export ROSWSS_INSTALL_DIR="rosinstall"      # Path/Directory to install files (r
 # SETUP YOUR ENVIRONMENT HERE (all fields are optional)
 export ONBOARD_LAUNCH_PKG=""                # Name of your main onboard launch package; Required for "launch" command.
 export UI_LAUNCH_PKG=""                     # Name of your main ui launch package; Required for "ui" command.
+export UI_DEFAULT_LAUNCH_FILE=""            # Name of your default ui launch file
 export GAZEBO_LAUNCH_PKG=""                 # Gazebo launch package; Required for "sim" command.
 export GAZEBO_DEFAULT_LAUNCH_FILE=""        # Gazebo default launch file; Required for "sim" command.
 export GAZEBO_WORLDS_PKG=""                 # Package name where your Gazebo worlds are stored; Required for "sim" command.
