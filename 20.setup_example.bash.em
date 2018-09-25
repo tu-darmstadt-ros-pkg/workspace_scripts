@@ -19,6 +19,7 @@ export AUTOSTART_LAUNCH_PKG=""              # Package containing autostart setup
 export ROBOT_MASTER_HOSTNANE=""             # Hostname running ros master; Required for "sync" (clock synchronization) command.
 export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers; Required for "master" command.
 export ROBOT_USER=""                        # Main login user name for robot computers; Required for starting ssh sessions.
+export ROBOT_USERS=""                       # Different login user name for robot computers; Required for starting ssh sessions on multiple computers using different user names for each.
 
 # SETUP YOUR REMOTE PCs HERE
 # Use add_remote_pc to register different remote pcs
