@@ -15,5 +15,5 @@ if [ "$#" -lt 1 ]; then
 else
   sudo ntpdate $1
 fi
-  sudo /etc/init.d/chrony start
-  
+
+sudo /etc/init.d/chrony start
