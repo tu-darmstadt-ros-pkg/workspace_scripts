@@ -11,7 +11,7 @@ fi
 master_ip=$(echo $master | egrep "([0-9]+\.){3}[0-9]+")
 
 # resolve master only if it is not already an IP address
-if [ "$master" != "$master_ip" ]; then
+if [ "$master" != "$master_ip" ] && [ "$master" != "localhost" ]; then
 	host -t a $master >/dev/null
 	if [ "$?" -ne 0 ]; then
 	    echo_warn "Host $master cannot be resolved at the moment!"
@@ -26,8 +26,11 @@ echo_info "Setting ROS_MASTER_URI to $ROS_MASTER_URI"
 local_ip=$2
 if [ -z "$local_ip" ]; then
 	num_ips=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+" | grep -c ".*")
-	# if there is only one IP in the system, use it as ROS_IP
-	if [ "$num_ips" == "1" ]; then
+	if [ "$num_ips" == "0" ]; then
+    	# if there is no IP in the system, use loopback as ROS_IP
+		local_ip=127.0.0.1
+	elif [ "$num_ips" == "1" ]; then
+    	# if there is only one IP in the system, use it as ROS_IP
 		local_ip=$(hostname -I)
 	fi
 fi
