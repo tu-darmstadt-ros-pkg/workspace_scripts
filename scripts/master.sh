@@ -41,11 +41,14 @@ if [ -n "$local_ip" ]; then
     return
 fi
 
-# if ROS_IP is already set, exit here
-if [ -n "$ROS_IP" ]; then
-    echo_info "ROS_IP is already set to $ROS_IP"
+# if ROS_IP is already set to an IP that belongs to this host, exit here
+if [ -n "$(hostname -I | grep -o $ROS_IP)" ]; then
+    echo_info "ROS_IP is already set to valid IP: $ROS_IP"
 	return
 fi
+
+# clear invalid ROS_IP value
+export ROS_IP=
 
 # give some information about possible ROS_IP settings
 echo
@@ -55,7 +58,7 @@ if [ -n "$ROS_HOSTNAME" ]; then
 fi
 
 myips=$(hostname -I)
-echo_note -n "Your hostname is: "
+echo_note "Your hostname is: "
 host -t a $hostname
 if [ $? -eq 0 ]; then
     echo_info "If this hostname cannot be resolved on the master, you need to set the ROS_IP environment variable."
