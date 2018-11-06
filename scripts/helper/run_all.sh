@@ -46,7 +46,7 @@ read_arguments() {
     done
 
     # read input arguments
-    LOG_DIR="${ROSWSS_LOG_DIR}/logs"
+    LOG_DIR="${ROSWSS_LOG_DIR}"
     while getopts 'p:l:' opt ; do
         case "$opt" in
             p) PREEXECUTE_COMMAND=$OPTARG ;;
@@ -149,7 +149,7 @@ run_scripts() {
 
 # program start, init variables
 PREEXECUTE_COMMAND=""
-LOG_DIR="${ROSWSS_LOG_DIR}/logs"
+LOG_DIR="${ROSWSS_LOG_DIR}"
 # array for reading input directories
 declare -a directories
 
