@@ -31,7 +31,7 @@ if [ -z "$local_ip" ]; then
 		local_ip=127.0.0.1
 	elif [ "$num_ips" == "1" ]; then
     	# if there is only one IP in the system, use it as ROS_IP
-		local_ip=$(hostname -I)
+		local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
 	fi
 fi
 # export ROS_IP
