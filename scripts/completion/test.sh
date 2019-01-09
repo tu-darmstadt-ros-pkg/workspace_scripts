@@ -10,7 +10,13 @@ function roswss_test() {
         legacy=true
         shift
     fi
-
+    
+    local text=""
+    if [[ "$1" = "--text" ]]; then
+        text="--text"
+        shift
+    fi
+  
     if [[ -z "$1" || "$1" = "--help" ]]; then
         _roswss_test_help
         return 0
@@ -45,7 +51,7 @@ function roswss_test() {
 
         # run tests manually
         while [[ ! -z "$launch" ]]; do
-            rostest $package $launch
+            rostest $text $package $launch
             launch=$1
             shift
         done
