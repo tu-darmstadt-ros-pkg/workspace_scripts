@@ -25,11 +25,6 @@ function displayStatus()
   desiredBranch=$2
 
   cd $dir
-  if [ -z "$desiredBranch" ]
-  then
-    desiredBranch=$(git log --pretty='%d' -1 HEAD | perl -ne 'm#(?<=origin/)([^,]*)# && print "$1\n"')
-  fi
-
   if [ -e "$dir/.git" ]
   then
     if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ] \
@@ -37,7 +32,7 @@ function displayStatus()
        || [ -n "$(git status | grep -P 'branch is (ahead|behind)')" ]
     then
       echo_note "$PWD:"
-      if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
+      if [ -n "$desiredBranch" ] && [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
       then
         git status | grep "On branch" | perl -pe "chomp"
         echo_warn " (should be on branch $desiredBranch)"
