@@ -8,11 +8,11 @@ function getSpecBranch()
   local entry
   entry=$1
 
-  local desiredBranch
-  desiredBranch=$(wstool info $entry | grep "Spec-Version")
-  desiredBranch="${desiredBranch[@]}"
-  desiredBranch=${desiredBranch#*: }
-  echo $desiredBranch
+  local desiredVersion
+  desiredVersion=$(wstool info $entry | grep "Spec-Version")
+  desiredVersion="${desiredVersion[@]}"
+  desiredVersion=${desiredVersion#*: }
+  echo $desiredVersion
 }
 
 function displayStatus()
@@ -21,23 +21,48 @@ function displayStatus()
   old_d=`pwd`
   local dir
   dir=$1
-  local desiredBranch
-  desiredBranch=$2
+  local desiredVersion
+  desiredVersion=$2
 
   cd $dir
   if [ -e "$dir/.git" ]
   then
-    if [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ] \
+    local versionChanged
+    versionChanged=false
+    # Check desired version (branch/tag/sha)
+    if [ -n "$desiredVersion" ]
+    then
+      local head
+      head=$(git rev-parse --abbrev-ref HEAD)
+      if [ "$head" == "HEAD" ]
+      then
+        # detached
+        # match to tag
+        head=$(git describe --tags --exact-match HEAD 2>/dev/null) || 
+        # if failed, use sha
+        head=$(git rev-parse HEAD)
+      fi
+      if [ "$head" != "$desiredVersion" ]
+      then
+        versionChanged=true
+      fi
+    fi
+    # If something changed, print info
+    if [ "$versionChanged" = true ] \
        || [ -n "$(git status --porcelain)" ] \
        || [ -n "$(git status | grep -P 'branch is (ahead|behind)')" ]
     then
       echo_note "$PWD:"
-      if [ -n "$desiredBranch" ] && [ "$(git rev-parse --abbrev-ref HEAD)" != "$desiredBranch" ]
+      
+      # Version changed
+      if [ "$versionChanged" = true ]
       then
-        git status | grep "On branch" | perl -pe "chomp"
-        echo_warn " (should be on branch $desiredBranch)"
+        git status | grep "On version" | perl -pe "chomp"
+        echo_warn " (should be on version $desiredVersion)"
       fi
+
       git status | grep -P 'branch is (ahead|behind)'
+      # Modified / new / deleted / untracked files
       echo -ne $RED; git status | grep "modified"; echo -ne $NOCOLOR
       echo -ne $GREEN; git status | grep "new file"; echo -ne $NOCOLOR
       echo -ne $ORANGE; git status | grep "deleted"; echo -ne $NOCOLOR
@@ -51,7 +76,7 @@ function displayStatus()
       echo
     fi
   elif [ -e "$dir/.hg" ]; then
-    if [ "$(hg branch)" != "$desiredBranch" ] \
+    if [ "$(hg branch)" != "$desiredVersion" ] \
        || [ -n "$(hg status)" ]
     then
       echo "$PWD:"
