@@ -334,7 +334,7 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
 * Scripts in `autostart.d` require to have execute permission.
 
 **Tips:**
-* Enumerate scripts using following convention `XX.my_script.sh`  in order to obtain a clearly defined execution order.
+* Enumerate scripts using following convention `XX.my_script.sh` (replace 'XX' by a decimal) in order to obtain a clearly defined execution order.
 * A wait script such as given in [this example](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/10.roscore.sh) should be placed to ensure the roscore has properly settled before proceeding. Analogously this should be done for any hardware that requires time to fully boot-up such as cameras.
 * Scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start parts of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh). The next sections will include how to setup this feature.
 
@@ -342,7 +342,7 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
 
 ##### The run_all script
 
-The previously described autostart feature by *roswss* works sequential. In order to run a collection of scripts in parallel, the `run_all` script should be used. 
+The previously described autostart feature by *roswss* works sequential and has a blocking behvavior as it waits for the termination of each started (sub)script. In order to run a collection of (non-terminating) scripts in parallel (each in a single screen session), the `run_all` script should be used. 
 
 ```Shell
 bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
