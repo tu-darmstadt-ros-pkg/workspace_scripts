@@ -248,7 +248,7 @@ robot_bringup
 │   │   <helper scripts here>
 │   │   ...
 │
-└───autostart.d # Software startup routines (optional)
+└───autostart.d # Automated software startup routines (optional)
 │   │   <common scripts>
 │   │   ...
 │   │
@@ -256,7 +256,7 @@ robot_bringup
 │       │   <Machine-specific scripts>
 │       │   ...
 │
-└───setup.d # Hardware/System setup routines (optional)
+└───setup.d # Automated hardware/system setup routines (optional)
 │   │   <common scripts>
 │   │   ...
 │   │
