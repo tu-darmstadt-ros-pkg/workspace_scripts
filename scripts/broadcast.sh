@@ -8,8 +8,15 @@ if [ "$#" -eq 0 ]; then
 fi
 command=$@;
 
-hosts=($ROBOT_HOSTNAMES)
-users=($ROBOT_USERS)
+if [[ -z "$SINGLE_ROBOT_HOSTNAMES" || -z "$SINGLE_ROBOT_USERS" ]]; then
+  hosts=($ROBOT_HOSTNAMES)
+  users=($ROBOT_USERS)
+else
+  hosts=($SINGLE_ROBOT_HOSTNAMES)
+  users=($SINGLE_ROBOT_USERS)
+fi
+
+
 counter=0;
 
 for idx in "${!hosts[@]}"; do 
