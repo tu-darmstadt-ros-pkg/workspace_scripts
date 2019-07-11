@@ -2,7 +2,7 @@
 
 . $ROSWSS_ROOT/setup.bash
 
-versions="7, 8"
+versions="7, 8, 9"
 
 valid_version=false
 
@@ -16,11 +16,11 @@ if [[ $version ]]; then
 fi
 
 while [ $valid_version = false ]; do
-  read -p "Which version of Gazebo do you want to install (7 or 8)?" version
+  read -p "Which version of Gazebo do you want to install (7, 8, 9)?" version
   if [[ $versions =~ $version ]]; then
     valid_version=true
   else
-    echo "Invalid Gazebo version number. Enter 7 or 8."
+    echo "Invalid Gazebo version number."
   fi
 done
 
