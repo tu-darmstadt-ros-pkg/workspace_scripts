@@ -61,6 +61,19 @@ apt_install() {
     aptinstall "$@"
 }
 
+aptremove() {
+    while [[ ! -z "$1" ]]; do
+        if dpkg -s $1 >/dev/null 2>&1; then
+          sudo apt-get remove $1
+        fi
+        shift
+    done
+}
+
+apt_remove() {
+    aptremove "$@"
+}
+
 depends() {
     local install
 
