@@ -51,9 +51,8 @@ echo_note() {
 }
 
 aptinstall() {
-    while [[ ! -z "$1" ]]; do
-        dpkg -s $1 &>/dev/null || sudo apt-get -y install $1
-        shift
+    for pkgs in "$@"; do
+        dpkg -s $pkgs &>/dev/null || sudo apt-get -y install $pkgs
     done
 }
 
@@ -62,11 +61,10 @@ apt_install() {
 }
 
 aptremove() {
-    while [[ ! -z "$1" ]]; do
-        if dpkg -s $1 >/dev/null 2>&1; then
-          sudo apt-get remove $1
+    for pkgs in "$@"; do
+        if dpkg -s $pkgs >/dev/null 2>&1; then
+          sudo apt-get remove $pkgs
         fi
-        shift
     done
 }
 
@@ -75,14 +73,10 @@ apt_remove() {
 }
 
 depends() {
-    local install
-
-    while [[ ! -z "$1" ]]; do
-        install=$1
+    for install in "$@"; do
         if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
             roswss install $install
         fi
-        shift
     done
 }
 

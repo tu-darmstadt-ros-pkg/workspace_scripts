@@ -77,7 +77,7 @@ function _roswss_test_complete() {
     # roswss test ...
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
-            COMPREPLY=( $( compgen -W "--help --fix" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "--fix --text --help" -- "$cur" ) )
         else
             _roscomplete
         fi

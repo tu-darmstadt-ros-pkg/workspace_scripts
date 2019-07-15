@@ -15,17 +15,12 @@ function roswss_rosdoc() {
     echo_info "Generating documentation(s)..."
     echo
 
-    local package
-    package=$1
-    while [[ ! -z "$package" ]]; do
+    for package in "$@"; do
         echo_note ">>> $package"
         roscd $package
         cd ..
         rosdoc_lite -o $package/doc $package
         echo
-        
-        shift
-        package=$1
     done
 
     echo_info "Done!"

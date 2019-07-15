@@ -10,14 +10,11 @@ package=$1
 if [[ ! -z "$package" ]]; then
     echo_info "Pulling packages manually..."
     echo
-    while [[ ! -z "$package" ]]; do
+    for package in "$@"; do
         echo_note ">>> $package"
         roscd $package
         git pull
         echo
-        
-        shift
-        package=$1
     done
     echo_info "Done!"
 # otherwise perform full update
@@ -62,7 +59,7 @@ else
         filename=$(basename ${file%.*})
         echo_note "Merging to workspace: ${filename}.rosinstall"
         wstool merge -y $file
-        echoc $BLUE "DONE (${filename}.rosinstall)"
+        echoc $BLUE "Done (${filename}.rosinstall)"
         echo
     done
     
@@ -75,7 +72,7 @@ else
             filename=$(basename ${file%.*})
             echo_note "Running bash script: ${filename}.sh"
             source $file
-            echoc $BLUE "DONE (${filename}.sh)"
+            echoc $BLUE "Done (${filename}.sh)"
             echo
         done
     fi
@@ -86,13 +83,13 @@ else
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.rosinstall" ]; then
             echo_note "Merging to workspace: ${filename}.rosinstall"
             wstool merge -y $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$filename.rosinstall
-            echoc $BLUE "DONE (${filename}.rosinstall)"
+            echoc $BLUE "Done (${filename}.rosinstall)"
             echo
         fi
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
-            echoc $BLUE "DONE (${filename}.sh)"
+            echoc $BLUE "Done (${filename}.sh)"
             echo
         fi
       done <$ROSWSS_ROOT/.install

@@ -4,10 +4,7 @@ function roswss_install() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
     source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 
-    local rosinstall=$1
-    shift
-
-    if [[ "$rosinstall" = "--help" || -z "$rosinstall" ]]; then
+    if [[ "$1" = "--help" || -z "$1" ]]; then
         _roswss_install_help
         return 0
     fi
@@ -16,7 +13,7 @@ function roswss_install() {
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
 
     # perform install
-    while [[ ! -z "$rosinstall" ]]; do
+    for rosinstall in "$@"; do
         local error=1
 
         echo_info ">>> Installing $rosinstall"
@@ -26,7 +23,7 @@ function roswss_install() {
             echo_note "Merging to workspace: ${rosinstall}.rosinstall"
             rosinstall ${rosinstall}.rosinstall
             error=0
-            echoc $BLUE "DONE (${rosinstall}.rosinstall)"
+            echoc $BLUE "Done (${rosinstall}.rosinstall)"
             echo
         fi
         
@@ -35,7 +32,7 @@ function roswss_install() {
             echo_note "Running bash script: ${rosinstall}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.sh "install"
             error=0
-            echoc $BLUE "DONE (${rosinstall}.sh)"
+            echoc $BLUE "Done (${rosinstall}.sh)"
             echo
         fi
 
@@ -48,10 +45,6 @@ function roswss_install() {
 
         # add entry in .install
         append_to_file_if_not_exist "$ROSWSS_ROOT/.install" "$rosinstall"
-
-        rosinstall=$1
-        shift
-        echo
     done
 
     cd $pwd
