@@ -62,6 +62,8 @@ else
         filename=$(basename ${file%.*})
         echo_note "Merging to workspace: ${filename}.rosinstall"
         wstool merge -y $file
+        echoc $BLUE "DONE (${filename}.rosinstall)"
+        echo
     done
     
     # running bash scripts from *.sh
@@ -74,6 +76,7 @@ else
             echo_note "Running bash script: ${filename}.sh"
             source $file
             echoc $BLUE "DONE (${filename}.sh)"
+            echo
         done
     fi
     
@@ -83,15 +86,17 @@ else
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.rosinstall" ]; then
             echo_note "Merging to workspace: ${filename}.rosinstall"
             wstool merge -y $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$filename.rosinstall
+            echoc $BLUE "DONE (${filename}.rosinstall)"
+            echo
         fi
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
             echoc $BLUE "DONE (${filename}.sh)"
+            echo
         fi
       done <$ROSWSS_ROOT/.install
     fi
-    echo
 
     echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src

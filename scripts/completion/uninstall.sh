@@ -14,9 +14,10 @@ function roswss_uninstall() {
 
     # run bash script
     if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
-      echo_note "Running bash script: ${rosinstall}.sh"
-      $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
-      echoc $BLUE "DONE (${rosinstall}.sh)"
+        echo_note "Running bash script: ${rosinstall}.sh"
+        $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
+        echoc $BLUE "DONE (${rosinstall}.sh)"
+        echo
     fi
 
     remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall

@@ -26,6 +26,8 @@ function roswss_install() {
             echo_note "Merging to workspace: ${rosinstall}.rosinstall"
             rosinstall ${rosinstall}.rosinstall
             error=0
+            echoc $BLUE "DONE (${rosinstall}.rosinstall)"
+            echo
         fi
         
         # run bash script
@@ -34,6 +36,7 @@ function roswss_install() {
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.sh "install"
             error=0
             echoc $BLUE "DONE (${rosinstall}.sh)"
+            echo
         fi
 
         # check error code
