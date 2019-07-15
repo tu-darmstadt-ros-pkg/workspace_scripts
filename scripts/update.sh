@@ -73,7 +73,7 @@ else
             filename=$(basename ${file%.*})
             echo_note "Running bash script: ${filename}.sh"
             source $file
-            echo
+            echoc $BLUE "DONE (${filename}.sh)"
         done
     fi
     
@@ -87,6 +87,7 @@ else
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
+            echoc $BLUE "DONE (${filename}.sh)"
         fi
       done <$ROSWSS_ROOT/.install
     fi

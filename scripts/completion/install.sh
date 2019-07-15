@@ -33,6 +33,7 @@ function roswss_install() {
             echo_note "Running bash script: ${rosinstall}.sh"
             source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${rosinstall}.sh "install"
             error=0
+            echoc $BLUE "DONE (${rosinstall}.sh)"
         fi
 
         # check error code
