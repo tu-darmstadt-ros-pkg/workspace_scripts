@@ -5,11 +5,11 @@ export HOSTNAME=$(hostname)
 @[if DEVELSPACE]@
 export ROSWSS_ROOT=$(cd "@(CMAKE_SOURCE_DIR)"/$ROSWSS_ROOT_RELATIVE_PATH; pwd)
 export ROSWSS_LOG_DIR="${ROSWSS_ROOT}/logs"
+export ROS_WORKSPACE=$ROSWSS_ROOT/src
 @[else]@
 export ROSWSS_ROOT="@(CMAKE_INSTALL_PREFIX)"
 export ROSWSS_LOG_DIR="${HOME}/logs"
 @[end if]@
-export ROS_WORKSPACE=$ROSWSS_ROOT/src
 
 # source completion files
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
