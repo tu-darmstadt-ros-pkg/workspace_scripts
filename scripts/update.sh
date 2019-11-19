@@ -4,13 +4,19 @@ source $ROSWSS_ROOT/setup.bash ""
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 
-package=$1
+packages=()
+for arg in $@; do
+  # Exclude arguments passed with -*, e.g., --no-sudo
+  if [[ $arg != "-"* && ! -z "$arg" ]]; then
+    packages+=("$arg")
+  fi
+done
 
 # update package only if given
-if [[ ! -z "$package" ]]; then
+if [[ ! -z "${packages[@]}" ]]; then
     echo_info "Pulling packages manually..."
     echo
-    for package in "$@"; do
+    for package in "${packages[@]}"; do
         echo_note ">>> $package"
         roscd $package
         git pull
