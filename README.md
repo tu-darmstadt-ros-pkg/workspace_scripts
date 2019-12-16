@@ -127,6 +127,11 @@ add_completion "my_script" "_my_script_complete"
 After a quick recompile and starting a new terminal session the new command's autocompleting function should be recognized.
 For details in working with [programmable completion](https://www.gnu.org/software/bash/manual/bash.html#Programmable-Completion) just take a look in the `completion` folder of *roswss* package.
 
+## Python
+
+The workspace scripts now support python scripts.
+For an example, see the `scripts/analyze.py` script. Completion can be given using the `argcomplete` package (see `scripts/completion/analyze.sh`).
+
 ## Rosinstall
 
 In large projects, the ROS workspace suffers from an excessive number of packages leading to long compile times. Therefore, *roswss* follows an approach to organizing your project workspace in "modules". Hereby, a simple rosinstall file and/or a shell script is used to define module's package composition and additional install routines. This approach enables to have only a basic workspace (including *roswss*) installed while additional modules can be added when required.
@@ -444,6 +449,29 @@ In case of any issues, you can check following steps:
  - Check if screen is even running with `roswss screen list` (or use the native version `screen -list`)
  - Attach to your main screen with `roswss <hostname> show`
  - Check the log files created in your specified `${ROSWSS_LOG_DIR}` 
+
+## Bonus: Analyze
+
+The workspace scripts now support analyzing the workspace to find common mistakes. For this the `roswss analyze` command evaluates a set of rules on your workspace and collects the results in the form of _errors_, _warnings_ and _informations_.
+By default, the analyze tool simply runs `catkin_lint` on your workspace.
+However, you can add your own rules by providing python scripts in a rules subfolder as follows:
+```
+my_scripts
+│   CMakeLists.txt
+│   package.xml
+│   20.setup.bash.em
+│
+└───scripts
+│   └───rules
+|   |   |   my_rule.py
+│   │   |   ...
+```
+
+A rule file should have a unique, short but descriptive name.
+It has to end in `.py` and contain a `class Rule` with a `check` member method.
+This rule is created once and check is called separately for each package, hence, reusable information should be loaded in the `__init__` method.
+The `check` method is passed the path of the package and the package information obtained from `catkin_pkg`.
+You can create your own rule by using `scripts/rules/rule_example.py.em` as a template.
 
 ## Disclaimer
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

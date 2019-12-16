@@ -15,7 +15,10 @@ function roswss() {
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -x "$dir/${command}.sh" ]; then
             $dir/${command}.sh "$@"
-            return 0
+            return $?
+        elif [ -x "$dir/${command}.py" ]; then
+            $dir/${command}.py "$@"
+            return $?
         elif [ -r "$dir/${command}.sh" ]; then
             source $dir/${command}.sh "$@"
             return 0
@@ -60,10 +63,11 @@ function _roswss_commands() {
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -d $dir ]; then
-            for i in `find -L $dir/ -maxdepth 1 -type f -name "*.sh"`; do
+            for i in $(find -L $dir/ -maxdepth 1 -type f -name "*.sh" -o -name "*.py"); do
                 local command
                 command=${i#$dir/}
                 command=${command%.sh}
+                command=${command%.py}
                 if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
                     ROSWSS_COMMANDS+=($command)
                 fi
@@ -104,6 +108,9 @@ function _roswss_help() {
         for dir in ${ROSWSS_SCRIPTS//:/ }; do
             if [ -x "$dir/$i.sh" ]; then
                 out+="\t $i \t\t ($dir)\n"
+                break
+            elif [ -x "$dir/$i.py" ]; then
+                out +="\t $i \t\t ($dir)\n"
                 break
             elif [ -r "$dir/$i.sh" ]; then
                 out+="* \t $i \t\t ($dir)\n"

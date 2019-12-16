@@ -6,6 +6,7 @@
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <maintainer email="stumpf@sim.tu-darmstadt.de">Alexander Stumpf</maintainer>
+  <maintainer email="fabian@sim.tu-darmstadt.de">Stefan Fabian</maintainer>
 
   <!-- One license tag required, multiple allowed, one license per tag -->
   <license>BSD</license>
@@ -19,6 +20,7 @@
   <!-- Authors do not have to be maintianers, but could be -->
   <!-- Example: -->
   <author email="stumpf@sim.tu-darmstadt.de">Alexander Stumpf</author>
+  <author email="fabian@sim.tu-darmstadt.de">Stefan Fabian</author>
 
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
