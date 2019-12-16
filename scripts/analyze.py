@@ -15,10 +15,11 @@ import os
 class PkgPathChoicesCompleter:
   def __init__(self, workspace_path):
     self.workspace_path = workspace_path
+    self.directory_completer = argcomplete.completers.DirectoriesCompleter()
 
   def __call__(self, **kwargs):
     packages = find_packages(workspace_path)
-    return [packages[path].name for path in packages]
+    return [packages[path].name for path in packages] + list(self.directory_completer(**kwargs))
 
 class RuleChoicesCompleter:
   def __call__(self, **kwargs):
