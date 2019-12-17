@@ -1,6 +1,11 @@
-from catkin_lint.environment import CatkinEnvironment
-from catkin_lint.linter import CMakeLinter, ERROR, WARNING, NOTICE
-from catkin_lint.main import add_linter_check
+try:
+  from catkin_lint.environment import CatkinEnvironment
+  from catkin_lint.linter import CMakeLinter, ERROR, WARNING, NOTICE
+  from catkin_lint.main import add_linter_check
+except ImportError:
+  print("ERROR: catkin_lint not installed!")
+  print("Install using, e.g., pip: pip install --user catkin-lint")
+  exit(1)
 import os
 
 class Rule:
