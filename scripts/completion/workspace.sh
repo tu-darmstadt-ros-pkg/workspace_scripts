@@ -66,6 +66,9 @@ function _roswss_commands() {
             for i in $(find -L $dir/ -maxdepth 1 -type f -name "*.sh" -o -name "*.py"); do
                 local command
                 command=${i#$dir/}
+                if [[ ${command} == *.py && ! -x ${dir}/${command} ]]; then
+                  continue
+                fi
                 command=${command%.sh}
                 command=${command%.py}
                 if [[ -r $i && ! " ${ROSWSS_COMMANDS[*]} " == *" $command "* ]]; then
