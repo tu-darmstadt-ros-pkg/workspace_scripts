@@ -43,6 +43,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="Analyzes the workspace, a package or a directory using a set of rules to ensure proper coding standards.")
   target_arg = parser.add_argument("target", default=None, metavar="PATHS_OR_PKGS", nargs='*')
   parser.add_argument("-s", "--strict", action="store_true", default=False)
+  parser.add_argument("--this", action="store_true", default=False)
   rules_arg = parser.add_argument("-r", "--rules", nargs="+")
   if __argcomplete:
     target_arg.completer = PkgPathChoicesCompleter(workspace_path)
@@ -86,7 +87,7 @@ if __name__ == "__main__":
           and (not strict or not "notices" in result or len(result["notices"]) == 0):
           continue
       if not header_printed:
-        printWithStyle(Style.Info, "> " + package.name)
+        printWithStyle(Style.Info, ">>> " + package.name)
         header_printed = True
       if "errors" in result:
         for error in result["errors"]:
@@ -135,7 +136,21 @@ if __name__ == "__main__":
     for rule_name in args.rules:
       if not rule_name in rules:
         printWithStyle(Style.Error, "Rule {} not found!".format(rule_name))
-  if args.target is None or len(args.target) == 0:
+  if args.this:
+    current_path = os.getcwd()
+    package_path = None
+    len_match = 0
+    if current_path.startswith(workspace_path):
+      current_path = os.path.relpath(current_path, workspace_path)
+      for path in packages:
+        if current_path.startswith(path) and len(path) > len_match:
+          package_path = path
+          len_match = len(path)
+    if package_path is None:
+      printWithStyle(Style.Error, "Current path is not a catkin package!")
+    elif check_package(os.path.join(workspace_path, package_path), packages[package_path], rules, strict=args.strict):
+      printWithStyle(Style.Info, "1 package checked and no errors found! Great!")
+  elif args.target is None or len(args.target) == 0:
     no_error = True
     for path in packages:
       no_error &= check_package(os.path.join(workspace_path, path), packages[path], rules, strict=args.strict)
