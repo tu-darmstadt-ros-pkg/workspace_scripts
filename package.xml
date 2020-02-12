@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>workspace_scripts</name>
   <version>0.0.0</version>
   <description>The workspace_scripts package</description>
@@ -25,5 +25,8 @@
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>python-gitpython-pip</exec_depend>
+  <exec_depend>python-argparse</exec_depend>
 
 </package>
