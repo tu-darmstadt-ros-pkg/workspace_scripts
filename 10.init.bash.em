@@ -1,6 +1,8 @@
 #!/bin/bash
 export ROSWSS_REMOTE_PC_SCRIPTS=()
 export ROSWSS_SEP_SYM=';'
+# Define ROSWSS_PREFIX with default value
+export ROSWSS_PREFIX="roswss"
 
 # Use this method to register different remote pcs
 # Syntax:

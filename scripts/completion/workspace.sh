@@ -233,5 +233,7 @@ function _roswss_complete() {
 
 complete -F _roswss_complete roswss
 
-alias $ROSWSS_PREFIX=roswss
-complete -F _roswss_complete $ROSWSS_PREFIX
+if [[ $ROSWSS_PREFIX != "roswss" ]]; then
+    alias $ROSWSS_PREFIX=roswss
+    complete -F _roswss_complete $ROSWSS_PREFIX
+fi
