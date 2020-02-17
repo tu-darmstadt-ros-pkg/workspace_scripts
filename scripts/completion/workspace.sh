@@ -113,7 +113,7 @@ function _roswss_help() {
                 out+="\t $i \t\t ($dir)\n"
                 break
             elif [ -x "$dir/$i.py" ]; then
-                out +="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t ($dir)\n"
                 break
             elif [ -r "$dir/$i.sh" ]; then
                 out+="* \t $i \t\t ($dir)\n"
