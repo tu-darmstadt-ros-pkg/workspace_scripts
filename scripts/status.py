@@ -5,7 +5,6 @@ try:
 except ImportError:
   print("GitPython is required! Install using 'pip install --user gitpython'")
   exit(1)
-from rospkg import RosPack
 import subprocess
 import os
 

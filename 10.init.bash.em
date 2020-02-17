@@ -1,8 +1,11 @@
 #!/bin/bash
 export ROSWSS_REMOTE_PC_SCRIPTS=()
 export ROSWSS_SEP_SYM=';'
-# Define ROSWSS_PREFIX with default value
+
+# Define variables with default values. See 20.setup... for a template / documentation
 export ROSWSS_PREFIX="roswss"
+export ROSWSS_ROOT_RELATIVE_PATH="../.."
+export ROSWSS_INSTALL_DIR="rosinstall"
 
 # Use this method to register different remote pcs
 # Syntax:
