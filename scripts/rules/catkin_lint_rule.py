@@ -8,28 +8,32 @@ except ImportError:
   exit(1)
 import os
 
+
 class Rule:
-  env=None
-  linter=None
   def __init__(self):
-    self.env = CatkinEnvironment(os_env=os.environ, quiet=True)
-    if not self.env.ok:
-      return
-    if "ROS_PACKAGE_PATH" in os.environ:
-      for pkg_path in os.environ["ROS_PACKAGE_PATH"].split(os.path.sep):
-        self.env.add_path(pkg_path)
-    self.linter = CMakeLinter(self.env)
-    add_linter_check(self.linter, "all")
+    self.workspace_path = os.environ["ROS_WORKSPACE"]
+    dir_backup = os.path.abspath(os.curdir)
+    # Switch to workspace dir for init to make sure catkin lint finds all packages
+    try:
+      os.chdir(self.workspace_path)
+
+      self.env = CatkinEnvironment(os_env=os.environ, quiet=True)
+      if not self.env.ok:
+        return
+      if "ROS_PACKAGE_PATH" in os.environ:
+        for pkg_path in os.environ["ROS_PACKAGE_PATH"].split(os.path.sep):
+          self.env.add_path(pkg_path)
+
+      self.linter = CMakeLinter(self.env)
+      add_linter_check(self.linter, "all")
+    finally:
+      # Switch back
+      os.chdir(dir_backup)
 
   def check(self, path, pkg):
     if not self.env.ok:
       return {"errors": ["Failed to initialize CatkinEnvironment!"]}
-    
-    # self.env.add_path(path)
-    # try:
-    #   path, manifest = self.env.find_local_pkg(pkg.name)
-    # except KeyError:
-    #   return {"errors": ["Could not find package '{}' in '{}'!".format(pkg.name, path)]}
+
     try:
       self.linter.lint(path, pkg)
     except Exception as err:
