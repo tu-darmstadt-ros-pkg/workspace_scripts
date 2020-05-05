@@ -333,7 +333,7 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
  4. ../autostart.d/\<hostname>
 
 **Please note:**
-* Only files in the given folders are considered; The content of all their subfolders is ignored!
+* Only files in the given folders are considered; The content of all their subfolders is intentionally ignored!
 * All scripts are handled in alphabetical order.
 * Scripts in `setup.d` will be sourced and therefore change the environment of the running bash session. Thus, it is the ideal place for exports of variables.
 * Scripts in `autostart.d` require to have execute permission.
@@ -341,19 +341,19 @@ Using the basic *roswss* autostart feature is now quite simple as long the in [s
 **Tips:**
 * Enumerate scripts using following convention `XX.my_script.sh` (replace 'XX' by a decimal) in order to obtain a clearly defined execution order.
 * A wait script such as given in [this example](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/10.roscore.sh) should be placed to ensure the roscore has properly settled before proceeding. Analogously this should be done for any hardware that requires time to fully boot-up such as cameras.
-* Scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start parts of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh). The next sections will include how to setup this feature.
+* Scripts can also make use of the screen management feature described [above](#remote-computer--screen-management). This allows to stop and (re)start stacks of the automatically started software conveniently without rebooting the entire machine. A small example is provided [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/autostart.d/motion/20.robot_basics.sh). The next sections will include how to setup this feature.
 
 #### Step 5: Multi-Screen Autostart
 
 ##### The run_all script
 
-The previously described autostart feature by *roswss* works sequential and has a blocking behvavior as it waits for the termination of each started (sub)script. In order to run a collection of (non-terminating) scripts in parallel (each in a single screen session), the `run_all` script should be used. 
+The previously described autostart feature by *roswss* works **sequential and has a blocking behvavior** as it waits for the termination of each started (sub)script. In order to run a collection of (non-terminating) scripts in **parallel** (each in a single screen session), the `run_all` script should be used. 
 
 ```Shell
 bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
 ```
 
-The run_all script will execute **each** roslaunch (\*.launch) and shell script (\*.sh) within the given folders (declared as a list of paths in `DIRECTORIES`) in its own screen session. Optionally, a path for the log files can be specified with `-l ${ROSWSS_LOG_DIR}`. A full example of how to use this script can be found [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/scripts/motion.sh).
+The run_all script will execute **each** roslaunch (\*.launch) and shell script (\*.sh) within the given folders (declared as a list of paths in `$DIRECTORIES`) in its own screen session. Optionally, a path for the log files can be specified with `-l ${ROSWSS_LOG_DIR}`. A full example of how to use this script can be found [here](https://github.com/thor-mang/thor_mang_robot_bringup/blob/master/scripts/motion.sh).
 
 The script will stop all started screen sessions on termination and therefore will not exit automatically. Please consider this blocking behavior when using the script.
 
@@ -367,7 +367,7 @@ robot_bringup
 └───autostart.d
 │   │   ...
 │   │
-│   └───<hostname>
+│   └───<hostname> # add launch/scripts subfolders containing shell scripts each to be started in its own screen
 │       │   ...
 │       │
 │       └───launch
@@ -378,7 +378,7 @@ robot_bringup
 │           │   my_script.sh
 │           │   ...
 │
-└───scripts
+└───scripts # main scripts invoked during screen session startup
 │   │   <hostname>.sh
 │   │   ...
 │
@@ -408,7 +408,7 @@ bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
 This main script is going to be used for a predefined screen session, thus, in `20.setup.bash.em` just add
 
 ```Shell
-add_remote_pc "<hostname>" "<hostname>" "<hostname>" "<absolute_path_to_workspace>/src/robot_bringup/scripts/<hostname>.sh"
+add_remote_pc "<hostname>" "<hostname>" "my_software" "<absolute_path_to_workspace>/src/robot_bringup/scripts/<hostname>.sh"
 ```
 
 Now we could already start the host software manually via `roswss <hostname> start`. In the final step, the *roswss* autostart must be configured to invoke this screen session during the autostart procedure. Therefore, the shell file `robot_bringup/autostart.d/<hostname>/20.<hostname>.sh` is created in the host's autostart folder:
