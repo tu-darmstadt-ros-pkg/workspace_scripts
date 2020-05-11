@@ -53,12 +53,19 @@ def printChanges(path):
   # Check branches for uncommited commits and pure local branches
   uncommited_commits = []
   local_branches = []
+  deleted_branches = []
   for branch in repo.branches:
     if branch.tracking_branch() is None:
       local_branches.append(branch)
       continue
-    if any(True for _ in repo.iter_commits('{0}@{{u}}..{0}'.format(branch.name))):
-      uncommited_commits.append(branch)
+    if not branch.tracking_branch().is_valid():
+      deleted_branches.append(branch)
+      continue
+    try:
+      if any(True for _ in repo.iter_commits('{0}@{{u}}..{0}'.format(branch.name))):
+        uncommited_commits.append(branch)
+    except (git.exc.GitCommandError, Exception) as e:
+      printWithStyle(Style.Error, "{} has error on branch {}: {}".format(path, branch.name, e.message))
 
   if any(repo.untracked_files) or any(stash) or any(uncommited_commits) or any(local_branches) or any(changes):
     printWithStyle(Style.Info, path)
@@ -66,6 +73,8 @@ def printChanges(path):
       printWithStyle(Style.RED, "  Unpushed commits on branch {}!".format(branch))
     for branch in local_branches:
       printWithStyle(Style.LRED, "  Local branch with no remote set up: {}".format(branch))
+    for branch in deleted_branches:
+      printWithStyle(Style.LRED, "  Local branch for which remote was deleted: {}".format(branch))
     if any(stash):
       printWithStyle(Style.LCYAN, "  Stashed changes")
     for item in changes:
