@@ -7,12 +7,12 @@ source $ROSWSS_BASE_SCRIPTS/helper/rosinstall.sh
 _NO_SUDO=0
 packages=()
 for arg in $@; do
-  # Exclude arguments passed with -*, e.g., --no-sudo
-  if [[ $arg != "-"* && ! -z "$arg" ]]; then
-    packages+=("$arg")
-  elif [[ $arg == "--no-sudo" ]]; then
-    _NO_SUDO=1
-  fi
+    # Exclude arguments passed with -*, e.g., --no-sudo
+    if [[ $arg != "-"* && ! -z "$arg" ]]; then
+        packages+=("$arg")
+    elif [[ $arg == "--no-sudo" ]]; then
+        _NO_SUDO=1
+    fi
 done
 
 # update package only if given
@@ -110,8 +110,8 @@ else
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
     if [[ $_NO_SUDO == 1 ]]; then
-      rosdep check --ignore-src -r --from-paths .
+        rosdep check --ignore-src -r --from-paths .
     else
-      rosdep install --ignore-src -r --from-paths .
+        rosdep install --ignore-src -r --from-paths .
     fi
 fi

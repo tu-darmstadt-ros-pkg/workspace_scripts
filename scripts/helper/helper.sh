@@ -51,8 +51,8 @@ echo_note() {
 }
 
 aptinstall() {
-    for pkgs in "$@"; do
-        dpkg -s $pkgs &>/dev/null || sudo apt-get -y install $pkgs
+    for pkg in "$@"; do
+        dpkg -s $pkg &>/dev/null || sudo apt-get -y install $pkg
     done
 }
 
@@ -61,9 +61,9 @@ apt_install() {
 }
 
 aptremove() {
-    for pkgs in "$@"; do
-        if dpkg -s $pkgs >/dev/null 2>&1; then
-          sudo apt-get remove $pkgs
+    for pkg in "$@"; do
+        if dpkg -s $pkg >/dev/null 2>&1; then
+          sudo apt-get remove $pkg
         fi
     done
 }
