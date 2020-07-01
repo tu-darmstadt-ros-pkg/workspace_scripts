@@ -4,7 +4,7 @@ try:
   from catkin_lint.main import add_linter_check
 except ImportError:
   print("ERROR: catkin_lint not installed!")
-  print("Install using, e.g., pip: pip install --user catkin-lint")
+  print("Install using, e.g., pip: pip3 install --user catkin-lint")
   exit(1)
 import os
 

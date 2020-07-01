@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # PYTHON_ARGCOMPLETE_OK
 # This script will analyze the workspace for errors.
 # It can be run recursively on the whole workspace, on a single package or recursively on a path

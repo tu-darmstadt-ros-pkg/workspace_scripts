@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 try:
   import git
 except ImportError:
-  print("GitPython is required! Install using 'pip install --user gitpython'")
+  print("GitPython is required! Install using 'pip3 install --user gitpython'")
   exit(1)
 import subprocess
 import os
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
   ws_tool_paths = {}
   for item in ws_tool_info.splitlines():
-    parts = item.split(",")
+    parts = item.decode().split(",")
     ws_tool_paths[parts[0]] = WsToolInfo(parts[1] == "git", parts[2])
 
   def scanWorkspace(path):
