@@ -80,7 +80,7 @@ else
         for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
             filename=$(basename ${file%.*})
             echo_note "Running bash script: ${filename}.sh"
-            source $file
+            source $file "update"
             echoc $BLUE "Done (${filename}.sh)"
             echo
         done
@@ -97,7 +97,7 @@ else
         fi
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
-            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
+            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "update"
             echoc $BLUE "Done (${filename}.sh)"
             echo
         fi
