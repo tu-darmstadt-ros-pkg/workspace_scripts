@@ -17,6 +17,9 @@ catkin_package()
 catkin_add_env_hooks(10.init SHELLS bash)
 catkin_add_env_hooks(50.exports SHELLS bash)
 
+catkin_install_python(PROGRAMS scripts/analyze.py scripts/status.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 #############
 ## Install ##
 #############
