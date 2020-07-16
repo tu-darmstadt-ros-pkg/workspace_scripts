@@ -91,7 +91,7 @@ my_scripts
 
 The script naming convention behaves like inheritance in object-oriented programming languages. Any own script will overload any previously defined script with the same name. The override order is indeed determined by alphabetical order of all environment hooks crawling for script files (usually the `xx.setup.bash.em`). The currently available scripts and their origin can be determined by using the `roswss --help`.
 
-*roswss* does already provide a lot of convenient helper functions such as colored text outputs ([see helper.sh](https://github.com/tu-darmstadt-ros-pkg/workspace_scripts/blob/kinetic-devel/scripts/helper/helper.sh)). In order to use them just source the `helper.sh` file:
+*roswss* does already provide a lot of convenient helper functions such as colored text outputs ([see helper.sh](https://github.com/tu-darmstadt-ros-pkg/workspace_scripts/blob/melodic-devel/scripts/helper/helper.sh)). In order to use them just source the `helper.sh` file:
 
 ```Shell
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
@@ -174,7 +174,7 @@ All files ending with `*.sh` and `*.rosinstall` located in the `optional` subfol
 
 All *.rosinstall files should follow the [rosinstall file format](http://docs.ros.org/independent/api/rosinstall/html/rosinstall_file_format.html). Alternatively, a shell script can be used to handle more complex install routines such as installing deb packages and further dependencies. If both variants exist, the rosinstall file will be always handled before the shell script is executed.
 
-Shell scripts are always called with a string argument which can either be "install" or "uninstall" according to the invoking command. Furthermore, multiple helper functions are directly available (no sourcing required) which are defined in the [helper.sh](https://github.com/tu-darmstadt-ros-pkg/workspace_scripts/blob/kinetic-devel/scripts/helper/helper.sh). Especially, the `depends` function let your install depend on other installs which will be executed before.
+Shell scripts are always called with a string argument which can either be "install", "update" or "uninstall" according to the invoking command. Furthermore, multiple helper functions are directly available (no sourcing required), which are defined in the [helper.sh](https://github.com/tu-darmstadt-ros-pkg/workspace_scripts/blob/melodic-devel/scripts/helper/helper.sh). Especially, the `depends` function let your install depend on other installs which will be executed before.
 
 ## Remote computer / Screen Management
 
