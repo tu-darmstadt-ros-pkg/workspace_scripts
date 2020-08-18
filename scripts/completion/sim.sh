@@ -17,6 +17,7 @@ function roswss_sim() {
 
     local command
     command="$1"
+    shift
 
     if [[ "$command" == "help" || "$command" = "--help" ]]; then
         _roswss_sim_help
