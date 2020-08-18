@@ -29,7 +29,7 @@ function roswss_clean() {
             return 1
         fi
     else
-        echoc ${YELLOW} "Do you want to clean following packages:"
+        echo_warn "Do you want to clean following packages:"
         for package in "$@"; do
             if [ $package == "--externals" ]; then
                 echo "  - external libraries (calls clean_externals.sh)"
