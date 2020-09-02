@@ -39,6 +39,20 @@ else
         echo
     fi
 
+    # pull system update
+    echo_info ">>> Pulling system package updates"
+    if [[ $_NO_SUDO == 1 ]]; then
+        echo "Skipped because --no-sudo option was specified."
+    else
+        sudo apt-get update -qq
+        AVAILABLE_SYSTEM_PACKAGE_UPDATES=$(apt-get -qq -s upgrade | grep Inst | cut -d ' ' -f 2 | grep "^[[:blank:]]*${ROSWSS_PREFIX}-\|^[[:blank:]]*ros-")
+        if [ ! -z "${AVAILABLE_SYSTEM_PACKAGE_UPDATES[@]}" ]; then
+            sudo apt install -qq --only-upgrade ${AVAILABLE_SYSTEM_PACKAGE_UPDATES[@]}
+        else
+            echo "Already up to date."
+        fi
+    fi
+
     # pull base scripts first
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         echo_info ">>> Pulling scripts folder in $dir"
@@ -80,7 +94,7 @@ else
         for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
             filename=$(basename ${file%.*})
             echo_note "Running bash script: ${filename}.sh"
-            source $file
+            source $file "update"
             echoc $BLUE "Done (${filename}.sh)"
             echo
         done
@@ -97,7 +111,7 @@ else
         fi
         if [ -r "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh" ]; then
             echo_note "Running bash script: ${filename}.sh"
-            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "install"
+            source $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/${filename}.sh "update"
             echoc $BLUE "Done (${filename}.sh)"
             echo
         fi

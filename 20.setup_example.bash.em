@@ -18,10 +18,9 @@ export UI_LAUNCH_PKG=""                     # Name of your main ui launch packag
 export UI_DEFAULT_LAUNCH_FILE=""            # Name of your default ui launch file
 export GAZEBO_LAUNCH_PKG=""                 # Gazebo launch package; Required for "sim" command.
 export GAZEBO_DEFAULT_LAUNCH_FILE=""        # Gazebo default launch file; Required for "sim" command.
-export GAZEBO_WORLDS_PKG=""                 # Package name where your Gazebo worlds are stored; Required for "sim" command.
 export AUTOSTART_LAUNCH_PKG=""              # Package containing autostart setup
 export ROBOT_MASTER_HOSTNAME=""             # Hostname running ros master; Required for "sync" (clock synchronization) command.
-export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers; Required for "master" command.
+export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot computers; Required for "master" command. Hostnames are space seperated, i.e. "host1 host2".
 export ROBOT_USER=""                        # Main login user name for robot computers; Required for starting ssh sessions.
 export ROBOT_USERS=""                       # Different login user name for robot computers; Required for starting ssh sessions on multiple computers using different user names for each.
 
@@ -33,6 +32,7 @@ export ROBOT_USERS=""                       # Different login user name for robo
 #   add_remote_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
 
 # REGISTER CUSTOM COMPLETION SCRIPTS HERE
+# NOTE: These may be overritten by default completion functions. In order to avoid this behavior, please define a 51.exports.bash.em (51 or greater) and call add_completion from this file.
 # Use add_completion to register additional auto completion scripts
 # Example:
 #   add_completion "my_command" "completion_function"
