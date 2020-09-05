@@ -132,7 +132,11 @@ if __name__ == "__main__":
   def scanWorkspace(path):
     if not os.path.isdir(path):
       return
-    subdirs = os.listdir(path)
+    try:
+      subdirs = os.listdir(path)
+    except Exception as e:
+      printWithStyle(Style.Error, "Error while scanning '{}'!\nMessage: {}".format(path, str(e)))
+      return
     if ".git" in subdirs:
       printChanges(path)
     elif path in ws_tool_paths:
