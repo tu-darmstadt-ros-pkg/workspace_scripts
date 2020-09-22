@@ -72,6 +72,21 @@ apt_remove() {
     aptremove "$@"
 }
 
+apt_add_repository() {
+    ppa=$1
+    key=$2
+    if ! grep -q "^$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+        if [ ! -z "$key" ]; then
+            echo_info "Adding PPA '$ppa' using key from '$key' ..."
+            wget -qO- $key | sudo apt-key add -
+        else
+            echo_info "Adding PPA '$ppa' ..."
+        fi
+        sudo apt-add-repository "$ppa"
+        sudo apt update
+    fi
+}
+
 depends() {
     for install in "$@"; do
         if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
