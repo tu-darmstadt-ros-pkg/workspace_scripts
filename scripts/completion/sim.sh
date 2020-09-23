@@ -26,7 +26,6 @@ function roswss_sim() {
 
     # launch file was given
     if [[ $command == *.launch ]]; then
-      shift
       roslaunch $GAZEBO_LAUNCH_PKG $command "$@"
     # use default launch file
     elif [[ ! -z "$GAZEBO_DEFAULT_LAUNCH_FILE" ]]; then
