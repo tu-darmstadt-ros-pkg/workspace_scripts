@@ -46,6 +46,7 @@ else
             cd $dir
             git pull
         fi
+        echo
     done
 
     # updating root rosinstalls
