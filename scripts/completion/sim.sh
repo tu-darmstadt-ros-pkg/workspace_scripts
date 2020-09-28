@@ -19,7 +19,7 @@ function roswss_sim() {
     command="$1"
     shift
 
-    if [[ "$command" == "help" || "$command" = "--help" ]]; then
+    if [[ "$command" == "help" || "$command" == "--help" || "$command" == "-h" ]]; then
         _roswss_sim_help
         return 0
     fi
