@@ -6,7 +6,7 @@ current_pwd=$PWD
 
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
     if [ -r "$dir/hooks/make_externals.sh" ]; then
-        . "$dir/hooks/make_externals.sh"
+        . "$dir/hooks/make_externals.sh" $@
     fi
 done
 
@@ -44,7 +44,7 @@ if [ $change_dir == true ]; then
     fi
 fi
 
-echo $PWD
+cd $PWD
 
 args=${args[*]}
 
