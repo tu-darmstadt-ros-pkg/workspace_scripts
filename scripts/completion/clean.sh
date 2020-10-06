@@ -11,7 +11,7 @@ function roswss_clean() {
     cd $ROSWSS_ROOT
 
     if [ "$#" -eq 0 ]; then
-        echo -ne "${YELLOW}Do you want to clean devel and build? [y/N] ${NOCOLOR}"
+        echo -ne "${YELLOW}Do you want to clean build, devel and install? [y/N] ${NOCOLOR}"
         read -N 1 REPLY
 
         if test "$REPLY" = "y" -o "$REPLY" = "Y"; then
@@ -19,8 +19,8 @@ function roswss_clean() {
             echo
             catkin clean --all --yes
             for dir in ${ROSWSS_SCRIPTS//:/ }; do
-                if [ -f "$dir/clean_externals.sh" ]; then
-                    . $dir/clean_externals.sh
+                if [ -f "$dir/hooks/clean_externals.sh" ]; then
+                    . $dir/hooks/clean_externals.sh
                 fi
             done
             echo_info ">>> Cleaned devel and build directories."
@@ -46,8 +46,8 @@ function roswss_clean() {
             for package in "$@"; do
                 if [ $package == "--externals" ]; then
                     for dir in ${ROSWSS_SCRIPTS//:/ }; do
-                        if [ -f "$dir/clean_externals.sh" ]; then
-                             . $dir/clean_externals.sh
+                        if [ -f "$dir/hooks/clean_externals.sh" ]; then
+                             . $dir/hooks/clean_externals.sh
                         fi
                     done
                 else
