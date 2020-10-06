@@ -51,17 +51,17 @@ args=${args[*]}
 # add proper compile flag
 if [ $debug == true ]; then
     echo
-    echo "-------------------- Debug build --------------------"
+    echo "--------------------- Debug build ---------------------"
     args="-DCMAKE_BUILD_TYPE=Debug $args"
 else
     echo
-    echo "------------------- Release build -------------------"
+    echo "-------------------- Release build --------------------"
     args="-DCMAKE_BUILD_TYPE=Release $args"
 fi
 echo ">>> Building with arguments '$args'"
-echo "-----------------------------------------------------"
+echo "-------------------------------------------------------"
 echo
 
-catkin build -c $args
+catkin build --continue-on-failure --summarize $args
 
 . $ROSWSS_ROOT/setup.bash
