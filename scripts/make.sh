@@ -62,6 +62,6 @@ echo ">>> Building with arguments '$args'"
 echo "-------------------------------------------------------"
 echo
 
-catkin build --continue-on-failure --summarize $args
+catkin build $CATKIN_BUILD_FLAGS $args
 
 . $ROSWSS_ROOT/setup.bash

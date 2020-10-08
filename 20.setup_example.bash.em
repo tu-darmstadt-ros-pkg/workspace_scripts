@@ -24,6 +24,9 @@ export ROBOT_HOSTNAMES=""                   # Hostnames of all available robot c
 export ROBOT_USER=""                        # Main login user name for robot computers; Required for starting ssh sessions.
 export ROBOT_USERS=""                       # Different login user name for robot computers; Required for starting ssh sessions on multiple computers using different user names for each.
 
+# additional build flags given to catkin build by default (see: https://catkin-tools.readthedocs.io/en/latest/verbs/catkin_build.html#full-command-line-interface)
+export CATKIN_BUILD_FLAGS="--continue-on-failure"
+
 # SETUP YOUR REMOTE PCs HERE
 # Use add_remote_pc to register different remote pcs
 # Syntax:
