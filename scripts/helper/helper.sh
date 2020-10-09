@@ -126,6 +126,27 @@ append_to_file_if_not_exist() {
     fi
 }
 
+check_if_in_file() {
+    local file
+    file=$1
+    local line
+    line=$2
+
+    # check if file exists
+    if [ ! -f $file ]; then
+        echo 1
+        return
+    fi
+
+    # check if entry exists
+    if ! grep -Fxq "$line" $file; then
+        echo 1
+        return
+    fi
+
+    echo 0
+}
+
 remove_from_file() {
     local file
     file=$1
