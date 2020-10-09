@@ -1,14 +1,34 @@
 #!/bin/bash
 
+source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+
 set -e
 
 current_pwd=$PWD
 
+echo_info ">>> Making externals"
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
+    scripts_pkg=${dir%/scripts}
+    scripts_pkg=${scripts_pkg##*/}
+
     if [ -r "$dir/hooks/make_externals.sh" ]; then
+        echo_note "Running bash script: make_externals.sh [$scripts_pkg]"
         . "$dir/hooks/make_externals.sh" $@
+        echoc $BLUE "Done (make_externals.sh [$scripts_pkg])"
+        echo
+    fi
+
+    if [ -d $dir/hooks/make_externals/ ]; then
+        for i in `find -L $dir/hooks/make_externals/ -maxdepth 1 -type f -name "*.sh"`; do
+            file=${i#$dir/hooks/make_externals/}
+            echo_note "Running bash script: ${file} [$scripts_pkg]"
+            . "$dir/hooks/make_externals/$file" $@
+            echoc $BLUE "Done (${file} [$scripts_pkg])"
+            echo
+        done
     fi
 done
+echo
 
 cd "$current_pwd"
 
