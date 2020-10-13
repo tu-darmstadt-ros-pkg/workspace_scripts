@@ -76,7 +76,7 @@ if [ $debug == true ]; then
 else
     echo
     echo "-------------------- Release build --------------------"
-    args="-DCMAKE_BUILD_TYPE=Release $args"
+    args="-DCMAKE_BUILD_TYPE=RelWithDebInfo $args"
 fi
 echo ">>> Building with arguments '$args'"
 echo "-------------------------------------------------------"
