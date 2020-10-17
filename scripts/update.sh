@@ -107,8 +107,24 @@ else
 
     # Call additional update scripts
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        scripts_pkg=${dir%/scripts}
+        scripts_pkg=${scripts_pkg##*/}
+
         if [ -r "$dir/hooks/update.sh" ]; then
+            echo_note "Running bash script: update.sh [$scripts_pkg]"
             . "$dir/hooks/update.sh" $@
+            echoc $BLUE "Done (update.sh [$scripts_pkg])"
+            echo
+        fi
+
+        if [ -d $dir/hooks/update/ ]; then
+            for i in `find -L $dir/hooks/update/ -maxdepth 1 -type f -name "*.sh"`; do
+                file=${i#$dir/hooks/update/}
+                echo_note "Running bash script: ${file} [$scripts_pkg]"
+                . "$dir/hooks/update/$file" $@
+                echoc $BLUE "Done (${file} [$scripts_pkg])"
+                echo
+            done
         fi
     done
 
