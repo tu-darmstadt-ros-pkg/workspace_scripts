@@ -21,8 +21,24 @@ if [[ ! -z "${packages[@]}" ]]; then
     echo
     for package in "${packages[@]}"; do
         echo_note ">>> $package"
-        roscd $package
-        git pull
+
+        # try dispatching path using rospack        
+        path=$(rospack find -q ${package})
+        if [ $path ]; then
+            git -C $path pull
+            echo
+            continue
+        fi
+
+        # otherwise dispatching path using wstool
+        path=$(wstool info --only=localname | grep ${package})
+        if [ $path ]; then
+            wstool update $path
+            echo
+            continue
+        fi
+
+        echo_error "Cannot dispatch path for package '${package}'"
         echo
     done
     echo_info "Done!"
