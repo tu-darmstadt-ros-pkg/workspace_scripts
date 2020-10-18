@@ -2,9 +2,10 @@
 
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
-set -e
+#set -e
 
 current_pwd=$PWD
+cd $ROSWSS_ROOT
 
 echo_info ">>> Making externals"
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
