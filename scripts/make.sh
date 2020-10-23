@@ -14,7 +14,7 @@ for dir in ${ROSWSS_SCRIPTS//:/ }; do
 
     if [ -r "$dir/hooks/make_externals.sh" ]; then
         echo_note "Running bash script: make_externals.sh [$scripts_pkg]"
-        . "$dir/hooks/make_externals.sh" $@
+        . "$dir/hooks/make_externals.sh" "$@"
         echoc $BLUE "Done (make_externals.sh [$scripts_pkg])"
         echo
     fi
@@ -23,7 +23,7 @@ for dir in ${ROSWSS_SCRIPTS//:/ }; do
         for i in `find -L $dir/hooks/make_externals/ -maxdepth 1 -type f -name "*.sh"`; do
             file=${i#$dir/hooks/make_externals/}
             echo_note "Running bash script: ${file} [$scripts_pkg]"
-            . "$dir/hooks/make_externals/$file" $@
+            . "$dir/hooks/make_externals/$file" "$@"
             echoc $BLUE "Done (${file} [$scripts_pkg])"
             echo
         done
