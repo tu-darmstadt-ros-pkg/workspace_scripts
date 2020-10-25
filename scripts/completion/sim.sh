@@ -19,14 +19,13 @@ function roswss_sim() {
     command="$1"
     shift
 
-    if [[ "$command" == "help" || "$command" = "--help" ]]; then
+    if [[ "$command" == "help" || "$command" == "--help" || "$command" == "-h" ]]; then
         _roswss_sim_help
         return 0
     fi
 
     # launch file was given
     if [[ $command == *.launch ]]; then
-      shift
       roslaunch $GAZEBO_LAUNCH_PKG $command "$@"
     # use default launch file
     elif [[ ! -z "$GAZEBO_DEFAULT_LAUNCH_FILE" ]]; then

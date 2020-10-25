@@ -72,6 +72,21 @@ apt_remove() {
     aptremove "$@"
 }
 
+apt_add_repository() {
+    ppa=$1
+    key=$2
+    if ! grep -q "^$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+        if [ ! -z "$key" ]; then
+            echo_info "Adding PPA '$ppa' using key from '$key' ..."
+            wget -qO- $key | sudo apt-key add -
+        else
+            echo_info "Adding PPA '$ppa' ..."
+        fi
+        sudo apt-add-repository "$ppa"
+        sudo apt update
+    fi
+}
+
 depends() {
     for install in "$@"; do
         if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
@@ -109,6 +124,27 @@ append_to_file_if_not_exist() {
     if ! grep -Fxq "$line" $file; then
         echo "$line" >> $file
     fi
+}
+
+check_if_in_file() {
+    local file
+    file=$1
+    local line
+    line=$2
+
+    # check if file exists
+    if [ ! -f $file ]; then
+        echo 1
+        return
+    fi
+
+    # check if entry exists
+    if ! grep -Fxq "$line" $file; then
+        echo 1
+        return
+    fi
+
+    echo 0
 }
 
 remove_from_file() {

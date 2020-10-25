@@ -21,8 +21,24 @@ if [[ ! -z "${packages[@]}" ]]; then
     echo
     for package in "${packages[@]}"; do
         echo_note ">>> $package"
-        roscd $package
-        git pull
+
+        # try dispatching path using rospack        
+        path=$(rospack find -q ${package})
+        if [ $path ]; then
+            git -C $path pull
+            echo
+            continue
+        fi
+
+        # otherwise dispatching path using wstool
+        path=$(wstool info --only=localname | grep ${package})
+        if [ $path ]; then
+            wstool update $path
+            echo
+            continue
+        fi
+
+        echo_error "Cannot dispatch path for package '${package}'"
         echo
     done
     echo_info "Done!"
@@ -39,20 +55,6 @@ else
         echo
     fi
 
-    # pull system update
-    echo_info ">>> Pulling system package updates"
-    if [[ $_NO_SUDO == 1 ]]; then
-        echo "Skipped because --no-sudo option was specified."
-    else
-        sudo apt-get update -qq
-        AVAILABLE_SYSTEM_PACKAGE_UPDATES=$(apt-get -qq -s upgrade | grep Inst | cut -d ' ' -f 2 | grep "^[[:blank:]]*${ROSWSS_PREFIX}-\|^[[:blank:]]*ros-")
-        if [ ! -z "${AVAILABLE_SYSTEM_PACKAGE_UPDATES[@]}" ]; then
-            sudo apt install -qq --only-upgrade ${AVAILABLE_SYSTEM_PACKAGE_UPDATES[@]}
-        else
-            echo "Already up to date."
-        fi
-    fi
-
     # pull base scripts first
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         echo_info ">>> Pulling scripts folder in $dir"
@@ -60,14 +62,15 @@ else
             cd $dir
             git pull
         fi
+        echo
     done
-    
+
     # updating root rosinstalls
     echo_info ">>> Pulling install folder in $ROSWSS_ROOT"
     cd $ROSWSS_ROOT
     git pull
     echo
-    
+
     # update optional rosinstalls
     echo_info ">>> Pulling optional installs in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional"
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
@@ -76,7 +79,7 @@ else
 
     cd $ROSWSS_ROOT/src
 
-    # merge rosinstall files from *.rosinstall
+    # merge default rosinstall files from *.rosinstall
     echo_info ">>> Checking rosinstall updates"
     for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.rosinstall; do
         filename=$(basename ${file%.*})
@@ -85,8 +88,8 @@ else
         echoc $BLUE "Done (${filename}.rosinstall)"
         echo
     done
-    
-    # running bash scripts from *.sh
+
+    # running default bash scripts from *.sh
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
     count=`ls -1 *.sh 2>/dev/null | wc -l`
     if [ $count != 0 ]; then
@@ -99,7 +102,7 @@ else
             echo
         done
     fi
-    
+
     # merged installed optional rosinstall or bash files
     if [ -f "$ROSWSS_ROOT/.install" ]; then
       while read filename; do
@@ -117,6 +120,29 @@ else
         fi
       done <$ROSWSS_ROOT/.install
     fi
+
+    # Call additional update scripts
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        scripts_pkg=${dir%/scripts}
+        scripts_pkg=${scripts_pkg##*/}
+
+        if [ -r "$dir/hooks/update.sh" ]; then
+            echo_note "Running bash script: update.sh [$scripts_pkg]"
+            . "$dir/hooks/update.sh" $@
+            echoc $BLUE "Done (update.sh [$scripts_pkg])"
+            echo
+        fi
+
+        if [ -d $dir/hooks/update/ ]; then
+            for i in `find -L $dir/hooks/update/ -maxdepth 1 -type f -name "*.sh"`; do
+                file=${i#$dir/hooks/update/}
+                echo_note "Running bash script: ${file} [$scripts_pkg]"
+                . "$dir/hooks/update/$file" $@
+                echoc $BLUE "Done (${file} [$scripts_pkg])"
+                echo
+            done
+        fi
+    done
 
     echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src

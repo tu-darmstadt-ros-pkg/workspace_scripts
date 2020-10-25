@@ -11,18 +11,14 @@ function roswss_clean() {
     cd $ROSWSS_ROOT
 
     if [ "$#" -eq 0 ]; then
-        echo -ne "${YELLOW}Do you want to clean devel and build? [y/N] ${NOCOLOR}"
+        echo -ne "${YELLOW}Do you want to clean build, devel and install? [y/N] ${NOCOLOR}"
         read -N 1 REPLY
 
         if test "$REPLY" = "y" -o "$REPLY" = "Y"; then
             echo
             echo
+            roswss_clean_externals
             catkin clean --all --yes
-            for dir in ${ROSWSS_SCRIPTS//:/ }; do
-                if [ -f "$dir/clean_externals.sh" ]; then
-                    . $dir/clean_externals.sh
-                fi
-            done
             echo_info ">>> Cleaned devel and build directories."
         else
             echo_error ">>> Clean cancelled by user."
@@ -32,7 +28,7 @@ function roswss_clean() {
         echo_warn "Do you want to clean following packages:"
         for package in "$@"; do
             if [ $package == "--externals" ]; then
-                echo "  - external libraries (calls clean_externals.sh)"
+                echo "  - externals"
             else
                 echo "  - $package"
             fi
@@ -45,17 +41,13 @@ function roswss_clean() {
             echo
             for package in "$@"; do
                 if [ $package == "--externals" ]; then
-                    for dir in ${ROSWSS_SCRIPTS//:/ }; do
-                        if [ -f "$dir/clean_externals.sh" ]; then
-                             . $dir/clean_externals.sh
-                        fi
-                    done
+                    roswss_clean_externals
                 else
                     echo_note ">>> Cleaning package: $package"
                     catkin clean "$package"
                     echoc $BLUE "Done"
+                    echo
                 fi
-                echo
             done
             echo_info ">>> Cleaned packages."
         else
@@ -65,6 +57,32 @@ function roswss_clean() {
     fi
 
     return 0
+}
+
+function roswss_clean_externals() {
+    echo_info ">>> Cleaning externals"
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        scripts_pkg=${dir%/scripts}
+        scripts_pkg=${scripts_pkg##*/}
+
+        if [ -r "$dir/hooks/clean_externals.sh" ]; then
+            echo_note "Running bash script: clean_externals.sh [$scripts_pkg]"
+            . "$dir/hooks/clean_externals.sh" $@
+            echoc $BLUE "Done (clean_externals.sh [$scripts_pkg])"
+            echo
+        fi
+
+        if [ -d $dir/hooks/clean_externals/ ]; then
+            for i in `find -L $dir/hooks/clean_externals/ -maxdepth 1 -type f -name "*.sh"`; do
+                file=${i#$dir/hooks/clean_externals/}
+                echo_note "Running bash script: ${file} [$scripts_pkg]"
+                . "$dir/hooks/clean_externals/$file" $@
+                echoc $BLUE "Done (${file} [$scripts_pkg])"
+                echo
+            done
+        fi
+    done
+    echo
 }
 
 function _roswss_clean_help() {

@@ -13,13 +13,13 @@ The **ROS** **W**ork**s**pace **S**cripts (*roswss*) package provides an expanda
 
 ## Setup
 
-Clone the basic *roswss* package into your workspace. Afterwards, create a new catkin package (e.g. my_scripts) which should have following minimal structure:
+Clone the basic *roswss* package into your workspace. Afterwards, create a new catkin package (e.g. my_workspace_scripts) which should have following minimal structure:
 
 ```
-my_scripts
-│   CMakeLists.txt
-│   package.xml
-│   20.setup.bash.em
+|— my_workspace_scripts
+    |— CMakeLists.txt
+    |— package.xml
+    |— 20.setup.bash.em
 ```
 
 ### CMakeLists.txt
@@ -28,7 +28,7 @@ A minimal CMake example setup looks like
 
 ```CMake
 cmake_minimum_required(VERSION 3.0.2)
-project(my_scripts)
+project(my_workspace_scripts)
 
 find_package(catkin REQUIRED)
 catkin_package()
@@ -50,9 +50,9 @@ The manifest is as well very simple
 ```XML
 <?xml version="1.0"?>
 <package type="2">
-  <name>my_scripts</name>
+  <name>my_workspace_scripts</name>
   <version>0.0.0</version>
-  <description>The my_scripts package</description>
+  <description>The my_workspace_scripts package</description>
 
   <maintainer email="stumpf@sim.tu-darmstadt.de">Alexander Stumpf</maintainer>
   <license>BSD</license>
@@ -77,14 +77,13 @@ After everything is setup, just run `catkin build` and open a new terminal. Ever
 In order to add your own scripts, just add the `scripts` subfolder to your package. Any script placed in this folder can be directly used (no re-compile required).
 
 ```
-my_scripts
-│   CMakeLists.txt
-│   package.xml
-│   20.setup.bash.em
-│
-└───scripts
-│   │   my_script.sh
-│   │   ...
+|— my_workspace_scripts
+    |— scripts
+        |— my_script.sh
+        |— ...
+    |— CMakeLists.txt
+    |— package.xml
+    |— 20.setup.bash.em
 ```
 
 **Note:** *roswss* will source a shell script if no execute permission is set. This allows scripts to change your current environment (e.g. exporting variables).
@@ -97,28 +96,41 @@ The script naming convention behaves like inheritance in object-oriented program
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 ```
 
+### Hooks
+
+The update and make scripts do already provide the option for adding new routines while preserving the default behavior. For this purpose, the workspace overlay can provide a corresponding update and make scripts in the hook subfolder, which will be executed by the top-level script automatically.
+
+```
+|— my_workspace_scripts
+    |— scripts
+        |— hooks
+            |— make.sh    # additional make routines go here
+            |— update.sh  # additional update routines go here
+    |— CMakeLists.txt
+    |— package.xml
+    |— 20.setup.bash.em
+```
+
 ## Autocomplete
 
 The workspace scripts package supports [programmable completion](https://www.gnu.org/software/bash/manual/bash.html#Programmable-Completion). One can simply add own autocomplete scripts in addition to the provided default ones. All shell scripts located in the `scripts/completion` subfolder will be automatically sourced and added to your terminal environment.
 
 ```
-my_scripts
-│   CMakeLists.txt
-│   package.xml
-│   20.setup.bash.em
-│
-└───scripts
-│   │   my_script.sh
-│   │   ...
-│   │
-│   └───completion
-│       │   my_super_script.sh
-│       │   ...
+|— my_workspace_scripts
+    |— scripts
+        |— my_script.sh
+        |— ...
+        |— completion
+            |— my_super_script.sh
+            |— ...
+    |— CMakeLists.txt
+    |— package.xml
+    |— 20.setup.bash.em
 ```
 
 The new autocomplete script must be registered using the `add_completion` function.
 
-**Example:** Let us assume that within the newly created `my_super_script.sh` two functions named `my_script` and `_my_script_complete` have been defined. The former function implements a new awesome command while latter defines how the autocompletion arguments are formed based on [programmable completion](https://www.gnu.org/software/bash/manual/bash.html#Programmable-Completion). In order to register the new autocomplete functionality, add following line in `20.setup.bash.em`:
+**Example:** Let us assume that within the newly created `my_super_script.sh` two functions named `my_script` and `_my_script_complete` have been defined. The former function implements a new awesome command while latter defines how the autocompletion arguments are formed based on [programmable completion](https://www.gnu.org/software/bash/manual/bash.html#Programmable-Completion). In order to register the new autocomplete functionality, add following line in your `20.setup.bash.em`:
 
 ```Shell
 add_completion "my_script" "_my_script_complete"
@@ -129,7 +141,7 @@ For details in working with [programmable completion](https://www.gnu.org/softwa
 
 ## Python
 
-The workspace scripts now support python scripts.
+The workspace scripts supports python scripts.
 For an example, see the `scripts/analyze.py` script. Completion can be given using the `argcomplete` package (see `scripts/completion/analyze.sh`).
 
 ## Rosinstall
@@ -148,21 +160,18 @@ export ROSWSS_INSTALL_DIR="rosinstall"
 The following example assumes the following ROS workspace layout. Any difference must be adapted respectively.
 
 ```
-<ros_root>
-│
-└───rosinstall
-│   │   my_default.rosinstall
-│   │   my_default.sh
-│   │   ...
-│   │
-│   └───optional
-│       │   my_optional.rosinstall
-│       │   my_optional.sh
-│       │   ...
-│       │
-└───src
-│   └───workspace_scripts
-│       │   ...
+|— <ros_root>
+    |— rosinstall
+        |— my_default.rosinstall
+        |— my_default.sh
+        |— ...
+        |— optional
+            |— my_optional.rosinstall
+            |— my_optional.sh
+            |— ...
+    |— src
+        |— workspace_scripts
+        |— ...
 ```
 
 The `ROSWSS_ROOT_RELATIVE_PATH` specifies the **relative** path from the *roswss* package location to your ROS workspace root folder. Usually, packages are located in the `"<ros_root>/src"` directory why the default setting `"../.."` should be already correct in most cases.
@@ -196,7 +205,7 @@ After a quick recompile, following command can be used in a (newly opened) termi
 roswss <script_name> start/stop/show
 ```
 
-**Tips:** Multiple screens can be defined for a single machine. In this way, the entire software stack can be easily managed on several screens. Hierarchical starts of screens are also possible.
+**Tips:** Multiple screens can be defined for a single machine. In this way, the entire software stack can be easily managed on several screens. Hierarchical start of screens is also possible.
 
 **Example:**
 In `20.setup.bash.em` add
@@ -245,29 +254,19 @@ Unfortunately, the autostart setup procedure is quite complex but provides great
 It is recommended to create a dedicated catkin package collecting all bringup scripts and launchfiles. In order to use all *roswss* features best, the following package structure is recommended:
 
 ```
-robot_bringup
-│   startup.sh # invoked by systemd service
-│   ...
-│
-└───scripts # Software startup routines
-│   │   <helper scripts here>
-│   │   ...
-│
-└───autostart.d # Automated software startup routines (optional)
-│   │   <common scripts>
-│   │   ...
-│   │
-│   └───<hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
-│       │   <Machine-specific scripts>
-│       │   ...
-│
-└───setup.d # Automated hardware/system setup routines (optional)
-│   │   <common scripts>
-│   │   ...
-│   │
-│   └───<hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
-│       │   <Machine-specific scripts>
-│       │   ...
+|— robot_bringup
+    |— autostart.d # Automated software startup routines (optional)
+        |— <hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
+            |— Machine-specific scripts...
+        |— common scripts...
+    |— setup.d # Automated hardware/system setup routines (optional)
+        |— <hostname> # Machine-specific parts should be located in the correspondingly named subfolder (optional)
+            |— Machine-specific scripts...
+        |— common scripts...
+    |— scripts # Software startup routines
+        |— helper scripts go here...
+    |— startup.sh # Invoked by systemd service
+    |— ...
 ```
 
 **Notes:**
@@ -361,32 +360,24 @@ The script will stop all started screen sessions on termination and therefore wi
 
 In order to combine the roswss autostart and run_all script, the robot_bringup package must be extended as illustrated below.
 ```
-robot_bringup
-│   ...
-│
-└───autostart.d
-│   │   ...
-│   │
-│   └───<hostname> # add launch/scripts subfolders containing shell scripts each to be started in its own screen
-│       │   ...
-│       │
-│       └───launch
-│       │   │   my_launch.sh
-│       │   │   ...
-│       │
-│       └───scripts
-│           │   my_script.sh
-│           │   ...
-│
-└───scripts # main scripts invoked during screen session startup
-│   │   <hostname>.sh
-│   │   ...
-│
-│   ...
+|— robot_bringup
+    |— autostart.d
+        |— <hostname> # Add subfolders containing launch files and shell scripts, each one is run in a dedicated screen session
+            |— launch
+                |— my_launch.sh
+                |— ...
+            |— scripts
+                |— my_script.sh
+                |— ...
+            |— ...
+    |— scripts # Main scripts invoked by screen session startup
+        |— <hostname>.sh
+        |— ...
+    |— ...
 ```
 Actually, for each machine new subfolders (launch and scripts) are created in their autostart.d section. **These newly created folders hold all launchfiles (\*.launch) and shell scripts (\*.sh) which should be started by the run_all script.**
 
-In addition, the root directory contains a  new script folder holding the main script for each machine which calls the run_all script.
+In addition, for each machine a script named after the machine must be added in the scripts folder. This script should call the run_all script (see above) and optionally machine-specific routines.
 
 ##### Final Plumbing
 
@@ -408,8 +399,10 @@ bash $ROSWSS_BASE_SCRIPTS/helper/run_all.sh $DIRECTORIES -l ${ROSWSS_LOG_DIR}
 This main script is going to be used for a predefined screen session, thus, in `20.setup.bash.em` just add
 
 ```Shell
-add_remote_pc "<hostname>" "<hostname>" "my_software" "<absolute_path_to_workspace>/src/robot_bringup/scripts/<hostname>.sh"
+add_remote_pc "<hostname>" "<hostname>" "<screen_session_name>" "<absolute_path_to_workspace>/src/robot_bringup/scripts/<hostname>.sh"
 ```
+
+where you can freely choose your desired screen session name.
 
 Now we could already start the host software manually via `roswss <hostname> start`. In the final step, the *roswss* autostart must be configured to invoke this screen session during the autostart procedure. Therefore, the shell file `robot_bringup/autostart.d/<hostname>/20.<hostname>.sh` is created in the host's autostart folder:
 
@@ -420,7 +413,7 @@ Now we could already start the host software manually via `roswss <hostname> sta
 bash -ic "roswss <hostname> start"
 ```
 
-That's it! From now your software should automatically spawn in a screen session named "my_software" on the defined host machine (`<hostname>`) and can be easily controlled with `roswss <hostname> start/stop/show` from any computer.
+That's it! From now your software should automatically spawn in a screen session named "<screen_session_name>" on the defined host machine (`<hostname>`) and can be easily controlled with `roswss <hostname> start/stop/show` from any computer.
 
 #### Bonus: Virtual Hosts
 
@@ -455,16 +448,16 @@ In case of any issues, you can check following steps:
 The workspace scripts now support analyzing the workspace to find common mistakes. For this the `roswss analyze` command evaluates a set of rules on your workspace and collects the results in the form of _errors_, _warnings_ and _informations_.
 By default, the analyze tool simply runs `catkin_lint` on your workspace.
 However, you can add your own rules by providing python scripts in a rules subfolder as follows:
+
 ```
-my_scripts
-│   CMakeLists.txt
-│   package.xml
-│   20.setup.bash.em
-│
-└───scripts
-│   └───rules
-|   |   |   my_rule.py
-│   │   |   ...
+|— my_workspace_scripts
+    |— scripts
+        |— rules
+            |— my_rule.py
+            |— ...
+    |— CMakeLists.txt
+    |— package.xml
+    |— 20.setup.bash.em
 ```
 
 A rule file should have a unique, short but descriptive name.

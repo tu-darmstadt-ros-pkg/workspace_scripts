@@ -6,7 +6,7 @@ function roswss_test() {
     set -e
 
     local legacy=false
-    if [[ "$1" = "--fix" ]]; then
+    if [[ "$1" = "--fix" || "$1" = "--run_tests" ]]; then
         legacy=true
         shift
     fi
@@ -77,7 +77,7 @@ function _roswss_test_complete() {
     # roswss test ...
     if [ $COMP_CWORD -eq 2 ]; then
         if [[ "$cur" == -* ]]; then
-            COMPREPLY=( $( compgen -W "--fix --text --help" -- "$cur" ) )
+            COMPREPLY=( $( compgen -W "--fix --run_tests --text --help" -- "$cur" ) )
         else
             _roscomplete
         fi

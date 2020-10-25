@@ -108,15 +108,18 @@ function _roswss_help() {
             fi
         done
 
-        for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do  
+            scripts_pkg=${dir%/scripts}
+            scripts_pkg=${scripts_pkg##*/}
+
             if [ -x "$dir/$i.sh" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t ($scripts_pkg)\n"
                 break
             elif [ -x "$dir/$i.py" ]; then
-                out+="\t $i \t\t ($dir)\n"
+                out+="\t $i \t\t ($scripts_pkg)\n"
                 break
             elif [ -r "$dir/$i.sh" ]; then
-                out+="* \t $i \t\t ($dir)\n"
+                out+="* \t $i \t\t ($scripts_pkg)\n"
                 break
             fi
         done
