@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function _analyze_complete() {
-  which register-python-argcomplete 2>&1 > /dev/null
+  which register-python-argcomplete3 2>&1 > /dev/null
   if [ $? -eq 0 ]; then
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
       if [ -x "$dir/analyze.py" ]; then
@@ -28,7 +28,7 @@ function _analyze_complete() {
     done
   else
     echo ""
-    echo_note "For autocompletion please install argcomplete using 'pip install --user argcomplete'"
+    echo_note "For autocompletion please install argcomplete using 'sudo apt install python3-argcomplete'"
   fi
 }
 
