@@ -26,7 +26,7 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>python-gitpython-pip</exec_depend>
+  <exec_depend>python-git</exec_depend>
   <exec_depend>python-argparse</exec_depend>
 
 </package>
