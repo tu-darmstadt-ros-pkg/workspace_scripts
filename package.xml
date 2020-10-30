@@ -27,7 +27,7 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>python-gitpython-pip</exec_depend>
+  <exec_depend>python-git</exec_depend>
   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-argparse</exec_depend> <!-- seems to be in std libraries in python 3 -->
 
 </package>

@@ -3,7 +3,7 @@ from __future__ import print_function
 try:
   import git
 except ImportError:
-  print("GitPython is required! Install using 'pip3 install --user gitpython'")
+  print("GitPython is required! Install using 'pip3 install --user gitpython' or 'apt install python3-git'")
   exit(1)
 import subprocess
 import os
