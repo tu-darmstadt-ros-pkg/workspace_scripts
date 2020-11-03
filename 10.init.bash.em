@@ -4,8 +4,29 @@ export ROSWSS_SEP_SYM=';'
 
 # Define variables with default values. See 20.setup... for a template / documentation
 export ROSWSS_PREFIX="roswss"
-export ROSWSS_ROOT_RELATIVE_PATH="../.."
 export ROSWSS_INSTALL_DIR="rosinstall"
+
+
+# export important variables (do not change!)
+export HOSTNAME=$(hostname)
+
+if [ -z $ROS_WORKSPACE ]; then
+  if [ ! -z $CMAKE_PREFIX_PATH ]; then
+    IFS=":" read -a _roswss_workspaces <<< "$CMAKE_PREFIX_PATH"
+    for _roswss_ws in "${_roswss_workspaces[@@]}"
+    do
+      if [ -f $_roswss_ws/.catkin ]; then
+        export ROS_WORKSPACE=$(cd ${_roswss_ws}/..; pwd)/src
+        break
+      fi
+    done
+  fi
+  if [ -z $ROS_WORKSPACE ]; then
+    echo -e "Neither ROS_WORKSPACE is set nor a catkin workspace is listed in CMAKE_PREFIX_PATH.  Please set ROS_WORKSPACE or source a catkin workspace to use the TUDa workspace scripts."
+  fi
+fi
+export ROSWSS_ROOT=$(cd $ROS_WORKSPACE/..; pwd)
+export ROSWSS_LOG_DIR="${ROSWSS_ROOT}/logs"
 
 # Use this method to register different remote pcs
 # Syntax:
@@ -28,8 +49,8 @@ export ROSWSS_COMPLETION_SCRIPTS=()
 #   add_completion "my_command" "completion_function"
 function add_completion()
 {
-    ROSWSS_COMPLETION_TAGS+=($1)
-    ROSWSS_COMPLETION_SCRIPTS+=($2)
+  ROSWSS_COMPLETION_TAGS+=($1)
+  ROSWSS_COMPLETION_SCRIPTS+=($2)
 }
 
 
