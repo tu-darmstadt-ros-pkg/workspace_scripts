@@ -147,6 +147,7 @@ else
     echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src
     wstool update -j$(nproc)
+    echo
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
     if [[ $_NO_SUDO == 1 ]]; then
