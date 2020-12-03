@@ -45,7 +45,7 @@ class Rule:
       path, manifest = self.env.find_local_pkg(pkg.name)
       self.linter.lint(path, manifest, config=self.config)
     except Exception as err:
-      return {"errors": ["catkin_lint - Failed to lint: {}".format(str(err))]}
+      return {"errors": ["catkin_lint - Failed to lint: {}".format(repr(err))]}
     errors = []
     warnings = []
     notices = []
