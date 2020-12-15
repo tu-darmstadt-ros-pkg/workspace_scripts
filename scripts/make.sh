@@ -2,62 +2,62 @@
 
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
-#set -e
-
-current_pwd=$PWD
-cd $ROSWSS_ROOT
-
-echo_info ">>> Making externals"
-for dir in ${ROSWSS_SCRIPTS//:/ }; do
-    scripts_pkg=${dir%/scripts}
-    scripts_pkg=${scripts_pkg##*/}
-
-    if [ -r "$dir/hooks/make_externals.sh" ]; then
-        echo_note "Running bash script: make_externals.sh [$scripts_pkg]"
-        . "$dir/hooks/make_externals.sh" "$@"
-        echoc $BLUE "Done (make_externals.sh [$scripts_pkg])"
-        echo
-    fi
-
-    if [ -d $dir/hooks/make_externals/ ]; then
-        for i in `find -L $dir/hooks/make_externals/ -maxdepth 1 -type f -name "*.sh"`; do
-            file=${i#$dir/hooks/make_externals/}
-            echo_note "Running bash script: ${file} [$scripts_pkg]"
-            . "$dir/hooks/make_externals/$file" "$@"
-            echoc $BLUE "Done (${file} [$scripts_pkg])"
-            echo
-        done
-    fi
-done
-echo
-
-cd "$current_pwd"
-
 # TODO: use getopts
 
-# check if debug compile is set
-args=("$@")
-debug=false
-for (( i=0; i<${#args[@]}; i++ )); do
-    var=${args[i]}
-    if [ "$var" == "debug" ]; then
-        debug=true
-        args=( "${args[@]:0:$i}" "${args[@]:$((i + 1))}" )
-        break
-    fi
-done
+build_debug=false
+build_this=false
+build_externals=false
 
-# check for single pkg compile
-change_dir=true
-for var in $args; do
-    if [ "$var" == "--this" ]; then
-        change_dir=false
-        break
-    fi
+# check arguments
+catkin_args=()
+for var in "$@"; do
+    case $var in
+        debug)
+            build_debug=true
+            ;;
+        --this)
+            build_this=true
+            catkin_args=( "${catkin_args[@]}" "$var" )
+            ;;
+        --externals)
+            build_externals=true
+            ;;
+        *)
+            catkin_args=( "${catkin_args[@]}" "$var" )
+            ;;
+    esac
 done
+catkin_args=${catkin_args[*]}
 
-if [ $change_dir == true ]; then
-    cd $ROSWSS_ROOT
+LAST_PWD=$PWD
+
+# run pre-build options
+cd $ROSWSS_ROOT
+if [[ $build_externals = true || $build_this = false ]]; then
+    # call external build scripts
+    echo_info ">>> Making externals"
+    for dir in ${ROSWSS_SCRIPTS//:/ }; do
+        scripts_pkg=${dir%/scripts}
+        scripts_pkg=${scripts_pkg##*/}
+
+        if [ -r "$dir/hooks/make_externals.sh" ]; then
+            echo_note "Running bash script: make_externals.sh [$scripts_pkg]"
+            . "$dir/hooks/make_externals.sh" "$@"
+            echoc $BLUE "Done (make_externals.sh [$scripts_pkg])"
+            echo
+        fi
+
+        if [ -d $dir/hooks/make_externals/ ]; then
+            for i in `find -L $dir/hooks/make_externals/ -maxdepth 1 -type f -name "*.sh"`; do
+                file=${i#$dir/hooks/make_externals/}
+                echo_note "Running bash script: ${file} [$scripts_pkg]"
+                . "$dir/hooks/make_externals/$file" "$@"
+                echoc $BLUE "Done (${file} [$scripts_pkg])"
+                echo
+            done
+        fi
+    done
+    echo
 
     # clean removed or disabled packages
     if [ -d $ROSWSS_ROOT/.catkin_tools ]; then
@@ -65,24 +65,27 @@ if [ $change_dir == true ]; then
     fi
 fi
 
-cd $PWD
-
-args=${args[*]}
-
-# add proper compile flag
-if [ $debug == true ]; then
-    echo
-    echo "--------------------- Debug build ---------------------"
-    args="-DCMAKE_BUILD_TYPE=Debug $args"
-else
-    echo
-    echo "-------------------- Release build --------------------"
-    args="-DCMAKE_BUILD_TYPE=RelWithDebInfo $args"
+# change directory back for --this flag
+if [ $build_this = true ]; then
+    cd $LAST_PWD
 fi
-echo ">>> Building with arguments '$args'"
-echo "-------------------------------------------------------"
-echo
 
-catkin build $CATKIN_BUILD_FLAGS $args
+# run catkin main build process
+if [[ $build_this = true || $build_externals = false ]]; then
+    if [ $build_debug = true ]; then
+        echo
+        echo "--------------------- Debug build ---------------------"
+        catkin_args="-DCMAKE_BUILD_TYPE=Debug $catkin_args"
+    else
+        echo
+        echo "-------------------- Release build --------------------"
+        catkin_args="-DCMAKE_BUILD_TYPE=RelWithDebInfo $catkin_args"
+    fi
+    echo ">>> Building with arguments '$catkin_args'"
+    echo "-------------------------------------------------------"
+    echo
+    
+    catkin build $CATKIN_BUILD_FLAGS $catkin_args
+fi
 
 . $ROSWSS_ROOT/setup.bash

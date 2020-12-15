@@ -78,19 +78,19 @@ def printChanges(path):
     if any(stash):
       printWithStyle(Style.LCYAN, "  Stashed changes")
     for item in changes:
-      if item.change_type == 'M':
+      if item.change_type.startswith('M'):
         printWithStyle(Style.ORANGE, "  Modified: {}".format(item.a_path))
-      elif item.change_type == 'D':
+      elif item.change_type.startswith('D'):
         printWithStyle(Style.RED, "  Deleted: {}".format(item.a_path))
-      elif item.change_type == 'R':
+      elif item.change_type.startswith('R'):
         printWithStyle(Style.GREEN, "  Renamed: {} -> {}".format(item.a_path, item.b_path))
-      elif item.change_type == 'A':
+      elif item.change_type.startswith('A'):
         printWithStyle(Style.GREEN, "  Added: {}".format(item.a_path))
-      elif item.change_type == 'U':
+      elif item.change_type.startswith('U'):
         printWithStyle(Style.Error, "  Unmerged: {}".format(item.a_path))
-      elif item.change_type == 'C':
+      elif item.change_type.startswith('C'):
         printWithStyle(Style.GREEN, "  Copied: {} -> {}".format(item.a_path, item.b_path))
-      elif item.change_type == 'T':
+      elif item.change_type.startswith('T'):
         printWithStyle(Style.ORANGE, "  Type changed: {}".format(item.a_path))
       else:
         printWithStyle(Style.RED, "  Unhandled change type '{}': {}".format(item.change_type, item.a_path))

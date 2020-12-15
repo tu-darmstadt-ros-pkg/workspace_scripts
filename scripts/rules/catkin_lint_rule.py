@@ -1,3 +1,4 @@
+import configparser
 try:
   from catkin_lint.environment import CatkinEnvironment
   from catkin_lint.linter import CMakeLinter, ERROR, WARNING, NOTICE
@@ -20,10 +21,17 @@ class Rule:
       self.env = CatkinEnvironment(os_env=os.environ, quiet=True)
       if not self.env.ok:
         return
+      self.config = configparser.ConfigParser(strict=True)
+      self.config.optionxform = lambda option: option.lower().replace("-", "_")
+      self.config["*"] = {}
+      self.config["catkin_lint"] = {}
       if "ROS_PACKAGE_PATH" in os.environ:
-        for pkg_path in os.environ["ROS_PACKAGE_PATH"].split(os.path.sep):
+        for pkg_path in os.environ["ROS_PACKAGE_PATH"].split(os.pathsep):
           self.env.add_path(pkg_path)
-
+        if os.path.isfile(os.path.join(pkg_path, ".catkin_lint")):
+          self.config.read([os.path.join(d, ".catkin_lint") for d in os.environ["ROS_PACKAGE_PATH"].split(os.pathsep)])
+      xdg_config_home = os.environ.get("XDG_CONFIG_HOME", "") or os.path.expanduser("~/.config")
+      self.config.read([os.path.join(xdg_config_home, "catkin_lint"), os.path.expanduser("~/.catkin_lint")])
       self.linter = CMakeLinter(self.env)
       add_linter_check(self.linter, "all")
     finally:
@@ -33,11 +41,11 @@ class Rule:
   def check(self, path, pkg):
     if not self.env.ok:
       return {"errors": ["Failed to initialize CatkinEnvironment!"]}
-
     try:
-      self.linter.lint(path, pkg)
+      path, manifest = self.env.find_local_pkg(pkg.name)
+      self.linter.lint(path, manifest, config=self.config)
     except Exception as err:
-      return {"errors": ["catkin_lint - Failed to lint: {}".format(str(err))]}
+      return {"errors": ["catkin_lint - Failed to lint: {}".format(repr(err))]}
     errors = []
     warnings = []
     notices = []
