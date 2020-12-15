@@ -9,7 +9,6 @@ export ROSWSS_SCRIPTS="@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATIO
 
 # SET HERE YOUR WORKSPACE PREFIX
 export ROSWSS_PREFIX="roswss"               # Replace with your preferred command name
-export ROSWSS_ROOT_RELATIVE_PATH="../.."    # Relative path to workspace root from package location
 export ROSWSS_INSTALL_DIR="rosinstall"      # Path/Directory to install files (relative to workspace root dir)
 
 # SETUP YOUR ENVIRONMENT HERE (all fields are optional)

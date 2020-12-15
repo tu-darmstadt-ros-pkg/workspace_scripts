@@ -64,7 +64,7 @@ The manifest is as well very simple
 
 ### 20.setup.bash.em
 
-This file is originated from `20.setup_example.bash.em` of the workspace_scripts main folder. It must be copied into your scripts package and renamed into `20.setup.bash.em`. Open the file and provide all required data, especially the command prefix via `ROSWSS_PREFIX` (default: `roswss`) which is used to create a name alias for `roswss`. For details how to set `ROSWSS_ROOT_RELATIVE_PATH` and `ROSWSS_INSTALL_DIR` correctly, please read the **[Rosinstall](#rosinstall)** section.
+This file is originated from `20.setup_example.bash.em` of the workspace_scripts main folder. It must be copied into your scripts package and renamed into `20.setup.bash.em`. Open the file and provide all required data, especially the command prefix via `ROSWSS_PREFIX` (default: `roswss`) which is used to create a name alias for `roswss`. For details how to set `ROSWSS_INSTALL_DIR` correctly, please read the **[Rosinstall](#rosinstall)** section.
 
 **Note:** Each change of the `20.setup.bash.em` file requires a recompile and new terminal session in order to take full effect.
 
@@ -153,7 +153,6 @@ In large projects, the ROS workspace suffers from an excessive number of package
 The location of the install files must be provided in the  `20.setup.bash.em`:
 
 ```Shell
-export ROSWSS_ROOT_RELATIVE_PATH="../.."
 export ROSWSS_INSTALL_DIR="rosinstall"
 ```
 
@@ -174,7 +173,6 @@ The following example assumes the following ROS workspace layout. Any difference
         |— ...
 ```
 
-The `ROSWSS_ROOT_RELATIVE_PATH` specifies the **relative** path from the *roswss* package location to your ROS workspace root folder. Usually, packages are located in the `"<ros_root>/src"` directory why the default setting `"../.."` should be already correct in most cases.
 The `ROSWSS_INSTALL_DIR` defines the **relative** path from your ROS workspace root folder `"<ros_root>"` to the location of all install files. In the given default settings, the complete path would compile to `"<ros_root>/rosinstall"`. All install files located in this folder will always be handled by default. All optional installable modules must be located in the `optional` subfolder.
 
 ### Usage
