@@ -10,30 +10,41 @@ export ROSWSS_INSTALL_DIR="rosinstall"
 # export important variables (do not change!)
 export HOSTNAME=$(hostname)
 
-if [ -z $ROS_WORKSPACE ]; then
-  if [ ! -z $CMAKE_PREFIX_PATH ]; then
+if [ -z "$ROS_WORKSPACE" ]; then
+  if [ ! -z "$CMAKE_PREFIX_PATH" ]; then
     IFS=":" read -a _roswss_workspaces <<< "$CMAKE_PREFIX_PATH"
     for _roswss_ws in "${_roswss_workspaces[@@]}"
     do
-      if [ -f $_roswss_ws/.catkin ]; then
-        export ROS_WORKSPACE=$(cd ${_roswss_ws}/..; pwd)/src
-        break
+      if [ -f "$_roswss_ws/.catkin" ]; then
+        _roswss_ws=$(cd ${_roswss_ws}/..; pwd)/src
+        if [ -d "$_roswss_ws" ]; then
+          export ROS_WORKSPACE=$_roswss_ws
+          break
+        fi
       fi
     done
   fi
-  if [ -z $ROS_WORKSPACE ]; then
-    echo -e "Neither ROS_WORKSPACE is set nor a catkin workspace is listed in CMAKE_PREFIX_PATH.  Please set ROS_WORKSPACE or source a catkin workspace to use the TUDa workspace scripts."
-  fi
 fi
-export ROSWSS_ROOT=$(cd $ROS_WORKSPACE/..; pwd)
-export ROSWSS_LOG_DIR="${ROSWSS_ROOT}/logs"
+
+if [ -z "$ROS_WORKSPACE" ]; then
+  @[if DEVELSPACE]@
+  echo "Could not locate ROS workspace despite being in devel space. Please fix this immediately!"
+  @[else]@
+  # This is more of a best effort, many commands will not work.
+  export ROSWSS_ROOT="@(CMAKE_INSTALL_PREFIX)"
+  @[end if]@
+  export ROSWSS_LOG_DIR="/tmp/roswss_logs"
+else
+  export ROSWSS_ROOT=$(cd $ROS_WORKSPACE/..; pwd)
+  export ROSWSS_LOG_DIR="${ROSWSS_ROOT}/logs"
+fi
 
 # Use this method to register different remote pcs
 # Syntax:
 #   add_remote_pc <script_name> <host_name> <screen_name> <command>
 # Example:
 #   add_remote_pc "motion" "thor-motion" "motion" "roslaunch thor_mang_onboard_launch motion.launch"
-function add_remote_pc() {
+add_remote_pc() {
     script_name="$1"
     export ${script_name}_remote_pc="${1}${ROSWSS_SEP_SYM}${2}${ROSWSS_SEP_SYM}${3}${ROSWSS_SEP_SYM}${4}"
     ROSWSS_REMOTE_PC_SCRIPTS+=($script_name)
@@ -47,7 +58,7 @@ export ROSWSS_COMPLETION_SCRIPTS=()
 # Use this method to register additional auto completion scripts
 # Example:
 #   add_completion "my_command" "completion_function"
-function add_completion()
+add_completion()
 {
   ROSWSS_COMPLETION_TAGS+=($1)
   ROSWSS_COMPLETION_SCRIPTS+=($2)
