@@ -15,7 +15,7 @@ if [ -z "$ROS_WORKSPACE" ]; then
     IFS=":" read -a _roswss_workspaces <<< "$CMAKE_PREFIX_PATH"
     for _roswss_ws in "${_roswss_workspaces[@@]}"
     do
-      if [ -f "$_roswss_ws/.catkin" ]; then
+      if [ -f "$_roswss_ws/.catkin" ] || [ -d "$_roswss_ws/../.catkin_tools" ]; then
         _roswss_ws=$(cd ${_roswss_ws}/..; pwd)/src
         if [ -d "$_roswss_ws" ]; then
           export ROS_WORKSPACE=$_roswss_ws
