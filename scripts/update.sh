@@ -57,8 +57,9 @@ else
 
     # pull base scripts first
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
-        echo_info ">>> Pulling scripts folder in $dir"
-        if [ -d $dir ]; then
+        # Only pull if directory exists and is writable
+        if [ -d $dir ] && [ -w $dir ]; then
+            echo_info ">>> Pulling scripts folder in $dir"
             cd $dir
             git pull
         fi
