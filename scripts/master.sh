@@ -14,7 +14,7 @@ master_ip=$(echo $master | egrep "([0-9]+\.){3}[0-9]+")
 if [ "$master" != "$master_ip" ] && [ "$master" != "localhost" ]; then
 	host -t a $master >/dev/null
 	if [ "$?" -ne 0 ]; then
-	    echo_warn "Host $master cannot be resolved at the moment!"
+		echo_warn "Host $master cannot be resolved at the moment!"
 	fi
 fi
 
@@ -27,10 +27,10 @@ local_ip=$2
 if [ -z "$local_ip" ]; then
 	num_ips=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+" | grep -c ".*")
 	if [ "$num_ips" == "0" ]; then
-    	# if there is no IP in the system, use loopback as ROS_IP
+		# if there is no IP in the system, use loopback as ROS_IP
 		local_ip=127.0.0.1
 	elif [ "$num_ips" == "1" ]; then
-    	# if there is only one IP in the system, use it as ROS_IP
+		# if there is only one IP in the system, use it as ROS_IP
 		local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
 	fi
 fi
@@ -42,8 +42,8 @@ if [ -n "$local_ip" ]; then
 fi
 
 # if ROS_IP is already set to an IP that belongs to this host, exit here
-if [ -n "$(hostname -I | grep -o $ROS_IP)" ]; then
-    echo_info "ROS_IP is already set to valid IP: $ROS_IP"
+if [ -n "$ROS_IP" ] && [ -n "$(hostname -I | grep -o $ROS_IP)" ]; then
+	echo_info "ROS_IP is already set to valid IP: $ROS_IP"
 	return
 fi
 
@@ -61,11 +61,11 @@ myips=$(hostname -I)
 echo_note "Your hostname is: "
 host -t a $hostname
 if [ $? -eq 0 ]; then
-    echo_info "If this hostname cannot be resolved on the master, you need to set the ROS_IP environment variable."
+	echo_info "If this hostname cannot be resolved on the master, you need to set the ROS_IP environment variable."
 else
-    echo_warn "Your hostname cannot be resolved in the network, you need to set the ROS_IP environment variable."
+	echo_warn "Your hostname cannot be resolved in the network, you need to set the ROS_IP environment variable."
 fi
 echo_note "You can use one of the following commands:"
 for local_ip in $myips; do
-    echo "  $ROSWSS_PREFIX master $1 $local_ip"
+	echo "  $ROSWSS_PREFIX master $1 $local_ip"
 done
