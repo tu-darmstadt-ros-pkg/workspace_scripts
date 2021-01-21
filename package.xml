@@ -23,5 +23,11 @@
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>rosbash</run_depend>
+  <run_depend>roslaunch</run_depend>
+  <run_depend>rostopic</run_depend>
+  <run_depend>screen</run_depend>
+  <run_depend>ffmpeg</run_depend>
+  <run_depend>git</run_depend>
 
 </package>
