@@ -4,7 +4,7 @@
   <version>0.0.0</version>
   <description>The workspace_scripts package</description>
 
-  <!-- One maintainer tag required, multiple allowed, one person per tag --> 
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <maintainer email="stumpf@sim.tu-darmstadt.de">Alexander Stumpf</maintainer>
   <maintainer email="fabian@sim.tu-darmstadt.de">Stefan Fabian</maintainer>
 
@@ -26,6 +26,12 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
 
+  <exec_depend>rosbash</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>rostopic</exec_depend>
+  <exec_depend>screen</exec_depend>
+  <exec_depend>ffmpeg</exec_depend>
+  <exec_depend>git</exec_depend>
   <exec_depend>python-git</exec_depend>
   <exec_depend>python-argparse</exec_depend>
 
