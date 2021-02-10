@@ -25,7 +25,10 @@ function roswss_clean() {
             # tidy up potential remainings
             rm -rf $ROSWSS_ROOT/build
             rm -rf $ROSWSS_ROOT/devel
-            rm -rf $ROSWSS_ROOT/.catkin_tools
+            #rm -rf $ROSWSS_ROOT/.catkin_tools
+            for dir in `find -L $ROSWSS_ROOT/.catkin_tools/profiles/ -maxdepth 1 -mindepth 1 -type d`; do
+                rm -rf $dir/packages
+            done
 
             echo_info ">>> Cleaned devel and build directories."
         else
