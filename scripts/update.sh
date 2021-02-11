@@ -97,7 +97,7 @@ else
 
     echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src
-    wstool update -j$(nproc)
+    wstool update -j$(($(nproc) < 16 ? $(nproc) : 16))
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
     rosdep install --ignore-src -r --from-paths .
