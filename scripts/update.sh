@@ -151,6 +151,7 @@ else
     echo
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
+    rosdep update
     if [[ $_NO_SUDO == 1 ]]; then
         rosdep check --ignore-src -r --from-paths .
     else
