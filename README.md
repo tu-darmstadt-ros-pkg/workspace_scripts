@@ -104,8 +104,14 @@ The update and make scripts do already provide the option for adding new routine
 |— my_workspace_scripts
     |— scripts
         |— hooks
-            |— make.sh    # additional make routines go here
-            |— update.sh  # additional update routines go here
+            |— make_externals  # individual make scripts goes here (alphabetical calling order)
+                |— projectX.sh    
+                |— ...
+            |— clean_externals # individual clean scripts goes here (alphabetical calling order)
+                |— projectX.sh    
+                |— ...
+            |— make.sh         # additional (common) make routines go here
+            |— update.sh       # additional (common) update routines go here
     |— CMakeLists.txt
     |— package.xml
     |— 20.setup.bash.em
