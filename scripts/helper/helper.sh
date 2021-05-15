@@ -87,6 +87,22 @@ apt_add_repository() {
     fi
 }
 
+apt_remove_repository() {
+    ppa=$1
+    key=$2
+    if grep -q "^$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+        if [ ! -z "$key" ]; then
+            echo_info "Removing PPA '$ppa' and key from '$key' ..."
+            echo_warn "Removing GPG keys is not implemented yet!"
+            #sudo apt-key del
+        else
+            echo_info "Removing PPA '$ppa' ..."
+        fi
+        sudo add-apt-repository --remove ppa:$ppa
+        sudo apt update
+    fi
+}
+
 depends() {
     for install in "$@"; do
         if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
