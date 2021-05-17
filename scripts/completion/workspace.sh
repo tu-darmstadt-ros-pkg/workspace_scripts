@@ -15,10 +15,10 @@ function roswss() {
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -x "$dir/${command}.sh" ]; then
             $dir/${command}.sh "$@"
-            return 0
+            return $?
         elif [ -r "$dir/${command}.sh" ]; then
             source $dir/${command}.sh "$@"
-            return 0
+            return $?
         else
             # check if current scope is remote pc script
             for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
@@ -42,7 +42,7 @@ function roswss() {
                     IFS=$OLD_IFS
 
                     remote_pc "${script_name}" "${hostname}" "${screen_name}" "${launch_command}" "$@"
-                    return 0
+                    return $?
                 fi
             done
         fi
