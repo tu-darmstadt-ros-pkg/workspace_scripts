@@ -197,6 +197,7 @@ else
     fi
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
+    rosdep update --rosdistro=${ROS_DISTRO}
     if [[ $_NO_SUDO == 1 ]]; then
         rosdep check --ignore-src -y -r --from-paths .
     else
