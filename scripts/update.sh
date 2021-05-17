@@ -100,5 +100,7 @@ else
     wstool update -j$(($(nproc) < 16 ? $(nproc) : 16))
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
+    roswss rosdep_add_local_packages
+    rosdep update --rosdistro=${ROS_DISTRO}
     rosdep install --ignore-src -r --from-paths .
 fi
