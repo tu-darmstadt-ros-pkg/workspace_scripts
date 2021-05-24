@@ -18,7 +18,18 @@ function roswss_clean() {
             echo
             echo
             roswss_clean_externals
+
+            # run regular clean command
             catkin clean --all --yes
+
+            # tidy up potential remainings
+            rm -rf $ROSWSS_ROOT/build
+            rm -rf $ROSWSS_ROOT/devel
+            #rm -rf $ROSWSS_ROOT/.catkin_tools
+            for dir in `find -L $ROSWSS_ROOT/.catkin_tools/profiles/ -maxdepth 1 -mindepth 1 -type d`; do
+                rm -rf $dir/packages
+            done
+
             echo_info ">>> Cleaned devel and build directories."
         else
             echo_error ">>> Clean cancelled by user."
@@ -44,7 +55,21 @@ function roswss_clean() {
                     roswss_clean_externals
                 else
                     echo_note ">>> Cleaning package: $package"
+
+                    # run regular clean command
                     catkin clean "$package"
+
+                    # tidy up potential remainings
+                    rm -rf $ROSWSS_ROOT/build/$package
+                    rm -rf $ROSWSS_ROOT/devel/include/$package
+                    rm -rf $ROSWSS_ROOT/devel/lib/$package
+                    rm -rf $ROSWSS_ROOT/devel/share/$package
+                    rm -rf $ROSWSS_ROOT/devel/.private/$package
+
+                    for dir in `find -L $ROSWSS_ROOT/.catkin_tools/profiles/ -maxdepth 1 -mindepth 1 -type d`; do
+                        rm -rf $dir/packages/$package
+                    done
+
                     echoc $BLUE "Done"
                     echo
                 fi

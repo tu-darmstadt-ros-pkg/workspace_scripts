@@ -22,6 +22,9 @@ for var in "$@"; do
         --externals)
             build_externals=true
             ;;
+        --distcc)
+            catkin_args=( "${catkin_args[@]}" "-p$(distcc -j) -j$(distcc -j) --no-jobserver" )
+            ;;
         *)
             catkin_args=( "${catkin_args[@]}" "$var" )
             ;;
