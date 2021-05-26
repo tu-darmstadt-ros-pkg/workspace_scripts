@@ -82,8 +82,7 @@ apt_add_repository() {
         else
             echo_info "Adding PPA '$ppa' ..."
         fi
-        sudo apt-add-repository "$ppa"
-        sudo apt update
+        sudo apt-add-repository --yes --update "$ppa"
     fi
 }
 
@@ -98,8 +97,7 @@ apt_remove_repository() {
         else
             echo_info "Removing PPA '$ppa' ..."
         fi
-        sudo add-apt-repository --remove ppa:$ppa
-        sudo apt update
+        sudo add-apt-repository --remove --update ppa:$ppa
     fi
 }
 

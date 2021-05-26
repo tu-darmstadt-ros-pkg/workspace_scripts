@@ -13,9 +13,9 @@ function roswss_clean() {
     if [ "$#" -eq 0 ]; then
         echo -ne "${YELLOW}Do you want to clean build, devel and install? [y/N] ${NOCOLOR}"
         read -N 1 REPLY
+        echo
 
         if test "$REPLY" = "y" -o "$REPLY" = "Y"; then
-            echo
             echo
             roswss_clean_externals
 
