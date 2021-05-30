@@ -52,7 +52,7 @@ echo_note() {
 
 aptinstall() {
     for pkg in "$@"; do
-        dpkg -s $pkg &>/dev/null || sudo apt-get -y install $pkg
+        dpkg -s $pkg &>/dev/null || sudo apt -y install $pkg
     done
 }
 
@@ -63,7 +63,7 @@ apt_install() {
 aptremove() {
     for pkg in "$@"; do
         if dpkg -s $pkg >/dev/null 2>&1; then
-          sudo apt-get remove $pkg
+          sudo apt remove $pkg
         fi
     done
 }
@@ -99,6 +99,11 @@ apt_remove_repository() {
         fi
         sudo add-apt-repository --remove --update ppa:$ppa
     fi
+}
+
+check_pkg_is_installed() {
+    pkg=$1
+    dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep "ok installed"
 }
 
 depends() {
