@@ -185,7 +185,7 @@ The `ROSWSS_INSTALL_DIR` defines the **relative** path from your ROS workspace r
 
 ### Usage
 
-All files ending with `*.sh` and `*.rosinstall` located in the `optional` subfolder are considered as an optional installable module. All available modules can be listed with `roswss install --help`. Once a module (e.g. `my_optional`) was installed via `roswss install my_optional`, its changes will be tracked further on until it has been uninstalled by the corresponding `roswss uninstall my_optional` command. Therefore all used shell scripts must be written in a way that they can be (re-)installed although the module has been already installed. 
+All files ending with `*.sh` and `*.rosinstall` located in the `optional` subfolder are considered as an optional installable module. All available modules can be listed with `roswss install --help`. Once a module (e.g. `my_optional`) was installed via `roswss install my_optional`, its changes will be tracked further on until it has been uninstalled by the corresponding `roswss uninstall my_optional` command. Therefore all used shell scripts must be written in an idempotent way that they can be (re-)installed although the module has been already installed. 
 
 All *.rosinstall files should follow the [rosinstall file format](http://docs.ros.org/independent/api/rosinstall/html/rosinstall_file_format.html). Alternatively, a shell script can be used to handle more complex install routines such as installing deb packages and further dependencies. If both variants exist, the rosinstall file will be always handled before the shell script is executed.
 
