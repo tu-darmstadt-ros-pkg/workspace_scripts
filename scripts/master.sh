@@ -61,7 +61,7 @@ myips=$(hostname -I)
 echo_note "Your hostname is: "
 host -t a $hostname
 if [ $? -eq 0 ]; then
-    echo_info "If this hostname cannot be resolved on the master, you need to set the ROS_IP environment variable."
+    echo_info "If this hostname cannot be resolved on the master ($master), you need to set the ROS_IP environment variable."
 else
     echo_warn "Your hostname cannot be resolved in the network, you need to set the ROS_IP environment variable."
 fi
