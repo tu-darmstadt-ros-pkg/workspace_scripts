@@ -153,8 +153,8 @@ else
     echo_info ">>> Updating rosdeps for all packages in workspace"
     rosdep update
     if [[ $_NO_SUDO == 1 ]]; then
-        rosdep check --ignore-src -r --from-paths .
+        rosdep check --ignore-src -y -r --from-paths .
     else
-        rosdep install --ignore-src -r --from-paths .
+        rosdep install --ignore-src -y -r --from-paths .
     fi
 fi
