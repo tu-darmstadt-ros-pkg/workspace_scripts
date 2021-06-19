@@ -9,11 +9,11 @@ fi
 
 host=$1; shift
 
-# Convert to arrays
+# convert to arrays
 hosts=($ROBOT_HOSTNAMES)
 users=($ROBOT_USERS)
 
-# Check if multiple users are defined
+# check if multiple users are defined
 if [ -z "$ROBOT_USERS" ]; then
     # if not, look for single user definition (backwards compatibility)
     if [ -z "$ROBOT_USER" ]; then
@@ -23,25 +23,26 @@ if [ -z "$ROBOT_USERS" ]; then
         user=$ROBOT_USER
     fi
 else
-    # Else look for the array index of the host name
+    # else look for the array index of the host name
     for idx in "${!hosts[@]}"; do 
         if [ "${hosts[$idx]}" = "$host" ]; then
-            # Take corresponding user
+            # take corresponding user
             user="${users[$idx]}"
             break
         fi
     done
 fi
 
-# Check if we found a valid user
+# check if we found a valid user
 if [ -z "$user" ]; then
     echo_error "Unknown host '$host'"
     exit
 fi
 
-echo_info "Connecting to \"$host\" as \"$user\""
+# connect via SSH
+echo_info "Connecting to machine \"$host\" as user \"$user\"..."
 if [ "$#" -eq 0 ]; then
     ssh $user@$host -A
 else
-    ssh $user@$host -A -t 'bash -l -c -i "'$@'"'
+    ssh $user@$host -A -t "bash -l -c -i '$@'"
 fi
