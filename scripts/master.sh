@@ -4,18 +4,18 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 master=$1
 if [ -z "$master" ]; then
-	echo "Usage: $ROSWSS_PREFIX master MASTER_HOSTNAME_OR_IP [LOCAL_HOSTNAME_OR_IP]"
-	return
+    echo "Usage: $ROSWSS_PREFIX master MASTER_HOSTNAME_OR_IP [LOCAL_HOSTNAME_OR_IP]"
+    return
 fi
 
 master_ip=$(echo $master | egrep "([0-9]+\.){3}[0-9]+")
 
 # resolve master only if it is not already an IP address
 if [ "$master" != "$master_ip" ] && [ "$master" != "localhost" ]; then
-	host -t a $master >/dev/null
-	if [ "$?" -ne 0 ]; then
-	    echo_warn "Host $master cannot be resolved at the moment!"
-	fi
+    host -t a $master >/dev/null
+    if [ "$?" -ne 0 ]; then
+        echo_warn "Host $master cannot be resolved at the moment!"
+    fi
 fi
 
 # export ROS_MASTER_URI
@@ -25,14 +25,14 @@ echo_info "Setting ROS_MASTER_URI to $ROS_MASTER_URI"
 # check command line for ROS_IP
 local_ip=$2
 if [ -z "$local_ip" ]; then
-	num_ips=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+" | grep -c ".*")
-	if [ "$num_ips" == "0" ]; then
-    	# if there is no IP in the system, use loopback as ROS_IP
-		local_ip=127.0.0.1
-	elif [ "$num_ips" == "1" ]; then
-    	# if there is only one IP in the system, use it as ROS_IP
-		local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
-	fi
+    num_ips=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+" | grep -c ".*")
+    if [ "$num_ips" == "0" ]; then
+        # if there is no IP in the system, use loopback as ROS_IP
+        local_ip=127.0.0.1
+    elif [ "$num_ips" == "1" ]; then
+        # if there is only one IP in the system, use it as ROS_IP
+        local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
+    fi
 fi
 # export ROS_IP
 if [ -n "$local_ip" ]; then
@@ -42,9 +42,9 @@ if [ -n "$local_ip" ]; then
 fi
 
 # if ROS_IP is already set to an IP that belongs to this host, exit here
-if [ -n "$(hostname -I | grep -o $ROS_IP)" ]; then
+if [ -n "$ROS_IP" ] && [ -n "$(hostname -I | grep -o $ROS_IP)" ]; then
     echo_info "ROS_IP is already set to valid IP: $ROS_IP"
-	return
+    return
 fi
 
 # clear invalid ROS_IP value
@@ -54,7 +54,7 @@ export ROS_IP=
 echo
 hostname=$(hostname)
 if [ -n "$ROS_HOSTNAME" ]; then
-	hostname=$ROS_HOSTNAME
+    hostname=$ROS_HOSTNAME
 fi
 
 myips=$(hostname -I)
