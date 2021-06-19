@@ -3,18 +3,23 @@
 function remote_pc() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
+    # dispatch arguments
     local script_name
     script_name="$1"
     shift
+
     local hostname
     hostname="$1"
     shift
+
     local screen_name
     screen_name="$1"
     shift
+
     local launch_command
     launch_command="$1"
     shift
+
     local command
     command="$1"
     shift
