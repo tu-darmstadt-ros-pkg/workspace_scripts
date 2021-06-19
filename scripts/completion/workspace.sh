@@ -29,10 +29,12 @@ function roswss() {
                     local pc
                     pc=${script_name}_remote_pc
 
+                    # temporary change seperation symbol
                     local OLD_IFS
                     OLD_IFS=$IFS
                     IFS=$ROSWSS_SEP_SYM
 
+                    # dispatch arguments for remote_pc function call
                     local args
                     args=(${!pc})
                     local hostname
@@ -44,6 +46,7 @@ function roswss() {
 
                     IFS=$OLD_IFS
 
+                    # call remote pc function
                     remote_pc "${script_name}" "${hostname}" "${screen_name}" "${launch_command}" "$@"
                     return 0
                 fi
