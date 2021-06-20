@@ -72,6 +72,11 @@ apt_remove() {
     aptremove "$@"
 }
 
+apt_key() {
+    key=$1
+    apt-key adv --keyserver keys.gnupg.net --recv-key $key || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key $key
+}
+
 apt_add_repository() {
     ppa=$1
     key=$2
