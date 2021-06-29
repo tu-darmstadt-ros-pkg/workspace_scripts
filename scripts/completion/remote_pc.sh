@@ -39,7 +39,7 @@ function remote_pc() {
             roswss ssh $hostname
         fi
     elif [[ ! $(hostname) == "$hostname" && ! "$hostname" == "localhost" ]]; then
-        roswss ssh $hostname "remote_pc '$script_name' '$hostname' '$screen_name' '$launch_command' '$command' '$@'"
+        roswss ssh $hostname "remote_pc '$script_name' '$hostname' '$screen_name' '$launch_command' '$command' $@"
 
     # we are on remote host pc
     else
