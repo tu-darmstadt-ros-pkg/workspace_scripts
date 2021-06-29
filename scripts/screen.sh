@@ -42,7 +42,7 @@ case $action in
         mkdir -p ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
         cd ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
         [ -f screenlog.0 ] && rm screenlog.0
-        screen -dmLS $screen_session /bin/bash -ic "$@"
+        screen -dmLS $screen_session /bin/bash -ic "$1 $2 $3 $4 $5"
 
         if screen -ls | grep $screen_session &>/dev/null; then
             echo_info "Screen '$screen_session' started!"
