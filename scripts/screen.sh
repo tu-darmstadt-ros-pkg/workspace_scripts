@@ -4,7 +4,7 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 # list of valid arguments
 ARGUMENTS=( "start" "stop" "show" "list" )
-ARGUMENTS_MSG="Usage: screen start/stop/show/list <Screen Name> <Command>"
+ARGUMENTS_MSG="Usage: screen start/stop/show/list/sigterm <Screen Name> <Command>"
 
 # checks if given argument is known
 valid_argument() { 
@@ -80,5 +80,9 @@ case $action in
 
     list)
         screen -list
+        ;;
+
+    sigterm)
+        screen -S $screen_session -p 0 -X stuff "^C"
         ;;
 esac
