@@ -55,7 +55,7 @@ function remote_pc() {
             for dir in ${ROSWSS_SCRIPTS//:/ }; do
                 if [ -x "$dir/${command}.sh" ]; then
                     roswss $command "$@"
-                    return 0            
+                    return 0
                 fi
             done
 
@@ -117,7 +117,7 @@ function _remote_pc_help() {
     out=""
 
     for i in ${commands[@]}; do
-        for dir in ${ROSWSS_SCRIPTS//:/ }; do      
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do
             if [ $i == "roscore" ]; then
                 out+="\t $i \t\t (Remote PC Script)\n"
                 break
