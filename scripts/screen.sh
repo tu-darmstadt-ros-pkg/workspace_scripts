@@ -3,7 +3,7 @@
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 # list of valid arguments
-ARGUMENTS=( "start" "stop" "show" "list" )
+ARGUMENTS=( "start" "stop" "show" "list" "sigterm" )
 ARGUMENTS_MSG="Usage: screen start/stop/show/list/sigterm <Screen Name> <Command>"
 
 # checks if given argument is known
