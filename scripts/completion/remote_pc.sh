@@ -32,8 +32,8 @@ function remote_pc() {
     #echo "roswss ssh $hostname '$ROSWSS_PREFIX $script_name $command $@'"
 
     # check if first a ssh connection to host is required/requested
-    if [ $command = 'ssh' ]; then
-        if [ $(hostname) = $hostname ]; then
+    if [ "$command" == "ssh" ]; then
+        if [ $(hostname) == "$hostname" ]; then
             echo_warn "You are already on $hostname!"
         else
             roswss ssh $hostname
