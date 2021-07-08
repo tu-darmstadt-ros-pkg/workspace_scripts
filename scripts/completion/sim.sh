@@ -34,7 +34,7 @@ function roswss_sim() {
         roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE world_name:="$command" "$@"
       # neither launch nor world was given; start default
       else
-        roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE "$@"
+        roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE "$command $@"
       fi
     else
       echo_error "No GAZEBO_DEFAULT_LAUNCH_FILE is defined. Please export GAZEBO_DEFAULT_LAUNCH_FILE in your local workspace setup."
