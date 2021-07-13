@@ -187,6 +187,51 @@ function _roswss_complete() {
             fi
         done
 
+
+        # Autocomplete python scripts
+        for dir in ${ROSWSS_SCRIPTS//:/ }; do
+            if [ -d "$dir" ]; then
+                while IFS= read -r -d '' file; do
+                    local command
+                    command=${file#$dir/}
+                    if [[ ! -x "$file" ]]; then
+                        continue
+                    fi
+                    command=${command%.py}
+                    if [[ "$command" != "$prev" ]]; then
+                        continue
+                    fi
+
+                    if ! which register-python-argcomplete > /dev/null 2>&1; then
+                        source "${ROSWSS_BASE_SCRIPTS}/helper/helper.sh"
+                        echo ""
+                        echo_note "For autocompletion please install argcomplete using 'pip3 install --user argcomplete'"
+                    fi
+                    local IFS=$'\013'
+                    local SUPPRESS_SPACE=0
+                    if compopt +o nospace 2> /dev/null; then
+                        SUPPRESS_SPACE=1
+                    fi
+                    COMP_LINE=${COMP_LINE#${COMP_WORDS[0]} } # Remove prefix and space
+                    (( COMP_POINT -= ${#COMP_WORDS[0]} + 1 ))
+                    COMPREPLY=( $(IFS="$IFS" \
+                                    COMP_LINE="$COMP_LINE" \
+                                    COMP_POINT="$COMP_POINT" \
+                                    COMP_TYPE="$COMP_TYPE" \
+                                    _ARGCOMPLETE_COMP_WORDBREAKS="$COMP_WORDBREAKS" \
+                                    _ARGCOMPLETE=1 \
+                                    _ARGCOMPLETE_SUPPRESS_SPACE=$SUPPRESS_SPACE \
+                                    $file 8>&1 9>&2 > /dev/null 2>&1) )
+                    if [[ $? != 0 ]]; then
+                        unset COMPREPLY
+                    elif [[ $SUPPRESS_SPACE == 1 ]] && [[ "$COMPREPLY" =~ [=/:]$ ]]; then
+                        compopt -o nospace
+                    fi
+                    return
+                done < <(find -L "$dir/" -maxdepth 1 -type f -name "*.py" -print0)
+            fi
+        done
+
         # default completion (special cases; default cases see in 50.exports.bash.em)
         case $prev in
             launch)
