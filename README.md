@@ -136,6 +136,8 @@ The workspace scripts package supports [programmable completion](https://www.gnu
 
 The new autocomplete script must be registered using the `add_completion` function.
 
+**Note:** Python scripts will be autocompleted automatically. A completion function can be provided but is not necessary. Completion can be added using the argcomplete package.
+
 **Example:** Let us assume that within the newly created `my_super_script.sh` two functions named `my_script` and `_my_script_complete` have been defined. The former function implements a new awesome command while latter defines how the autocompletion arguments are formed based on [programmable completion](https://www.gnu.org/software/bash/manual/bash.html#Programmable-Completion). In order to register the new autocomplete functionality, add following line in your `20.setup.bash.em`:
 
 ```Shell
@@ -148,7 +150,7 @@ For details in working with [programmable completion](https://www.gnu.org/softwa
 ## Python
 
 The workspace scripts supports python scripts.
-For an example, see the `scripts/analyze.py` script. Completion can be given using the `argcomplete` package (see `scripts/completion/analyze.sh`).
+For an example, see the `scripts/analyze.py` script. Completion can be given using the `argcomplete` package and will automatically be used if provided.
 
 ## Rosinstall
 
