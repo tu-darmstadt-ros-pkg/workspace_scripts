@@ -33,6 +33,7 @@ if [[ ! -z "${packages[@]}" ]]; then
         fi
 
         # otherwise dispatching path using wstool
+        cd $ROSWSS_ROOT
         path=$(wstool info --only=localname | grep ${package})
         if [ $path ]; then
             wstool update $path
