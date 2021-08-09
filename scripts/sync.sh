@@ -8,9 +8,9 @@ if [[ -z "$1" && -z "$ROBOT_MASTER_HOSTNAME" ]]; then
     exit 1
 fi
 
-return
-
-sudo /etc/init.d/chrony stop
+if [ -x /etc/init.d/chrony ]; then
+  sudo /etc/init.d/chrony stop
+fi
 
 if [ "$#" -lt 1 ]; then
   sudo ntpdate $ROBOT_MASTER_HOSTNAME
@@ -18,4 +18,6 @@ else
   sudo ntpdate $1
 fi
 
-sudo /etc/init.d/chrony start
+if [ -x /etc/init.d/chrony ]; then
+  sudo /etc/init.d/chrony start
+fi
