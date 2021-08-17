@@ -18,6 +18,8 @@ if [ "$#" -eq 0 ]; then
     if [[ "$REPLY" = "y" || "$REPLY" = "Y" ]]; then
 
         rm -f "$logging_dir/bags/"*.bag
+        rm -f "$logging_dir/bags/"*.bag.active
+        rm -f "$logging_dir/bags/"*.urdf
         rm -f "$logging_dir/maps/"*
         rm -f "$logging_dir/octomaps/"*.bt
 
