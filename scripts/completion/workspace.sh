@@ -202,7 +202,7 @@ function _roswss_complete() {
                         continue
                     fi
 
-                    if ! which register-python-argcomplete > /dev/null 2>&1; then
+                    if ! which register-python-argcomplete > /dev/null 2>&1 && ! which register-python-argcomplete3 > /dev/null 2>&1; then
                         source "${ROSWSS_BASE_SCRIPTS}/helper/helper.sh"
                         echo ""
                         echo_note "For autocompletion please install argcomplete using 'pip3 install --user argcomplete'"
