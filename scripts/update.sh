@@ -75,10 +75,12 @@ else
     echo
 
     # update optional rosinstalls
-    echo_info ">>> Pulling optional installs in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional"
-    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
-    git pull
-    echo
+    if [ -d $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/.git ]; then
+        echo_info ">>> Pulling optional installs in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional"
+        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
+        git pull
+        echo
+    fi
 
     cd $ROSWSS_ROOT/src
 
