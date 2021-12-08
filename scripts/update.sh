@@ -198,4 +198,5 @@ else
     else
         rosdep install --ignore-src -y -r --from-paths .
     fi
+    echo
 fi
