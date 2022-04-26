@@ -48,7 +48,7 @@ def printChanges(path):
     # Need to reverse using R=True, otherwise we get the diff from tree to HEAD meaning deleted files are added and vice versa
     changes += repo.index.diff("HEAD", R=True)
   except git.BadName as e:
-    printWithStyle(Style.Error, "{} has no HEAD!\Exception: {}".format(path, e.message))
+    printWithStyle(Style.Error, "{} has no HEAD!\nException: {}".format(path, e.message))
 
   # Check branches for uncommited commits and pure local branches
   uncommited_commits = []
