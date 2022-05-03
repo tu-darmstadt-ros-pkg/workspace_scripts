@@ -9,10 +9,11 @@ function roswss_install() {
         return 0
     fi
 
-    pwd=$PWD
+    local pwd=$PWD
     cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional
 
     # perform install
+    local rosinstall
     for rosinstall in "$@"; do
         local error=1
 
