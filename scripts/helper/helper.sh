@@ -112,6 +112,10 @@ check_pkg_is_installed() {
 }
 
 depends() {
+    if [ ! -f $ROSWSS_ROOT/.install ]; then
+        touch $ROSWSS_ROOT/.install
+    fi
+      
     for install in "$@"; do
         if ! grep -Fxq "$install" $ROSWSS_ROOT/.install; then
             roswss install $install
