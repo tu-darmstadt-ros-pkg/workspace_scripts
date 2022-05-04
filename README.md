@@ -229,6 +229,10 @@ which will spawn a screen named "my_screen" with "hello world" output when calli
 roswss my_script start
 ```
 
+## Auto ros master
+
+The workspace can automatically set a ros master. In your workspace root, Just add the `.rosmaster` file containing the target hostname or IP adress, e.g. `localhost`. If this file exists, each bash session will automatically call `fm master <content of your .rosmaster>` on startup.
+
 ## Autostart
 
 Autostart is a very complex and difficult topic and comes with a lot of issues at different layers which have to be solved reliably. Hence, the currently known best-practice method using *roswss* is demonstrated next.
