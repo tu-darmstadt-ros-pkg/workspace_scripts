@@ -123,6 +123,14 @@ depends() {
     done
 }
 
+wstool_rm() {
+    for path in "$@"; do
+        if wstool info | grep "$path"; then
+            wstool rm $path
+        fi
+    done
+}
+
 append_to_file() {
     local file
     file=$1
