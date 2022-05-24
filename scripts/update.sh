@@ -26,7 +26,7 @@ if [[ ! -z "${packages[@]}" ]]; then
 
         # try dispatching path using rospack        
         path=$(rospack find -q ${package})
-        if [ $path ]; then
+        if [ -d $path ]; then
             git -C $path pull
             echo
             continue
@@ -35,7 +35,7 @@ if [[ ! -z "${packages[@]}" ]]; then
         # otherwise dispatching path using wstool
         cd $ROSWSS_ROOT
         path=$(wstool info --only=localname | grep ${package})
-        if [ $path ]; then
+        if [ -d $path ]; then
             wstool update $path
             echo
             continue
