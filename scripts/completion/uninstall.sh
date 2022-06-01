@@ -3,26 +3,29 @@
 function roswss_uninstall() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
-    local rosinstall
-    rosinstall=$1
-    shift
-
-    if [[ "$rosinstall" = "--help" || -z "$rosinstall" ]]; then
+    if [[ "$1" = "--help" || -z "$1" ]]; then
         _roswss_uninstall_help
         return 0
     fi
 
-    # run bash script
-    if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
-        echo_note "Running bash script: ${rosinstall}.sh"
-        $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
-        echoc $BLUE "Done (${rosinstall}.sh)"
-        echo
-    fi
+    # perform install
+    local rosinstall
+    for rosinstall in "$@"; do
+    
+        echo_info ">>> Uninstalling $rosinstall"
+        
+        # run bash script
+        if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
+            echo_note "Running bash script: ${rosinstall}.sh"
+            $ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh "uninstall"
+            echoc $BLUE "Done (${rosinstall}.sh)"
+            echo
+        fi
 
-    remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall
+        remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall
 
-    # TODO: Also uninstall packages?
+        # TODO: Also uninstall packages?
+    done
 
     return 0
 }
