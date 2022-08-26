@@ -34,7 +34,7 @@ function roswss_sim() {
         roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE world_name:="$command" "$@"
       # neither launch nor world was given; start default
       elif [[ ! -z "$command" ]]; then
-        roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE "$command $@"
+        roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE "$command" "$@"
       else
         roslaunch $GAZEBO_LAUNCH_PKG $GAZEBO_DEFAULT_LAUNCH_FILE "$@"
       fi
