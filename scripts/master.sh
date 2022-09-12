@@ -32,6 +32,17 @@ if [ -z "$local_ip" ]; then
     elif [ "$num_ips" == "1" ]; then
         # if there is only one IP in the system, use it as ROS_IP
         local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
+    elif which resolvectl >/dev/null 2>&1; then
+        # Try to find ip on same subnet
+        # First try to resolve master and check on which interface
+        tmp_remote_interface=$(resolvectl query ecscout --no-pager --legend=false | sed -En -e "s/.*link: ([^\s]+).*/\1/p")
+        if [ $? -eq 0 ]; then
+            # Get ip for interface
+            num_ips=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p" | grep -c ".*")
+            if [ "$num_ips" == "1" ]; then
+                local_ip=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p")
+            fi
+        fi
     fi
 fi
 # export ROS_IP
