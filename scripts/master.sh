@@ -41,6 +41,7 @@ if [ -z "$local_ip" ]; then
             num_ips=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p" | grep -c ".*")
             if [ "$num_ips" == "1" ]; then
                 local_ip=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p")
+                echo_note "Resolved master over $tmp_remote_interface. Using interface ip: $local_ip"
             fi
         fi
     fi
