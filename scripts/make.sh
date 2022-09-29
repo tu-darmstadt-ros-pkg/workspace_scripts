@@ -35,7 +35,7 @@ catkin_args=${catkin_args[*]}
 LAST_PWD=$PWD
 
 # run pre-build options
-cd $ROSWSS_ROOT
+cd "$ROSWSS_ROOT"
 if [[ $build_externals = true || $build_this = false ]]; then
     # call external build scripts
     echo_info ">>> Making externals"
@@ -70,7 +70,7 @@ fi
 
 # change directory back for --this flag
 if [ $build_this = true ]; then
-    cd $LAST_PWD
+    cd "$LAST_PWD"
 fi
 
 # run catkin main build process
