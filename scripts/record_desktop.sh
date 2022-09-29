@@ -19,7 +19,7 @@
 # This is the `record_desktop' command, which records your desktop.
 # If no argument is received full resolution is used. 
 
-usage="Usage: rd  [OPTION]... VALUE...
+usage="Usage: record_desktop  [OPTION]... VALUE...
         -h,            print this help and exit
         -v,            print version information and exit
         -d,            records display number: [0- Number of displays available] (e.g. -d 0) 
@@ -34,8 +34,12 @@ resolution=$(xdpyinfo | grep dimensions | awk '{print $2'})   #Default resolutio
 offset=0x0
 record=true
 use_display=false
+record_speakers_audio=""
+record_microphone_audio=""
 record_audio=""
-loop_audio=false
+map_mic=false
+map_speakers=false
+mix_mic_speakers=""
 file_path=""
 module=
 
@@ -52,11 +56,56 @@ while getopts ":hvr:d:o:alp:" opt; do
         offset=$OPTARG
         ;;
     a)
-        record_audio="-f alsa -ac 2 -i pulse -acodec pcm_s16le"
+        echo "Looking for microphones"
+        MICROPHONES="$(pacmd list-sources | grep "\.analog-" | grep -v "monitor" | grep -o -P '(?<=<).*(?=>)')"
+        MICS=($MICROPHONES) # Convert string into array
+
+
+        if [ "${#MICS[@]}" = 1 ]; then
+            echo "Found only one Microphone, using it."
+            MIC_ID=0
+        else
+            echo "Found ${#MICS[@]} microphones: "
+            until [[ $MIC_ID =~ ^[0-$((${#MICS[@]}-1))]+$ ]]; do
+                for index in "${!MICS[@]}"
+                do
+                    echo "$index ${MICS[index]}"
+                done
+                echo -n "Which Microphone index do you want to record from [${!MICS[@]}] ?: "
+                read -r -e MIC_ID
+            done
+        fi
+
+        echo  "Recording Microphone Selected: ${MICS[$MIC_ID]}"  
+	    record_microphone_audio="-f pulse -ac 2 -ar 48000 -i ${MICS[$MIC_ID]}"
+	    record_audio="-acodec pcm_s16le"
+	    map_mic=true
         ;;
     l)
-        record_audio="-f alsa -ac 2 -i pulse -acodec pcm_s16le"
-        loop_audio=true
+        echo "Looking for speakers"
+        SPEAKERS="$(pacmd list-sources | grep "\.monitor" | grep -o -P '(?<=<).*(?=>)')"
+        SPEAK=($SPEAKERS) # Convert string into array
+
+
+        if [ "${#SPEAK[@]}" = 1 ]; then
+            echo "Found only one Speaker, using it."
+            SPEAK_ID=0
+        else
+            echo "Found ${#SPEAK[@]} speakers: "
+            until [[ $SPEAK_ID =~ ^[0-$((${#SPEAK[@]}-1))]+$ ]]; do
+                for index in "${!SPEAK[@]}"
+                do
+                    echo "$index ${SPEAK[index]}"
+                done
+                echo -n "Which Speaker index do you want to record from [${!SPEAK[@]}] ?: "
+                read -r -e SPEAK_ID
+            done
+        fi
+
+        echo  "Recording Speakers Selected: ${SPEAK[$SPEAK_ID]}"
+	    record_speakers_audio="-f pulse -ac 2 -ar 44100 -i ${SPEAK[$SPEAK_ID]}"
+	    record_audio="-acodec pcm_s16le"
+	    map_speakers=true
         ;;
     h)
         echo "$usage"
@@ -73,13 +122,13 @@ while getopts ":hvr:d:o:alp:" opt; do
         ;;
 
     v)  
-        echo 'rd  1.0'
+        echo 'record_desktop  1.1'
         printf $"Copyright (C) %s Team ViGIR.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-" "2015"
-printf $"Written by %s.
-" "Alberto Romay"
+        This is free software; see the source for copying conditions.  There is NO
+        warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+        " "2015"
+        printf $"Written by %s.
+        " "Alberto Romay"
         exit 1
         ;;
     :)
@@ -93,30 +142,43 @@ done
 x_off=$(echo $offset | cut -f1 -dx)
 y_off=$(echo $offset | cut -f2 -dx)
 
-now="$(date +'%d-%m-%Y_%H:%M:%S')"
+now="$(date +'%d-%m-%Y_%H-%M-%S')"
 lightgreen='\033[1;32m'
 NC='\033[0m' # No Color
 
 if [ "$use_display" = true ]; then
     if echo "$display" | grep -qE ^\-?[0-9]?\.?[0-9]+$ ; then
-        string=$(xrandr | grep \* | awk '{print $1'})
-        #echo "$string"
-        arr=()
+        arr_res=()
+        arr_x_off=()
+        arr_y_off=()
         count=0
         x_acum=0
+
+        string=$(xrandr | grep -o "[0-9]*x[0-9]*+[0-9]*+[0-9]*" | grep -o "[0-9]*x[0-9]*")  #Get resolutions
+        #echo "$string"
         while read -r line; do
-            arr+=("$line")
+            arr_res+=("$line")
             count=$[$count +1]
         done <<< "$string"
+
+	string=$(xrandr | grep -o "[0-9]*x[0-9]*+[0-9]*+[0-9]*" | grep -o "+[0-9]*+" | grep -o "[0-9]*")  #Get x offsets
+        #echo "$string"
+        while read -r line; do
+            arr_x_off+=("$line")
+        done <<< "$string"
+
+	string=$(xrandr | grep -o "[0-9]*x[0-9]*+[0-9]*+[0-9]*" | grep -o "+[0-9]*$" | grep -o "[0-9]*")  #Get y offsets
+        #echo "$string"
+        while read -r line; do
+            arr_y_off+=("$line")
+        done <<< "$string"
+
+
         echo "Found $count displays"
         if [ "$display" -ge 0 ] && [ "$display" -lt "$count" ]; then
-            i="0"
-            while [ $i -lt $display ]; do
-                x_acum=$[$x_acum + $(echo ${arr["$i"]} | cut -f1 -dx)]
-                i=$[$i+1]
-            done
-            resolution=${arr["$display"]}
-            x_off=$x_acum
+            resolution=${arr_res["$display"]}
+            x_off=${arr_x_off["$display"]}
+            y_off=${arr_y_off["$display"]}
         else
             count=$[$count -1]
             echo "Display number $display out of range [0-$count]"
@@ -131,13 +193,6 @@ fi
 
 if [ "$record" = true ]; then
 
-   if [ "$loop_audio" = true ]; then 
-       module=`pactl load-module module-loopback` #Loads the audio module to loopback and stores it or later unload
-   fi
-   if   [  -n "$record_audio" ]; then
-        pavucontrol &
-   fi
-
    if [ "$file_path" = "" ]; then
      echo "use time stamped name ..."
      full_path=screencast_$now.mkv
@@ -145,23 +200,17 @@ if [ "$record" = true ]; then
      echo "use path and hostname ..."
      full_path=$file_path"/"$HOSTNAME"_desktop.mkv"
    fi 
+    
+    echo "map_mic: $map_mic"
+    echo "map_speakers: $map_speakers"
+    if [ "$map_mic" = true ] && [ "$map_speakers" = true ]; then
+        echo "MIXING CHANNELS"
+        mix_mic_speakers="-filter_complex amix=inputs=2"
+    fi
 
    echo "Recording at $resolution with $x_off,$y_off offset"
    echo " to $full_path"
-   ffmpeg  $record_audio -s $resolution -f x11grab -i :0.0+$x_off,$y_off -vcodec libx264 -preset ultrafast -crf 0 -threads 0 $full_path
+   ffmpeg  $record_speakers_audio $record_microphone_audio $mix_mic_speakers $record_audio -s $resolution -f x11grab -i :0.0+$x_off,$y_off -vcodec libx264 -preset ultrafast -threads 0 $full_path
    echo -e "${lightgreen}Recorded to screencast_$now.mkv${NC}"
 
-   if [ "$loop_audio" = true ]; then
-       pactl unload-module $module     #Unloads the audio loopback
-   fi
-   if  [ -n "$record_audio" ]; then
-       pidofpavu=$(pidof pavucontrol)
-       if  [ -n "$pidofpavu" ]; then
-            kill -9 $pidofpavu
-       fi
-   fi
-
 fi
-
-
-
