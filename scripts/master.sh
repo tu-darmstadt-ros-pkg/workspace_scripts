@@ -32,16 +32,17 @@ if [ -z "$local_ip" ]; then
     elif [ "$num_ips" == "1" ]; then
         # if there is only one IP in the system, use it as ROS_IP
         local_ip=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+")
-    elif which resolvectl >/dev/null 2>&1; then
-        # Try to find ip on same subnet
-        # First try to resolve master and check on which interface
-        tmp_remote_interface=$(resolvectl query ecscout --no-pager --legend=false | sed -En -e "s/.*link: ([^\s]+).*/\1/p")
-        if [ $? -eq 0 ]; then
-            # Get ip for interface
-            num_ips=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p" | grep -c ".*")
-            if [ "$num_ips" == "1" ]; then
-                local_ip=$(ip -f inet addr show $tmp_remote_interface | sed -En -e "s/.*inet ([0-9.]+).*/\1/p")
-                echo_note "Resolved master over $tmp_remote_interface. Using interface ip: $local_ip"
+    elif which resolvectl >/dev/null 2>&1 && which ip >/dev/null 2>&1; then
+        # Get ip of master if not already an ip
+        if [ "$master" != "$master_ip" ]; then
+            master_ip=$(resolvectl query $master --no-pager --legend=false 2>/dev/null | cut -d" " -f2)
+        fi
+        # Find route that is used to get to master ip
+        if [ ! -z "$master_ip" ]; then
+            local_ip=$(ip r get $master_ip 2>/dev/null | sed -En -e "s/.*src ([^\s ]+).*/\1/p")
+            if [ $? -eq 0 ] && [ ! -z "$local_ip" ]; then
+                tmp_remote_interface=$(ip r get $master_ip 2>/dev/null | sed -En -e "s/.*dev ([^\s ]+).*/\1/p")
+                echo_note "Resolved route to $master over $local_ip. Using interface: $tmp_remote_interface"
             fi
         fi
     fi
