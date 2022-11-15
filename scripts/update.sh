@@ -113,38 +113,6 @@ else
         done
     fi
 
-    # merge host-specific rosinstall files
-    if [ -d $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname ]; then
-        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname
-        count=`ls -1 *.rosinstall 2>/dev/null | wc -l`
-        if [ $count != 0 ]; then
-            echo_info ">>> Checking host-specific rosinstall updates"
-            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname/*.rosinstall; do
-                filename=$(basename ${file%.*})
-                echo_note "Merging to workspace: ${filename}.rosinstall"
-                wstool merge -y $file
-                echoc $BLUE "Done (${filename}.rosinstall)"
-                echo
-            done
-        fi
-    fi
-
-    # running host-specific bash scripts
-    if [ -d $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname ]; then
-        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname
-        count=`ls -1 *.sh 2>/dev/null | wc -l`
-        if [ $count != 0 ]; then
-            echo_info ">>> Running host-specific bash scripts"
-            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname/*.sh; do
-                filename=$(basename ${file%.*})
-                echo_note "Running bash script: ${filename}.sh"
-                source $file "update"
-                echoc $BLUE "Done (${filename}.sh)"
-                echo
-            done
-        fi
-    fi
-
     # merged installed optional rosinstall or bash files
     if [ -f "$ROSWSS_ROOT/.install" ]; then
       while read filename; do
@@ -185,6 +153,38 @@ else
             done
         fi
     done
+
+    # merge host-specific rosinstall files
+    if [ -d $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname ]; then
+        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname
+        count=`ls -1 *.rosinstall 2>/dev/null | wc -l`
+        if [ $count != 0 ]; then
+            echo_info ">>> Checking host-specific rosinstall updates"
+            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname/*.rosinstall; do
+                filename=$(basename ${file%.*})
+                echo_note "Merging to workspace: ${filename}.rosinstall"
+                wstool merge -y $file
+                echoc $BLUE "Done (${filename}.rosinstall)"
+                echo
+            done
+        fi
+    fi
+
+    # running host-specific bash scripts
+    if [ -d $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname ]; then
+        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname
+        count=`ls -1 *.sh 2>/dev/null | wc -l`
+        if [ $count != 0 ]; then
+            echo_info ">>> Running host-specific bash scripts"
+            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/$hostname/*.sh; do
+                filename=$(basename ${file%.*})
+                echo_note "Running bash script: ${filename}.sh"
+                source $file "update"
+                echoc $BLUE "Done (${filename}.sh)"
+                echo
+            done
+        fi
+    fi
 
     echo_info ">>> Updating catkin workspace"
     cd $ROSWSS_ROOT/src
