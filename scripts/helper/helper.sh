@@ -200,3 +200,20 @@ remove_from_file_exact() {
 
     sed -i "\?\<${line}\>?d" $file
 }
+
+move_scm_location() {
+    local scm
+    scm=$1;
+    local old_path
+    old_path=$2
+    local new_path
+    new_path=$3
+
+    cd ${ROSWSS_ROOT}
+
+    if [ -d ${old_path} ]; then
+        echo_note "Old directory location detected, moving ${scm} folder."
+        mv ${old_path} ${new_path}
+        wstool_rm ${old_path}
+    fi
+}
