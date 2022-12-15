@@ -2,12 +2,17 @@
 
 source ${ROSWSS_BASE_SCRIPTS}/helper/helper.sh
 
-if [ "$#" -eq 0 ]; then
-    echo "Usage: ssh host [Command (optional)]"
+apt_install sshfs
+
+if [ "$#" -lt 3 ]; then
+    echo "Usage: sshfs host remote_dir local_dir"
     exit 1
 fi
 
+# extract arguments
 host=$1; shift
+remote_dir="$1"; shift
+local_dir="$1"; shift
 
 # convert to arrays
 hosts=(${ROBOT_HOSTNAMES})
@@ -17,7 +22,7 @@ users=(${ROBOT_USERS})
 if [ -z "${ROBOT_USERS}" ]; then
     # if not, look for single user definition (backwards compatibility)
     if [ -z "${ROBOT_USER}" ]; then
-        echo_error "ERROR: In order to use the ssh command, please set ROBOT_USER or ROBOT_USERS." 
+        echo_error "ERROR: In order to use the sshfs command, please set ROBOT_USER or ROBOT_USERS." 
         exit 1
     else
         user=${ROBOT_USER}
@@ -39,10 +44,14 @@ if [ -z "${user}" ]; then
     exit
 fi
 
-# connect via SSH
-echo_info "Connecting to machine \"${host}\" as user \"${user}\"..."
-if [ "$#" -eq 0 ]; then
-    ssh ${user}@${host} -A
-else
-    ssh ${user}@${host} -A -t "bash -l -c -i '$@'"
+# check if mounting dir is available at the local system
+mkdir -p ${local_dir}
+if [ ! -z "$(ls -A ${local_dir})" ]; then
+    echo_error "Mount directory \"${local_dir}\" is not empty!"
+    exit 1
 fi
+
+# connect via SSHFS
+echo_info "Connecting to machine \"${host}\" as user \"${user}\"..."
+echo_info "Mounting remote path \"${remote_dir}\" to \"${local_dir}\"..."
+sshfs ${user}@${host}:${remote_dir} ${local_dir} -o ServerAliveInterval=15 -o idmap=user -o uid=$(id -u) -o gid=$(id -g) "$@"
