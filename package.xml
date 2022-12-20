@@ -30,5 +30,6 @@
   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-git</exec_depend>
   <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-git</exec_depend>
   <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-argparse</exec_depend> <!-- seems to be in std libraries in python 3 -->
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-argcomplete</exec_depend> <!-- seems to be in std libraries in python 3 -->
 
 </package>
