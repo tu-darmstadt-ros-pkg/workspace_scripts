@@ -123,6 +123,16 @@ depends() {
     done
 }
 
+renamed() {
+    old_install=$1
+    new_install=$2
+    
+    echo_info "Update install '$old_install' to '$new_install'."
+    
+    remove_from_file_exact "$ROSWSS_ROOT/.install" "$old_install"
+    append_to_file_if_not_exist "$ROSWSS_ROOT/.install" "$new_install"
+}
+
 wstool_rm() {
     for path in "$@"; do
         if wstool info | grep "$path"; then

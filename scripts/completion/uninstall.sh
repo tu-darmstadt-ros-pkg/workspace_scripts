@@ -22,7 +22,7 @@ function roswss_uninstall() {
             echo
         fi
 
-        remove_from_file_exact $ROSWSS_ROOT/.install $rosinstall
+        remove_from_file_exact "$ROSWSS_ROOT/.install" "$rosinstall"
 
         # TODO: Also uninstall packages?
     done
