@@ -65,8 +65,8 @@ else
             echo_info ">>> Pulling scripts folder in $dir"
             cd $dir
             git pull
+            echo
         fi
-        echo
     done
 
     # updating root rosinstalls
