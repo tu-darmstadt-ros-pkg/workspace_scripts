@@ -74,11 +74,6 @@ run_scripts() {
             echo_note "Starting bash script: ${started_screens_array[${counter}]}.sh"
                 (( counter=$counter + 1 ))
 
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
-
             if [ -z "$PREEXECUTE_COMMAND" ]; then
               roswss screen start $screen_session "bash $files"
             else
@@ -101,10 +96,6 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
                   roswss screen start $screen_session "roslaunch $files"
@@ -132,11 +123,6 @@ run_scripts() {
             echo_note "Starting bash script: ${started_screens_array[${counter}]}.sh"
                 (( counter=$counter + 1 ))
 
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
-
             if [ -z "$PREEXECUTE_COMMAND" ]; then
               roswss screen start $screen_session "bash $files"
             else
@@ -156,12 +142,18 @@ declare -a directories
 # read input arguments
 read_arguments "$@"
 
+# temporarily overwrite the log directory
+export ROSWSS_LOG_DIR="${LOG_DIR}"
+INITIAL_ROSWSS_LOG_DIR="${ROSWSS_LOG_DIR}"
+
 # run scripts for each directory
 for entry in ${directories[@]}
 do
     DIRECTORY=$entry
     run_scripts 
 done 
+
+export ROSWSS_LOG_DIR="${INITIAL_ROSWSS_LOG_DIR}"
 
 echo_info ">>> Done"
 
