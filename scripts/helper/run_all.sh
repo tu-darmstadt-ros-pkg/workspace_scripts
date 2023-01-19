@@ -59,6 +59,7 @@ read_arguments() {
 
 run_scripts() {
     local screen_session
+    local screen_log_dir=$1
 
     echo_info ">>> Executing all files in '$DIRECTORY':"
 
@@ -75,9 +76,9 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              roswss screen start $screen_session "bash $files"
+              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "bash $files"
             else
-              roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
@@ -98,9 +99,9 @@ run_scripts() {
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-                  roswss screen start $screen_session "roslaunch $files"
+                  env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "roslaunch $files"
             else
-                  roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
+                  env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
             fi
         fi
     done
@@ -124,9 +125,9 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              roswss screen start $screen_session "bash $files"
+              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "bash $files"
             else
-              roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
@@ -142,18 +143,12 @@ declare -a directories
 # read input arguments
 read_arguments "$@"
 
-# temporarily overwrite the log directory
-export ROSWSS_LOG_DIR="${LOG_DIR}"
-INITIAL_ROSWSS_LOG_DIR="${ROSWSS_LOG_DIR}"
-
 # run scripts for each directory
 for entry in ${directories[@]}
 do
     DIRECTORY=$entry
-    run_scripts 
-done 
-
-export ROSWSS_LOG_DIR="${INITIAL_ROSWSS_LOG_DIR}"
+    run_scripts $LOG_DIR
+done
 
 echo_info ">>> Done"
 
