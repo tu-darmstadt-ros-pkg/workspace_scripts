@@ -76,9 +76,9 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "bash $files"
             else
-              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
@@ -125,9 +125,9 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "bash $files"
             else
-              env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
