@@ -59,6 +59,7 @@ read_arguments() {
 
 run_scripts() {
     local screen_session
+    local screen_log_dir=$1
 
     echo_info ">>> Executing all files in '$DIRECTORY':"
 
@@ -74,15 +75,10 @@ run_scripts() {
             echo_note "Starting bash script: ${started_screens_array[${counter}]}.sh"
                 (( counter=$counter + 1 ))
 
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
-
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              roswss screen start $screen_session "bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "bash $files"
             else
-              roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
@@ -101,15 +97,11 @@ run_scripts() {
                 (( counter=$counter + 1 ))
 
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-                  roswss screen start $screen_session "roslaunch $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "roslaunch $files"
             else
-                  roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
             fi
         fi
     done
@@ -132,15 +124,10 @@ run_scripts() {
             echo_note "Starting bash script: ${started_screens_array[${counter}]}.sh"
                 (( counter=$counter + 1 ))
 
-            # create subfolders for each screen, there seems to be no option to change the output file name
-            mkdir -p ${LOG_DIR}/$screen_session
-            cd ${LOG_DIR}/$screen_session
-            [ -f screenlog.0 ] && rm screenlog.0
-
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-              roswss screen start $screen_session "bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "bash $files"
             else
-              roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
+                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && bash $files"
             fi
         fi
     done
@@ -160,8 +147,8 @@ read_arguments "$@"
 for entry in ${directories[@]}
 do
     DIRECTORY=$entry
-    run_scripts 
-done 
+    run_scripts $LOG_DIR
+done
 
 echo_info ">>> Done"
 
