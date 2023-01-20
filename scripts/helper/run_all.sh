@@ -99,9 +99,9 @@ run_scripts() {
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-                  env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "roslaunch $files"
+                ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "roslaunch $files"
             else
-                  env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
+                ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
             fi
         fi
     done
