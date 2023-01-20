@@ -47,7 +47,7 @@ case $action in
         done
 
         current_time=$(date "+%Y_%m_%d_%H_%M_%S")
-        screen -L -Logfile ${screen_log_dir}/${screen_session}_${current_time}.log -dmS $screen_session /bin/bash -ic "$1 $2 $3 $4 $5"
+        screen -L -Logfile ${screen_log_dir}/${screen_session}_${current_time}.log -dmS $screen_session /bin/bash -ic "$@"
 
         if screen -ls | grep $screen_session &>/dev/null; then
             echo_info "Screen '$screen_session' started!"

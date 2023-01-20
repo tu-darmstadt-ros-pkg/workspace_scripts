@@ -30,14 +30,14 @@ read_arguments() {
 
     # first argument is the path
     DIRECTORY=$1
-    if [ ! -d $DIRECTORY ]; then 
+    if [ ! -d $DIRECTORY ]; then
         echo "Directory $DIRECTORY does not exist"
         exit 1
     fi
 
     # put all directories into an array
     counter=0
-    while [ -d $DIRECTORY ]; 
+    while [ -d $DIRECTORY ];
     do
         directories[${counter}]=$DIRECTORY
         (( counter=$counter + 1 ))
@@ -99,21 +99,22 @@ run_scripts() {
             #echo $screen_session >> /home/$(whoami)/started_screen_sessions.txt
 
             if [ -z "$PREEXECUTE_COMMAND" ]; then
-                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "roslaunch $files"
+                env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "roslaunch $files"
             else
-                ROSWSS_LOG_DIR="${screen_log_dir}" roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
+                env ROSWSS_LOG_DIR=${screen_log_dir} roswss screen start $screen_session "$PREEXECUTE_COMMAND && roslaunch $files"
             fi
         fi
     done
     echo
-    
+
     echo_info ">>> Running delayed scripts"
-    if [ ! -d $DIRECTORY/delayed_scripts ]; then 
+    if [ ! -d $DIRECTORY/delayed_scripts ]; then
         echo_note "No delayed scripts to be executed"
     else
         echo "Waiting 30 seconds before executing delayed scripts"
         sleep 30
     fi
+    echo_info ">>> Running delayed scripts"
     for files in $DIRECTORY/delayed_scripts/*.sh; do
         if [ -f $files ]; then
             # getting script name for screen session
