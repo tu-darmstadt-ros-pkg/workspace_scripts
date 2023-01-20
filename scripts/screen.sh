@@ -38,11 +38,16 @@ case $action in
             exit 1
         fi
 
-        # create subfolders for each screen, there seems to be no option to change the output file name
-        mkdir -p ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
-        cd ${ROSWSS_LOG_DIR}/screen_logs/$screen_session
-        [ -f screenlog.0 ] && rm screenlog.0
-        screen -dmLS $screen_session /bin/bash -ic "$1 $2 $3 $4 $5"
+        screen_log_dir="${ROSWSS_LOG_DIR}/screen_logs"
+        mkdir -p ${screen_log_dir}
+
+        # only keep the most recent files
+        for file in `ls -t1 -r ${screen_log_dir} | grep ${screen_session}_ | head -n -10`; do
+            rm ${screen_log_dir}/$file
+        done
+
+        current_time=$(date "+%Y_%m_%d_%H_%M_%S")
+        screen -L -Logfile ${screen_log_dir}/${screen_session}_${current_time}.log -dmS $screen_session /bin/bash -ic "$1 $2 $3 $4 $5"
 
         if screen -ls | grep $screen_session &>/dev/null; then
             echo_info "Screen '$screen_session' started!"
