@@ -38,6 +38,19 @@ def printWithStyle(style, msg, end=None):
   print(style + msg + Style.Reset, end=end)
 
 
+def getGitHeadState(repo: git.Repo):
+  try:
+    if not repo.head.is_detached:
+      return repo.active_branch
+    for tag in repo.tags:
+      if tag.commit.hexsha == repo.head.commit.hexsha:
+        return tag.name
+    return repo.head.commit.hexsha
+  except:
+    printWithStyle(Style.Error, f"Failed to get head state for repo: {os.path.dirname(repo.git_dir)}")
+    return "unknown"
+
+
 def printChanges(path: str, show_all=False, base_path=''):
   try:
     repo = git.Repo(path, search_parent_directories=True)
@@ -72,7 +85,7 @@ def printChanges(path: str, show_all=False, base_path=''):
   has_changes = any(repo.untracked_files) or any(stash) or any(uncommited_commits) or any(local_branches) or any(changes)
   if show_all or has_changes or repo.is_dirty():
     printWithStyle(Style.Info, path[len(base_path)+1:] if path.startswith(base_path) else path, end=' ')
-    printWithStyle(Style.PURPLE, f"({repo.active_branch})")
+    printWithStyle(Style.PURPLE, f"({getGitHeadState(repo)})")
   if has_changes:
     for branch in uncommited_commits:
       printWithStyle(Style.RED, "  Unpushed commits on branch {}!".format(branch))
