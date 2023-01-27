@@ -44,7 +44,7 @@ def getGitHeadState(repo: git.Repo):
       return repo.active_branch
     for tag in repo.tags:
       if tag.commit.hexsha == repo.head.commit.hexsha:
-        return tag.name
+        return "tag: " + tag.name
     return repo.head.commit.hexsha
   except:
     printWithStyle(Style.Error, f"Failed to get head state for repo: {os.path.dirname(repo.git_dir)}")
