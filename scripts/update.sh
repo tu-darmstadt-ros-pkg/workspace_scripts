@@ -190,10 +190,12 @@ else
         fi
     fi
 
-    echo_info ">>> Updating catkin workspace"
-    cd $ROSWSS_ROOT/src
-    wstool update -j$(nproc)
-    echo
+    if [ -f $ROSWSS_ROOT/.install ]; then
+        echo_info ">>> Updating catkin workspace"
+        cd $ROSWSS_ROOT/src
+        wstool update -j$(nproc)
+        echo
+    fi
 
     echo_info ">>> Updating rosdeps for all packages in workspace"
     rosdep update
