@@ -24,7 +24,7 @@ if [[ ! -z "${packages[@]}" ]]; then
     for package in "${packages[@]}"; do
         echo_note ">>> $package"
 
-        # try dispatching path using rospack        
+        # try dispatching path using rospack
         path=$(rospack find -q ${package})
         if [[ ! -z $path && -d $path ]]; then
             git -C $path pull
@@ -86,31 +86,35 @@ else
     cd $ROSWSS_ROOT/src
 
     # merge default rosinstall files from *.rosinstall
-    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
-    count=`ls -1 *.rosinstall 2>/dev/null | wc -l`
-    if [ $count != 0 ]; then
-        echo_info ">>> Checking default rosinstall updates"
-        for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.rosinstall; do
-            filename=$(basename ${file%.*})
-            echo_note "Merging to workspace: ${filename}.rosinstall"
-            wstool merge -y $file
-            echoc $BLUE "Done (${filename}.rosinstall)"
-            echo
-        done
+    if [ -d "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR" ]; then
+        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
+        count=`ls -1 *.rosinstall 2>/dev/null | wc -l`
+        if [ $count != 0 ]; then
+            echo_info ">>> Checking default rosinstall updates"
+            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.rosinstall; do
+                filename=$(basename ${file%.*})
+                echo_note "Merging to workspace: ${filename}.rosinstall"
+                wstool merge -y $file
+                echoc $BLUE "Done (${filename}.rosinstall)"
+                echo
+            done
+        fi
     fi
 
     # running default bash scripts from *.sh
-    cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
-    count=`ls -1 *.sh 2>/dev/null | wc -l`
-    if [ $count != 0 ]; then
-        echo_info ">>> Running default bash scripts"
-        for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
-            filename=$(basename ${file%.*})
-            echo_note "Running bash script: ${filename}.sh"
-            source $file "update"
-            echoc $BLUE "Done (${filename}.sh)"
-            echo
-        done
+    if [ -d "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR" ]; then
+        cd $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR
+        count=`ls -1 *.sh 2>/dev/null | wc -l`
+        if [ $count != 0 ]; then
+            echo_info ">>> Running default bash scripts"
+            for file in $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/*.sh; do
+                filename=$(basename ${file%.*})
+                echo_note "Running bash script: ${filename}.sh"
+                source $file "update"
+                echoc $BLUE "Done (${filename}.sh)"
+                echo
+            done
+        fi
     fi
 
     # merged installed optional rosinstall or bash files
