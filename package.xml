@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>The workspace_scripts package</description>
 
-  <!-- One maintainer tag required, multiple allowed, one person per tag --> 
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <maintainer email="stumpf@sim.tu-darmstadt.de">Alexander Stumpf</maintainer>
   <maintainer email="fabian@sim.tu-darmstadt.de">Stefan Fabian</maintainer>
 
@@ -33,12 +33,6 @@
   <exec_depend>screen</exec_depend>
   <exec_depend>ffmpeg</exec_depend>
   <exec_depend>git</exec_depend>
-  <exec_depend>python-git</exec_depend>
-  <exec_depend>python-argparse</exec_depend>
-
-  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-git</exec_depend>
-  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-git</exec_depend>
-  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-argparse</exec_depend> <!-- seems to be in std libraries in python 3 -->
-  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-argcomplete</exec_depend> <!-- seems to be in std libraries in python 3 -->
-
+  <exec_depend>python3-git</exec_depend>
+  <exec_depend>python3-argcomplete</exec_depend>
 </package>
