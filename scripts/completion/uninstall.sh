@@ -8,12 +8,12 @@ function roswss_uninstall() {
         return 0
     fi
 
-    # perform install
+    # perform uninstall
     local rosinstall
     for rosinstall in "$@"; do
-    
+
         echo_info ">>> Uninstalling $rosinstall"
-        
+
         # run bash script
         if [ -r "$ROSWSS_ROOT/rosinstall/optional/${rosinstall}.sh" ]; then
             echo_note "Running bash script: ${rosinstall}.sh"

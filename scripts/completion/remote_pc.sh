@@ -23,7 +23,7 @@ function remote_pc() {
     local command
     command="$1"
     shift
-    
+
     if [[ "$command" == "help" || "$command" == "--help" || -z "$command" ]]; then
         _remote_pc_help
         return 0
@@ -103,7 +103,7 @@ function _remote_pc_commands() {
 
         COMMANDS+=($i)
     done
-    
+
     echo ${COMMANDS[@]}
 }
 
