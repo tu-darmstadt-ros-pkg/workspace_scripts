@@ -7,6 +7,12 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 build_debug=false
 build_this=false
 build_externals=false
+build_cores=$(echo "$@" | grep -oP 'j\s*\K\d+')
+
+# get number of cores
+if [ -z $build_cores ]; then
+    build_cores=$(nproc --all)
+fi
 
 # check arguments
 catkin_args=()
@@ -77,6 +83,12 @@ if [ $build_this = true ]; then
     cd "$LAST_PWD"
 fi
 
+# Set the memory limit on machines when building with more than 8 cores
+mem_limit_arg=""
+if [ $build_cores -gt 8 ]; then
+    mem_limit_arg="--mem-limit 80%"
+fi
+
 # run catkin main build process
 if [[ $build_this = true || $build_externals = false ]]; then
     if [ $build_debug = true ]; then
@@ -92,7 +104,7 @@ if [[ $build_this = true || $build_externals = false ]]; then
     echo "-------------------------------------------------------"
     echo
 
-    catkin build $CATKIN_BUILD_FLAGS $catkin_args
+    catkin build $CATKIN_BUILD_FLAGS $mem_limit_arg $catkin_args
 fi
 
 . $ROSWSS_ROOT/setup.bash
