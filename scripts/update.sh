@@ -190,6 +190,7 @@ else
         fi
     fi
 
+    # Update catkin workspace using wstool
     if [ -f $ROSWSS_ROOT/.install ]; then
         echo_info ">>> Updating catkin workspace"
         cd $ROSWSS_ROOT/src
@@ -197,6 +198,7 @@ else
         echo
     fi
 
+    # Trigger rosdep update
     echo_info ">>> Updating rosdeps for all packages in workspace"
     rosdep update --rosdistro=${ROS_DISTRO}
     if [[ $_NO_SUDO == 1 ]]; then
