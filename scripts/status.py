@@ -63,7 +63,8 @@ def printChanges(path: str, show_all=False, base_path=''):
     # Need to reverse using R=True, otherwise we get the diff from tree to HEAD meaning deleted files are added and vice versa
     changes += repo.index.diff("HEAD", R=True)
   except git.BadName as e:
-    printWithStyle(Style.Error, "{} has no HEAD!\nException: {}".format(path, e.message))
+    subject = getattr(e, 'message', '')
+    printWithStyle(Style.Error, "{} has no HEAD!\nException: {}".format(path, subject))
 
   # Check branches for uncommited commits and pure local branches
   uncommited_commits = []
@@ -123,6 +124,39 @@ def printChanges(path: str, show_all=False, base_path=''):
     print("")
 
 
+def scanWorkspace(path, ws_src_path, ws_tool_paths={}, args=None):
+  # Skip hidden directories
+  if not os.path.isdir(path):
+    return
+
+  # Skip symlinks
+  if os.path.islink(path):
+    return
+
+  show_all=False if args is None else args.show_all
+
+  try:
+    subdirs = os.listdir(path)
+  except Exception as e:
+    printWithStyle(Style.Error, "Error while scanning '{}'!\nMessage: {}".format(path, str(e)))
+    return
+
+  # Check if this is a git repository
+  if ".git" in subdirs:
+    printChanges(path, show_all, ws_src_path)
+  # Check if this is a wstool managed repository
+  elif path in ws_tool_paths:
+    if not ws_tool_paths[path]:
+      output = subprocess.call(["wstool", "status", path])
+      if output is not None and len(output) > 0:
+        print(output)
+        print("")
+
+  # Recurse into subdirectories
+  for dir in sorted(subdirs):
+    scanWorkspace(os.path.join(path, dir), ws_src_path, ws_tool_paths, args)
+
+
 class WsToolInfo:
   def __init__(self, git, version):
     self.git = git
@@ -135,42 +169,26 @@ if __name__ == "__main__":
   args = parser.parse_args()
   argcomplete.autocomplete(parser)
 
+  # Check root path of workspace
   ws_root_path = os.environ.get("ROSWSS_ROOT")
   os.chdir(ws_root_path)
   printWithStyle(Style.GREEN, "Looking for changes in {}...".format(ws_root_path))
   printChanges(ws_root_path)
 
+  # Get wstool managed repositories
+  ws_tool_paths = {}
   try:
     ws_tool_info = subprocess.check_output(["wstool", "info", "--only=path,scmtype,version"])
+    for item in ws_tool_info.splitlines():
+      parts = item.decode().split(",")
+      ws_tool_paths[parts[0]] = WsToolInfo(parts[1] == "git", parts[2])
   except subprocess.CalledProcessError:
     printWithStyle(Style.Error, "Failed to get wstool info!")
     exit(1)
+  except FileNotFoundError:
+    pass
 
-  ws_tool_paths = {}
-  for item in ws_tool_info.splitlines():
-    parts = item.decode().split(",")
-    ws_tool_paths[parts[0]] = WsToolInfo(parts[1] == "git", parts[2])
-
-  def scanWorkspace(path):
-    if not os.path.isdir(path):
-      return
-    try:
-      subdirs = os.listdir(path)
-    except Exception as e:
-      printWithStyle(Style.Error, "Error while scanning '{}'!\nMessage: {}".format(path, str(e)))
-      return
-    if ".git" in subdirs:
-      printChanges(path, show_all=args.show_all, base_path=ws_src_path)
-    elif path in ws_tool_paths:
-      if not ws_tool_paths[path]:
-        output = subprocess.call(["wstool", "status", path])
-        if output is not None and len(output) > 0:
-          print(output)
-          print("")
-
-    for dir in sorted(subdirs):
-      scanWorkspace(os.path.join(path, dir))
-
+  # Check src path of workspace
   ws_src_path = os.path.join(ws_root_path, "src")
   printWithStyle(Style.GREEN, "Looking for changes in {}...".format(ws_src_path))
-  scanWorkspace(ws_src_path)
+  scanWorkspace(ws_src_path, ws_src_path, ws_tool_paths, args)
