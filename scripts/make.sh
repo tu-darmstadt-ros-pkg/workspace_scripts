@@ -64,7 +64,11 @@ if [[ $build_externals = true || $build_this = false ]]; then
 
     # clean removed or disabled packages
     if [ -d $ROSWSS_ROOT/.catkin_tools ]; then
-        catkin clean --orphans
+        # check devel space layout
+        layout=$(catkin config | grep "Devel Space Layout:" | awk '{print $NF}')
+        if [ $layout = "linked" ]; then
+            catkin clean --orphans
+        fi
     fi
 fi
 
@@ -87,7 +91,7 @@ if [[ $build_this = true || $build_externals = false ]]; then
     echo ">>> Building with arguments '$catkin_args'"
     echo "-------------------------------------------------------"
     echo
-    
+
     catkin build $CATKIN_BUILD_FLAGS $catkin_args
 fi
 
