@@ -27,11 +27,12 @@ class Style:
   LPURPLE = '\033[1;35m'
   LCYAN = '\033[1;36m'
   WHITE = '\033[1;37m'
-  Error = '\033[0;31m'
-  Warning = '\033[0;33m'
-  Info = '\033[0;34m'
-  Success = '\033[0;32m'
-  Reset = '\033[0;39m'
+  NOCOLOR = '\033[0m'
+  Error = RED
+  Warning = YELLOW
+  Info = LBLUE
+  Success = LGREEN
+  Reset = NOCOLOR
 
 
 def printWithStyle(style, msg, end=None):
