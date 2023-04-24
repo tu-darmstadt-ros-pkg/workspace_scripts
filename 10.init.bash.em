@@ -33,7 +33,7 @@ if [ -z "$ROS_WORKSPACE" ]; then
   # This is more of a best effort, many commands will not work.
   export ROSWSS_ROOT="@(CMAKE_INSTALL_PREFIX)"
   @[end if]@
-  export ROSWSS_LOG_DIR="/tmp/roswss_logs"
+  export ROSWSS_LOG_DIR="${HOME}/logs"
 else
   export ROSWSS_ROOT=$(cd $ROS_WORKSPACE/..; pwd)
   export ROSWSS_LOG_DIR="${ROSWSS_ROOT}/logs"
