@@ -22,6 +22,13 @@ Clone the basic *roswss* package into your workspace. Afterwards, create a new c
     |— 20.setup.bash.em
 ```
 
+Attention: The system requires top-level `setup.bash` located in the root folder of your workspace (usually same directory where your `src` directory is located).
+
+```
+#!/bin/bash
+. $ROSWSS_ROOT/devel/setup.bash
+```
+
 ### CMakeLists.txt
 
 A minimal CMake example setup looks like
