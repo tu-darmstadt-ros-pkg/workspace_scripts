@@ -32,7 +32,8 @@ for var in "$@"; do
             catkin_args=( "${catkin_args[@]}" "-p$(distcc -j) -j$(distcc -j) --no-jobserver" )
             ;;
         *)
-            catkin_args=( "${catkin_args[@]}" "$var" )
+            dirs=$(find $ROSWSS_ROOT/src -type f -path "**/$var/package.xml" -exec bash -c 'basename "$(dirname {})"' \;)
+            catkin_args=( "${catkin_args[@]}" ${dirs} )
             ;;
     esac
 done
