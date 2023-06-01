@@ -32,8 +32,8 @@ for var in "$@"; do
             catkin_args=( "${catkin_args[@]}" "-p$(distcc -j) -j$(distcc -j) --no-jobserver" )
             ;;
         *)
-            args=$(find $ROSWSS_ROOT/src -path "**/$var/package.xml" -exec bash -c 'basename "$(dirname {})"' \;)
-            [[ -z "$args" ]] && args="$var"
+            args=$(catkin list -u | sed -n "/$var/p" | tr '\n' ' ')
+            [[ -z "$args" ]] && args="$var" # if no package found, use argument as is
             catkin_args=( "${catkin_args[@]}" "${args}" )
             ;;
     esac
