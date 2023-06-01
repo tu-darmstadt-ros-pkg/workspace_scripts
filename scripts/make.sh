@@ -32,7 +32,9 @@ for var in "$@"; do
             catkin_args=( "${catkin_args[@]}" "-p$(distcc -j) -j$(distcc -j) --no-jobserver" )
             ;;
         *)
-            catkin_args=( "${catkin_args[@]}" "$var" )
+            args=$(catkin list -u | sed -n "/$var/p" | tr '\n' ' ') # get package(s) from catkin list
+            [[ -z "$args" ]] && args="$var" # if no package found, use argument as is
+            catkin_args=( "${catkin_args[@]}" "${args}" )
             ;;
     esac
 done
