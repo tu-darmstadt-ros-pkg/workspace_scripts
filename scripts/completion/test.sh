@@ -40,9 +40,9 @@ function roswss_test() {
         roscd $package
 
         if [[ -z "$1" ]]; then
-            catkin build $package --catkin-make-args run_tests
+            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args run_tests
         else
-            catkin build $package --catkin-make-args tests
+            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args tests
         fi
 
         local launch
