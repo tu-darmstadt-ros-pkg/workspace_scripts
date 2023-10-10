@@ -39,10 +39,11 @@ case $action in
         fi
 
         screen_log_dir="${ROSWSS_LOG_DIR}/screen_logs"
+        max_num_screen_logs="${ROSWSS_MAX_NUM_LOGS:-25}"
         mkdir -p ${screen_log_dir}
 
         # only keep the most recent files
-        for file in `ls -t1 -r ${screen_log_dir} | grep ${screen_session}_ | head -n -10`; do
+        for file in `ls -t1 -r ${screen_log_dir} | grep ${screen_session}_ | head -n -${max_num_screen_logs}`; do
             rm ${screen_log_dir}/$file
         done
 
