@@ -14,8 +14,11 @@ if [ -z $build_cores ]; then
     build_cores=$(nproc --all)
 fi
 
+# Explicitely disable building the tests, because the variable CATKIN_ENABLE_TESTING is set to ON by default.
+#   Since it is added before the extra catkin args, it can be overwritten there.
+catkin_args=("-DCATKIN_ENABLE_TESTING=OFF")
+
 # check arguments
-catkin_args=()
 for var in "$@"; do
     case $var in
         debug)
