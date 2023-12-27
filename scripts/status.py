@@ -59,13 +59,15 @@ def printChanges(path: str, show_all=False, base_path=''):
     printWithStyle(Style.Error, "Failed to obtain git info for: {}".format(path))
     return
   stash = repo.git.stash('list')
-  changes = repo.index.diff(None)
-  try:
-    # Need to reverse using R=True, otherwise we get the diff from tree to HEAD meaning deleted files are added and vice versa
-    changes += repo.index.diff("HEAD", R=True)
-  except git.BadName as e:
-    subject = getattr(e, 'message', '')
-    printWithStyle(Style.Error, "{} has no HEAD!\nException: {}".format(path, subject))
+  changes = []
+  if repo.head.is_valid():
+    try:
+      changes = repo.index.diff(None)
+      # Need to reverse using R=True, otherwise we get the diff from tree to HEAD meaning deleted files are added and vice versa
+      changes += repo.index.diff("HEAD", R=True)
+    except git.BadName as e:
+      subject = getattr(e, 'message', '')
+      printWithStyle(Style.Error, "{} has no HEAD!\nException: {}".format(path, subject))
 
   # Check branches for uncommited commits and pure local branches
   uncommited_commits = []
@@ -85,9 +87,11 @@ def printChanges(path: str, show_all=False, base_path=''):
       printWithStyle(Style.Error, f"{path} has error on branch {branch.name}: {e.message}")
 
   has_changes = any(repo.untracked_files) or any(stash) or any(uncommited_commits) or any(local_branches) or any(changes)
-  if show_all or has_changes or repo.is_dirty():
+  if show_all or has_changes or repo.is_dirty() or not repo.head.is_valid():
     printWithStyle(Style.Info, path[len(base_path)+1:] if path.startswith(base_path) else path, end=' ')
     printWithStyle(Style.PURPLE, f"({getGitHeadState(repo)})")
+  if not repo.head.is_valid():
+    printWithStyle(Style.RED, "  No HEAD configured!")
   if has_changes:
     for branch in uncommited_commits:
       printWithStyle(Style.RED, "  Unpushed commits on branch {}!".format(branch))
