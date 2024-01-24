@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+source /opt/ros/$ROS_DISTRO/setup.bash
+echo ">>> Installing dependencies"
+ROS_PACKAGE_PATH=$(pwd) rosdep install -i -y -r $@
+echo ">>> Building workspace"
+# Use build type in BUILD_TYPE env if set otherwise default to RelWithDebInfo
+BUILD_TYPE=${BUILD_TYPE:-RelWithDebInfo}
+catkin build -DCMAKE_BUILD_TYPE=$BUILD_TYPE $@
