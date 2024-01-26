@@ -34,20 +34,37 @@ def cross_compile(
     packages: Union[str, List[str]],
     ros_distro: str,
     platform: str,
-    output_dir: str,
+    output_base_dir: str,
+    output_dir: Union[str, None] = None,
     build_type: str = "RelWithDebInfo",
     clean: bool = False,
     no_cache: bool = False,
-    rebuild: bool = False
+    rebuild: bool = False,
+    pull: bool = False,
+    base_image: Union[str, None] = None
 ) -> bool:
     # if packages is iterable, join them
     if isinstance(packages, list):
         packages = " ".join(packages)
     print(">>> Create output directory")
+    if output_dir is None:
+        output_dir = output_base_dir
+        if ros_distro != os.getenv("ROS_DISTRO"):
+            output_dir = os.path.join(output_dir, ros_distro)
+        output_dir = os.path.join(output_dir, platform.replace("/", "_"))
+        if clean and os.path.isdir(output_dir):
+            rmtree(output_dir)
     os.makedirs(output_dir, exist_ok=True)
-    tag = f"cross-compile-{ros_distro}-{platform.replace('/', '_')}"
+    print(f"{output_dir} created.")
+    platform_cleaned = platform.replace('/', '_')
+    if base_image is None:
+        tag = f"cross-compile-{ros_distro}-{platform_cleaned}"
+        print(f">>> Obtain image for {ros_distro} on {platform}")
+    else:
+        base_image_cleaned = base_image.replace(':', '_').replace('/', '_')
+        tag = f"cross-compile-{base_image_cleaned}-{platform_cleaned}"
+        print(f">>> Obtain image based on {base_image} for {platform}")
     docker_client = docker.from_env()
-    print(f">>> Obtain image for {ros_distro} on {platform}")
     if not rebuild:
         try:
             image = docker_client.images.get(tag)
@@ -75,12 +92,13 @@ def cross_compile(
             path=path,
             tag=tag,
             buildargs={
+                "BASE_IMAGE": base_image,
                 "ROS_DISTRO": ros_distro,
                 "USER_ID": f"{getuid()}",
                 "GROUP_ID": f"{getgid()}",
             },
             platform=platform,
-            pull=True,
+            pull=pull,
             rm=True,
             forcerm=True,
             nocache=no_cache,
@@ -103,7 +121,6 @@ def cross_compile(
     try:
         tmp_path = f"/tmp/tudawss/{tag}"
         if clean:
-
             def ignore_file_not_found(func, path, exc_info):
                 if isinstance(exc_info[1], FileNotFoundError):
                     return
@@ -161,16 +178,16 @@ def cross_compile(
             return False
         print(f">>> Copying results")
         # Copy install folder to workspace
-        target_path = output_dir
-        if ros_distro != os.getenv("ROS_DISTRO"):
-            target_path = os.path.join(target_path, ros_distro)
-        target_path = os.path.join(target_path, platform.replace("/", "_"))
-        copytree(f"{tmp_path}/install", target_path, dirs_exist_ok=True)
-        print(f"Copied build results to {target_path}")
+        copytree(f"{tmp_path}/install", output_dir, dirs_exist_ok=True)
+        print(f"Copied build results to {output_dir}")
     except docker.errors.ContainerError as e:
         print(f"Failed to cross-compile {packages}:", file=sys.stderr)
         print(e.stderr.decode("utf-8"), file=sys.stderr)
         return False
+    except KeyboardInterrupt:
+        if container is not None:
+            container.kill()
+            print("Container killed.")
     finally:
         if container is not None:
             container.remove()
@@ -181,12 +198,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Builds the given packages for the given platform/architecture in a docker image."
     )
+    parser.add_argument("--base-image", help="An alternative base image to use.")
     parser.add_argument("--build-type", choices=["Debug", "RelWithDebInfo", "Release"])
     parser.add_argument(
         "--no-cache",
         default=False,
         action="store_true",
         help="Do not use the cache when building. Use with --rebuild for a clean build of the docker image.",
+    )
+    parser.add_argument(
+        "--pull",
+        default=False,
+        action="store_true",
+        help="Always try to pull the latest image when building."
     )
     parser.add_argument(
         "--rebuild",
@@ -212,9 +236,14 @@ if __name__ == "__main__":
     workspace_path = os.environ.get("ROS_WORKSPACE")
 
     parser.add_argument(
-        "--output-dir",
+        "--output-base-dir",
         default=os.path.join(os.path.dirname(workspace_path), "cross-compile-install"),
-        help="Specifies the directory where the install output is placed. It will be placed in a subdirectory based on the ROS distro and architecture.",
+        help="Specifies the base directory where the install output is placed. It will be placed in a subdirectory based on the ROS distro and architecture.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="Use to specify an exact directory where the install output will be placed. Overwrites --output-base-dir setting.",
     )
     package_arg = parser.add_argument(
         "PACKAGE", nargs="*", help="Packages to cross-compile"
@@ -231,6 +260,9 @@ if __name__ == "__main__":
         clean=args.clean,
         no_cache=args.no_cache,
         rebuild=args.rebuild,
-        output_dir=args.output_dir
+        output_base_dir=args.output_base_dir,
+        output_dir=args.output_dir,
+        base_image=args.base_image,
+        pull=args.pull
     ):
         exit(1)
