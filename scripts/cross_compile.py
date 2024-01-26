@@ -87,6 +87,30 @@ def cross_compile(
         )
         if not os.path.isfile(os.path.join(path, "Dockerfile")):
             raise RuntimeError("Could not find Dockerfile in " + path)
+        if base_image is not None:
+            print(f">>> Pulling {base_image}")
+            result = docker_client.api.pull(base_image, stream=True, decode=True)
+            # Compute total progress from individual progress
+            progress = {}
+            current = 0
+            total = 0
+            ids = set()
+            for item in result:
+                if "id" in item:
+                    ids.add(item["id"])
+                if "progress" in item:
+                    text = item["progress"].strip()
+                    detail = item["progressDetail"]
+                    if "current" in detail:
+                        progress[item["id"]] = {"current": detail["current"], "total": detail["total"]}
+                        current = sum([p["current"] for p in progress.values()]) / 1024 / 1024
+                        total = sum([p["total"] for p in progress.values()]) / 1024 / 1024
+                    print(f"{int(current / total * 100)}% ({int(current)}MB / {int(total)}MB) [{len(progress)}/{len(ids)} Layers]", end="\r")
+                if "errorDetail" in item:
+                    print("\033[K"+item["errorDetail"]["message"], file=sys.stderr)
+                    return False
+            print("\033[KDone.")
+        print(">>> Building image")
         result = docker_client.api.build(
             decode=True,
             path=path,
