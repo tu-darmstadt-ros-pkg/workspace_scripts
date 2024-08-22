@@ -5,6 +5,7 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
 # executes all scripts and launchfiles in a path given as argument
 
+# Trap various signals to ensure a graceful shutdown
 trap 'shutdown' EXIT HUP INT QUIT PIPE TERM
 
 shutdown() {
@@ -13,8 +14,9 @@ shutdown() {
     echo "**** Shutting down... ****"
     echo
 
+    # Stop all screen sessions started by this script
     for screen in "${started_screens_array[@]}"; do
-        roswss screen stop $screen
+        roswss screen graceful-stop $screen
     done
 
     exit 0
