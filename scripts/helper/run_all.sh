@@ -14,10 +14,21 @@ shutdown() {
     echo "**** Shutting down... ****"
     echo
 
-    # Stop all screen sessions started by this script
+    pids=()
+    # Gracefully stop all screen sessions started by this script in the background
     for screen in "${started_screens_array[@]}"; do
-        roswss screen graceful-stop $screen
+        roswss screen graceful-stop $screen --yes &
+        pids+=($!)
     done
+
+    # Wait for all background processes to finish
+    for pid in "${pids[@]}"; do
+        wait $pid
+    done
+
+    echo
+    echo "**** All screens stopped successfully ****"
+    echo
 
     exit 0
 }
