@@ -37,25 +37,32 @@ function roswss_test() {
             return 1
         fi
     else
-        roscd $package
-
-        if [[ -z "$1" ]]; then
-            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args run_tests
-        else
-            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args tests
+        if ! roscd "$package"; then
+            echo_error "Package '$package' not found! Please check the package name and try to run a regular build first."
+            return 1
         fi
 
-        local launch
-        launch=$1
-        shift
+        if [[ -z "$1" ]]; then
+            # build and run all tests in the package
+            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args run_tests
 
-        # run tests manually
-        while [[ ! -z "$launch" ]]; do
-            rostest $text $package $launch
-            launch=$1
-            shift
-        done
+            # get summary of test results (do not fail if there were any errors)
+            set +e
+            echo ""
+            catkin_test_results $ROSWSS_ROOT/build/$package/test_results
+            set -e
+        else
+            # build all tests in the package
+            catkin build $package -DCATKIN_ENABLE_TESTING=ON --catkin-make-args tests
+
+            # run requested tests manually
+            for launch in "$@"; do
+                rostest $text $package $launch
+            done
+        fi
     fi
+
+    echo "See '$ROSWSS_ROOT/build/$package/test_results' for detailed test results."
 
     return 0
 }
