@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DISABLE_ROS1_EOL_WARNINGS=true
+
 # source completion files
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
   if [ -d "$dir/completion" ]; then
