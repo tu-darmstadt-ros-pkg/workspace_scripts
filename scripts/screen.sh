@@ -96,7 +96,13 @@ case $action in
         done
 
         current_time=$(date "+%Y_%m_%d_%H_%M_%S")
-        screen -L -Logfile ${screen_log_dir}/${screen_session}_${current_time}.log -dmS $screen_session /bin/bash -ic "$@"
+        : "${ROSWSS_ENABLE_SCREEN_LOGS:=true}"  # Set to "true" if unset or null (default)
+
+        if [ "$ROSWSS_ENABLE_SCREEN_LOGS" = "true" ]; then
+            screen -L -Logfile ${screen_log_dir}/${screen_session}_${current_time}.log -dmS $screen_session /bin/bash -ic "$@"
+        else
+            screen -dmS $screen_session /bin/bash -ic "$@"
+        fi
 
         if check_screen "$screen_session"; then
             echo_info "Screen '$screen_session' started!"
