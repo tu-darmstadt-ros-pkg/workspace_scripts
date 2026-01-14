@@ -84,6 +84,12 @@ function _roswss_install_files() {
 }
 
 function _roswss_install_help() {
+    # Check if column command is available, install if missing
+    if ! command -v column &> /dev/null; then
+        echo_warn "Installing required dependency: bsdmainutils (provides 'column' command)..."
+        apt_install bsdmainutils
+    fi
+
     echo_note "The following optional rosinstall files are available:"
 
     local files=$(_roswss_install_files)

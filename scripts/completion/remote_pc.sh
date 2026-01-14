@@ -108,6 +108,12 @@ function _remote_pc_commands() {
 }
 
 function _remote_pc_help() {
+    # Check if column command is available, install if missing
+    if ! command -v column &> /dev/null; then
+        echo_warn "Installing required dependency: bsdmainutils (provides 'column' command)..."
+        apt_install bsdmainutils
+    fi
+
     echo_note "The following commands are available:"
 
     local commands
