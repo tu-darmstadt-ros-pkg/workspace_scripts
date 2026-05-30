@@ -24,6 +24,16 @@ echo_info "Setting ROS_MASTER_URI to $ROS_MASTER_URI"
 
 # check command line for ROS_IP
 local_ip=$2
+# macOS lacks `hostname -I`/iproute2: derive local IP from the route toward the
+# master (picks the right iface on multi-VPN hosts). Linux path below unchanged.
+if [ -z "$local_ip" ] && [ "$(uname)" == "Darwin" ]; then
+    remote_interface=$(route -n get "$master" 2>/dev/null | awk '/interface:/{print $2; exit}')
+    if [ -n "$remote_interface" ]; then
+        local_ip=$(ifconfig "$remote_interface" 2>/dev/null | awk '/inet /{print $2; exit}')
+        [ -n "$local_ip" ] && echo_note "Resolved route to $master over $local_ip. Using interface: $remote_interface"
+    fi
+    [ -z "$local_ip" ] && local_ip=127.0.0.1
+fi
 if [ -z "$local_ip" ]; then
     num_ips=$(hostname -I | egrep -o "([0-9]+\.){3}[0-9]+" | grep -c ".*")
     if [ "$num_ips" == "0" ]; then
