@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function remote_pc() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh

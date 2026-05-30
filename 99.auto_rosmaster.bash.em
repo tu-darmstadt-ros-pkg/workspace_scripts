@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # check for .rosmaster file
 if [ -f ${ROSWSS_ROOT}/.rosmaster ]; then

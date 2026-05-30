@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # By Christian Steiger
 
 set -e -u

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cd $ROSWSS_ROOT
 catkin clean --orphans

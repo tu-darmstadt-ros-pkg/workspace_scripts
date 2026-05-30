@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export DISABLE_ROS1_EOL_WARNINGS=true
 

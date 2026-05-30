@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # avoid re-sourcing ROS workspace due to possible duplications in all exported path variables
 #. $ROSWSS_ROOT/setup.bash ""

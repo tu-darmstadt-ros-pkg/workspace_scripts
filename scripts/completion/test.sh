@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function roswss_test() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
