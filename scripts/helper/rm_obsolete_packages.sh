@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script is for removing packages that were part of a workspace,
 # but are not needed anymore. Manual removal is very cumbersome.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function roswss_clean() {
     source $ROSWSS_BASE_SCRIPTS/helper/helper.sh

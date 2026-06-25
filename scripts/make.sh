@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 
@@ -7,7 +7,12 @@ source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
 build_debug=false
 build_this=false
 build_externals=false
-build_cores=$(echo "$@" | grep -oP 'j\s*\K\d+')
+# macOS/BSD grep lacks GNU grep -P (Perl regex); use a portable sed fallback there.
+if [ "$(uname -s)" = "Darwin" ]; then
+    build_cores=$(printf '%s\n' "$@" | sed -nE 's/^-?j[[:space:]]*([0-9]+)$/\1/p' | tail -n1)
+else
+    build_cores=$(echo "$@" | grep -oP 'j\s*\K\d+')
+fi
 
 # get number of cores
 if [ -z $build_cores ]; then

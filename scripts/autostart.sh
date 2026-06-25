@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # only execute autostart if specified
 if [ -z "$AUTOSTART_LAUNCH_PKG" ]; then

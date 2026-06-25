@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DO NOT REMOVE THIS LINE UNLESS YOU DON'T WANT TO USE CUSTOM SCRIPTS
 @[if DEVELSPACE]@

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source ${ROSWSS_BASE_SCRIPTS}/helper/helper.sh
 

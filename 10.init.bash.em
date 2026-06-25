@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 export ROSWSS_REMOTE_PC_SCRIPTS=()
 export ROSWSS_SEP_SYM=';'
 

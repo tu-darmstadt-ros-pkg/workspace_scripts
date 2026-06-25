@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 clang-format -i -style=file $1

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
     if [ -r "$dir/update.sh" ]; then
