@@ -2,6 +2,7 @@
 
 source $ROSWSS_ROOT/setup.bash ""
 source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+source $ROSWSS_BASE_SCRIPTS/completion/workspace.sh
 
 # executes all scripts and launchfiles in a path given as argument
 
