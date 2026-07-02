@@ -9,8 +9,9 @@ case $- in *i*) ;; *) return 0 ;; esac
 # source completion files
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
   if [ -d "$dir/completion" ]; then
-    for file in `find -L $dir/completion/ -maxdepth 1 -type f -name "*.sh"`; do
-      source $file
+    for file in "$dir"/completion/*.sh; do
+      [ -f "$file" ] || continue
+      source "$file"
     done
   fi
 done
