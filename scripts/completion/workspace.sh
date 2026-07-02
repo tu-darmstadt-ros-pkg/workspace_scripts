@@ -66,7 +66,8 @@ function _roswss_commands() {
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -d $dir ]; then
-            for i in $(find -L $dir/ -maxdepth 1 -type f -name "*.sh" -o -name "*.py"); do
+            for i in "$dir"/*.sh "$dir"/*.py; do
+                [ -f "$i" ] || continue
                 local command
                 command=${i#$dir/}
                 if [[ ${command} == *.py && ! -x ${dir}/${command} ]]; then
@@ -234,7 +235,12 @@ function _roswss_complete() {
                         compopt -o nospace
                     fi
                     return
-                done < <(find -L "$dir/" -maxdepth 1 -type f -name "*.py" -print0)
+                done < <(
+                    for file in "$dir"/*.py; do
+                        [ -f "$file" ] || continue
+                        printf '%s\0' "$file"
+                    done
+                )
             fi
         done
 
