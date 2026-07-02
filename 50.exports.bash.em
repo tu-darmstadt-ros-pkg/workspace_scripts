@@ -2,6 +2,8 @@
 
 export DISABLE_ROS1_EOL_WARNINGS=true
 
+source "$ROSWSS_BASE_SCRIPTS/helper/workspace.sh"
+
 # Completions are interactive-only; skip in non-interactive build shells
 # (catkin's stripped env sources this under macOS /bin/bash 3.2 and errors).
 case $- in *i*) ;; *) return 0 ;; esac
