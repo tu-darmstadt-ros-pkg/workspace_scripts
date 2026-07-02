@@ -26,7 +26,8 @@ function roswss_clean() {
             rm -rf $ROSWSS_ROOT/build
             rm -rf $ROSWSS_ROOT/devel
             #rm -rf $ROSWSS_ROOT/.catkin_tools
-            for dir in `find -L $ROSWSS_ROOT/.catkin_tools/profiles/ -maxdepth 1 -mindepth 1 -type d`; do
+            for dir in "$ROSWSS_ROOT"/.catkin_tools/profiles/*; do
+                [ -d "$dir" ] || continue
                 rm -rf $dir/packages
             done
 
@@ -66,7 +67,8 @@ function roswss_clean() {
                     rm -rf $ROSWSS_ROOT/devel/share/$package
                     rm -rf $ROSWSS_ROOT/devel/.private/$package
 
-                    for dir in `find -L $ROSWSS_ROOT/.catkin_tools/profiles/ -maxdepth 1 -mindepth 1 -type d`; do
+                    for dir in "$ROSWSS_ROOT"/.catkin_tools/profiles/*; do
+                        [ -d "$dir" ] || continue
                         rm -rf $dir/packages/$package
                     done
 
@@ -98,7 +100,8 @@ function roswss_clean_externals() {
         fi
 
         if [ -d $dir/hooks/clean_externals/ ]; then
-            for i in `find -L $dir/hooks/clean_externals/ -maxdepth 1 -type f -name "*.sh"`; do
+            for i in "$dir"/hooks/clean_externals/*.sh; do
+                [ -f "$i" ] || continue
                 file=${i#$dir/hooks/clean_externals/}
                 echo_note "Running bash script: ${file} [$scripts_pkg]"
                 . "$dir/hooks/clean_externals/$file" $@

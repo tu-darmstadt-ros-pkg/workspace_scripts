@@ -57,19 +57,21 @@ function _roswss_install_files() {
     local ROSWSS_ROSINSTALL_FILES=()
  
     # find all rosinstall files
-    for i in `find -L $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/ -maxdepth 1 -type f -name "*.rosinstall"`; do
+    for i in "$ROSWSS_ROOT"/"$ROSWSS_INSTALL_DIR"/optional/*.rosinstall; do
+        [ -f "$i" ] || continue
         local file=${i#$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/}
         file=${file%.rosinstall}
-        if [ -r $i ]; then
+        if [ -r "$i" ]; then
             ROSWSS_ROSINSTALL_FILES+=($file)
         fi
     done
 
     # find all bash scripts
-    for i in `find -L $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/ -maxdepth 1 -type f -name "*.sh"`; do
+    for i in "$ROSWSS_ROOT"/"$ROSWSS_INSTALL_DIR"/optional/*.sh; do
+        [ -f "$i" ] || continue
         local file=${i#$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/}
         file=${file%.sh}
-        if [ -r $i ] && [ ! -f $ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$file.rosinstall ]; then
+        if [ -r "$i" ] && [ ! -f "$ROSWSS_ROOT/$ROSWSS_INSTALL_DIR/optional/$file.rosinstall" ]; then
             ROSWSS_ROSINSTALL_FILES+=($file)
         fi
     done

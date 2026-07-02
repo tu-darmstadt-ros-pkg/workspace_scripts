@@ -1,64 +1,8 @@
 #!/usr/bin/env bash
 
-function roswss() {
-    source $ROSWSS_BASE_SCRIPTS/helper/helper.sh
+source "$ROSWSS_BASE_SCRIPTS/helper/workspace.sh"
 
-    local command
-    command="$1"
-    shift
-
-    if [[ "$command" == "help" || "$command" = "--help" || -z "$command" ]]; then
-        _roswss_help
-        return 0
-    fi
-
-    for dir in ${ROSWSS_SCRIPTS//:/ }; do
-        if [ -x "$dir/${command}.sh" ]; then
-            $dir/${command}.sh "$@"
-            return $?
-        elif [ -x "$dir/${command}.py" ]; then
-            $dir/${command}.py "$@"
-            return $?
-        elif [ -r "$dir/${command}.sh" ]; then
-            source $dir/${command}.sh "$@"
-            return $?
-        else
-            # check if current scope is remote pc script
-            for script_name in "${ROSWSS_REMOTE_PC_SCRIPTS[@]}"; do
-                if [[ "$script_name" == "$command" ]]; then
-                    local pc
-                    pc=${script_name}_remote_pc
-
-                    # temporary change seperation symbol
-                    local OLD_IFS
-                    OLD_IFS=$IFS
-                    IFS=$ROSWSS_SEP_SYM
-
-                    # dispatch arguments for remote_pc function call
-                    local args
-                    args=(${!pc})
-                    local hostname
-                    hostname=${args[1]}
-                    local screen_name
-                    screen_name=${args[2]}
-                    local launch_command
-                    launch_command=${args[3]}
-
-                    IFS=$OLD_IFS
-
-                    # call remote pc function
-                    remote_pc "${script_name}" "${hostname}" "${screen_name}" "${launch_command}" "$@"
-                    return $?
-                fi
-            done
-        fi
-    done
-
-    echo_error "Unknown workspace script command: $command"
-    _roswss_help 
-
-    return 1
-}
+case $- in *i*) ;; *) return 0 ;; esac
 
 function _roswss_commands() {
     local ROSWSS_COMMANDS
@@ -66,7 +10,8 @@ function _roswss_commands() {
 
     for dir in ${ROSWSS_SCRIPTS//:/ }; do
         if [ -d $dir ]; then
-            for i in $(find -L $dir/ -maxdepth 1 -type f -name "*.sh" -o -name "*.py"); do
+            for i in "$dir"/*.sh "$dir"/*.py; do
+                [ -f "$i" ] || continue
                 local command
                 command=${i#$dir/}
                 if [[ ${command} == *.py && ! -x ${dir}/${command} ]]; then
@@ -234,7 +179,12 @@ function _roswss_complete() {
                         compopt -o nospace
                     fi
                     return
-                done < <(find -L "$dir/" -maxdepth 1 -type f -name "*.py" -print0)
+                done < <(
+                    for file in "$dir"/*.py; do
+                        [ -f "$file" ] || continue
+                        printf '%s\0' "$file"
+                    done
+                )
             fi
         done
 

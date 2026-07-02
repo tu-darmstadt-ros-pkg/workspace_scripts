@@ -2,6 +2,8 @@
 
 export DISABLE_ROS1_EOL_WARNINGS=true
 
+source "$ROSWSS_BASE_SCRIPTS/helper/workspace.sh"
+
 # Completions are interactive-only; skip in non-interactive build shells
 # (catkin's stripped env sources this under macOS /bin/bash 3.2 and errors).
 case $- in *i*) ;; *) return 0 ;; esac
@@ -9,8 +11,9 @@ case $- in *i*) ;; *) return 0 ;; esac
 # source completion files
 for dir in ${ROSWSS_SCRIPTS//:/ }; do
   if [ -d "$dir/completion" ]; then
-    for file in `find -L $dir/completion/ -maxdepth 1 -type f -name "*.sh"`; do
-      source $file
+    for file in "$dir"/completion/*.sh; do
+      [ -f "$file" ] || continue
+      source "$file"
     done
   fi
 done
