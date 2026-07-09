@@ -23,6 +23,16 @@ fi
 #   Since it is added before the extra catkin args, it can be overwritten there.
 catkin_args=("-DCATKIN_ENABLE_TESTING=OFF")
 
+: "${CCACHE_DIR:=$ROSWSS_ROOT/.cache/ccache}"
+if [[ -f "$CCACHE_DIR/env" ]]; then
+    . "$CCACHE_DIR/env"
+    echo_info ">>> ccache ENABLED (CC=$CC, CXX=$CXX)"
+else
+    unset CC
+    unset CXX
+    echo_note ">>> ccache disabled - run '$ROSWSS_PREFIX ccache activate' to enable."
+fi
+
 # check arguments
 for var in "$@"; do
     case $var in
