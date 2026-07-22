@@ -39,6 +39,27 @@ if [ -z "${user}" ]; then
     exit
 fi
 
+if command -v opkssh &>/dev/null; then
+  if [[ -f "$HOME/.ssh/id_ecdsa-cert.pub" ]]; then
+    OPKSSH_CERT="$HOME/.ssh/id_ecdsa-cert.pub"
+  else
+    OPKSSH_CERT="$HOME/.ssh/id_ecdsa.pub"
+  fi
+  if [[ -f "$OPKSSH_CERT" ]]; then
+    CERT_AGE=$(( $(date +%s) - $(stat -c %Y "$OPKSSH_CERT") ))
+    if (( CERT_AGE >= 86400 )); then
+      echo "opkssh cert expired, re-authenticating..."
+      opkssh login keycloak
+    fi
+  else
+    echo "opkssh cert not found, authenticating..."
+    opkssh login keycloak
+  fi
+else
+  echo "opkssh cert not found, authenticating..."
+  opkssh login keycloak
+fi
+
 # connect via SSH
 echo_info "Connecting to machine \"${host}\" as user \"${user}\"..."
 if [ "$#" -eq 0 ]; then
